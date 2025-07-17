@@ -8,5 +8,9 @@
 
         public int CategoryId { get; set; }
         public Category Category { get; set; }
+
+        // 通用属性：创建时间、更新时间
+        public DateTime CreatedTime { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedTime { get; set; } = DateTime.UtcNow;
     }
 }

@@ -17,5 +17,9 @@
 
         // 一个借阅记录可能产生一笔罚款
         public Fine? Fine { get; set; }
+
+        // 通用属性：创建时间、更新时间
+        public DateTime CreatedTime { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedTime { get; set; } = DateTime.UtcNow;
     }
 }

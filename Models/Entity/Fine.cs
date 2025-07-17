@@ -18,5 +18,9 @@ namespace DEMO_CRUD.Models.Entity
 
         public int UserId { get; set; }
         public User User { get; set; }
+
+        // 通用属性：创建时间、更新时间
+        public DateTime CreatedTime { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedTime { get; set; } = DateTime.UtcNow;
     }
 }

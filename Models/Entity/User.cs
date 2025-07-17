@@ -20,7 +20,8 @@ namespace DEMO_CRUD.Models.Entity
         public string Email { get; set; } // 邮箱，用于登录
 
         [Required]
-        public string PasswordHash { get; set; } // 存储哈希后的密码，绝不存明文
+        [MaxLength(255)]
+        public string PasswordHash { get; set; } // 存储哈希后的密码
 
         public UserRole Role { get; set; } = UserRole.Member; // 角色 (管理员/普通用户)
 
@@ -30,6 +31,11 @@ namespace DEMO_CRUD.Models.Entity
         public ICollection<Loan> Loans { get; set; } = new List<Loan>();
         public ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
         public ICollection<Fine> Fines { get; set; } = new List<Fine>();
+
+
+        // 通用属性：创建时间、更新时间
+        public DateTime CreatedTime { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedTime { get; set; } = DateTime.UtcNow;
     }
 
     public enum UserRole

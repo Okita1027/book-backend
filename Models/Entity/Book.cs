@@ -43,5 +43,11 @@ namespace DEMO_CRUD.Models.Entity
 
         // 一个 Book 可以有多个预约记录
         public ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
+
+
+        // 通用属性：创建时间、更新时间
+        public DateTime CreatedTime { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedTime { get; set; } = DateTime.UtcNow;
+
     }
 }
