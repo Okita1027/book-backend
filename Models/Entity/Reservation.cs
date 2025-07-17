@@ -1,6 +1,8 @@
-﻿namespace DEMO_CRUD.Models.Entity
+﻿using DEMO_CRUD.Data;
+
+namespace DEMO_CRUD.Models.Entity
 {
-    public class Reservation
+    public class Reservation : IAuditableEntity // 实现通用属性接口
     {
         public int Id { get; set; }
 
@@ -15,8 +17,8 @@
         public User User { get; set; }
 
         // 通用属性：创建时间、更新时间
-        public DateTime CreatedTime { get; set; } = DateTime.UtcNow;
-        public DateTime UpdatedTime { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedTime { get; set; } = DateTime.Now;
+        //public DateTime UpdatedTime { get; set; } = DateTime.UtcNow;
     }
 
     public enum ReservationStatus

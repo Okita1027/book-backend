@@ -1,12 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DEMO_CRUD.Data;
+using System.ComponentModel.DataAnnotations;
 
 namespace DEMO_CRUD.Models.Entity
 {
     /**
      *  同时代表 管理员和普通用户
      */
-
-    public class User
+    public class User : IAuditableEntity // 实现通用属性接口
     {
         public int Id { get; set; }
 
@@ -34,8 +34,8 @@ namespace DEMO_CRUD.Models.Entity
 
 
         // 通用属性：创建时间、更新时间
-        public DateTime CreatedTime { get; set; } = DateTime.UtcNow;
-        public DateTime UpdatedTime { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedTime { get; set; } = DateTime.Now;
+        //public DateTime UpdatedTime { get; set; } = DateTime.Now;
     }
 
     public enum UserRole

@@ -127,7 +127,7 @@ namespace DEMO_CRUD.Controllers
                 return BadRequest("作者/出版社不存在！");
             }
 
-            if (bookDTO.Available < bookDTO.Stock)
+            if (bookDTO.Available > bookDTO.Stock)
             {
                 return BadRequest("可用库存必须小于总库存");
             }

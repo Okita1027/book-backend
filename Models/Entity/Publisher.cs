@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DEMO_CRUD.Data;
+using System.ComponentModel.DataAnnotations;
 
 namespace DEMO_CRUD.Models.Entity;
 
-public class Publisher
+public class Publisher : IAuditableEntity // 实现通用属性接口
 {
     public int Id { get; set; }
 
@@ -15,6 +16,6 @@ public class Publisher
     public ICollection<Book> Books { get; set; } = new List<Book>();
 
     // 通用属性：创建时间、更新时间
-    public DateTime CreatedTime { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedTime { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedTime { get; set; } = DateTime.Now;
+    //public DateTime UpdatedTime { get; set; } = DateTime.UtcNow;
 }

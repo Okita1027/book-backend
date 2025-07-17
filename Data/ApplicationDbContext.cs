@@ -53,23 +53,42 @@ namespace DEMO_CRUD.Data
         //重写 SaveChanges 和 SaveChangesAsync 方法，用于自动更新 UpdatedTime
         public override int SaveChanges()
         {
-            UpdateTimestamps();
+            ApplyAuditInformation(); // 调用私有方法来更新 UpdatedTime
             return base.SaveChanges();
         }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            UpdateTimestamps();
+            ApplyAuditInformation(); // 调用私有方法来更新 UpdatedTime
             return await base.SaveChangesAsync(cancellationToken);
         }
-        private void UpdateTimestamps()
-        {
-            var entries = ChangeTracker.Entries()
-                .Where(e => e.Entity is Author && e.State == EntityState.Modified);
 
-            foreach (var entry in entries)
+
+        /// <summary>
+        /// 私有辅助方法，用于遍历被修改的实体并更新 UpdatedTime。
+        /// </summary>
+        private void ApplyAuditInformation()
+        {
+            // 获取所有处于 Added (新增) 或 Modified (修改) 状态的实体条目
+            foreach (var entry in ChangeTracker.Entries())
             {
-                ((Author)entry.Entity).UpdatedTime = DateTime.UtcNow;
+                if (entry.Entity is IAuditableEntity auditableEntity) // 检查实体是否实现了 IAuditableEntity 接口
+                {
+                    if (entry.State == EntityState.Modified)
+                    {
+                        // 如果实体被修改，更新 UpdatedTime
+                        auditableEntity.UpdatedTime = DateTime.Now;
+
+                        // 可选：如果你想确保 CreatedTime 不被修改，可以在这里处理
+                        // entry.Property(nameof(IAuditableEntity.CreatedTime)).IsModified = false;
+                    }
+                    // 你也可以在这里处理 EntityState.Added 状态的实体，如果它们的 CreatedTime 没有在构造函数中设置
+                    // else if (entry.State == EntityState.Added)
+                    // {
+                    //     auditableEntity.CreatedTime = DateTime.Now;
+                    //     auditableEntity.UpdatedTime = DateTime.Now;
+                    // }
+                }
             }
         }
 
