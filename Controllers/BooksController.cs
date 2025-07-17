@@ -73,5 +73,94 @@ namespace DEMO_CRUD.Controllers
             }
             return Ok(book); // 回传 HTTP 200 状态码和书籍详情
         }
+
+
+        // POST: api/books
+        // 添加新的书籍
+        [HttpPost]
+        public async Task<ActionResult<string>> AddBook([FromBody]EditBookDTO book)
+        {
+            // 检查传入的 AuthorID 和 PublisherID 是否存在
+            var author = await _context.Authors.FindAsync(book.AuthorId);
+            var publisher = await _context.Publishers.FindAsync(book.PublisherId);
+            if (author == null || publisher == null)
+            {
+                return BadRequest("作者/出版社不存在！");
+            }
+
+            // DTO映射
+            var newBook = new Book
+            {
+                Title = book.Title,
+                Isbn = book.Isbn,
+                PublishedDate = book.PublishedDate,
+                Stock = book.Stock,
+                Available = book.Stock, // 初始可用数量等于库存数量
+                AuthorId = book.AuthorId,
+                PublisherId = book.PublisherId
+            };
+
+            // 将新实体添加到数据库上下文中
+            _context.Books.Add(newBook);
+            // 保存更改到数据库
+            await _context.SaveChangesAsync();
+
+            return Ok("创建成功！");
+        }
+
+        // PUT: api/books/{id}
+        // 修改图书
+        [HttpPut("{id}")]
+        public async Task<ActionResult<string>> UpdateBook(int id, [FromBody]EditBookDTO bookDTO)
+        {
+            // 查找要更新的书籍
+            var book = await _context.Books.FindAsync(id);
+            if (book == null)
+            {
+                return NotFound("书籍未找到！");
+            }
+            // 检查传入的 AuthorID 和 PublisherID 是否存在
+            var author = await _context.Authors.FindAsync(bookDTO.AuthorId);
+            var publisher = await _context.Publishers.FindAsync(bookDTO.PublisherId);
+            if (author == null || publisher == null)
+            {
+                return BadRequest("作者/出版社不存在！");
+            }
+
+            if (bookDTO.Available < bookDTO.Stock)
+            {
+                return BadRequest("可用库存必须小于总库存");
+            }
+
+            // 更新书籍属性
+            book.Title = bookDTO.Title;
+            book.Isbn = bookDTO.Isbn;
+            book.PublishedDate = bookDTO.PublishedDate;
+            book.Stock = bookDTO.Stock;
+            book.Available = bookDTO.Available; // 更新可用数量
+            book.AuthorId = bookDTO.AuthorId;
+            book.PublisherId = bookDTO.PublisherId;
+            // 保存更改到数据库
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
+        // DELETE: api/books/{id}
+        // 删除图书
+        [HttpDelete("id")]
+        public async Task<ActionResult<string>> DeleteBook(int id)
+        {
+            // 查找要删除的书籍
+            var book = await _context.Books.FindAsync(id);
+            if (book == null)
+            {
+                return NotFound("书籍未找到！");
+            }
+            // 从数据库上下文中移除书籍
+            _context.Books.Remove(book);
+            // 保存更改到数据库
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
     }
 }
