@@ -22,7 +22,7 @@ namespace DEMO_CRUD.Data
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<Fine> Fines { get; set; }
 
-        // 我们稍后会在这里加入 Fluent API 的设定
+        // Fluent API 设定
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

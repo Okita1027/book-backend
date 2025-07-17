@@ -364,3 +364,6 @@ FodyWeavers.xsd
 
 # Rider开发工具
 .idea/
+
+# 日志
+Logs/

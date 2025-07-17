@@ -1,6 +1,7 @@
 ﻿using DEMO_CRUD.Data;
 using DEMO_CRUD.Models.DTO;
 using DEMO_CRUD.Models.Entity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ namespace DEMO_CRUD.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize] // 鉴权注解，必须通过JWT认证才能访问该类中的方法
     public class BooksController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -20,6 +22,7 @@ namespace DEMO_CRUD.Controllers
         // GET: api/books
         // 获取所有书籍
         [HttpGet]
+        [AllowAnonymous]    // 允许匿名访问
         //public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
         public async Task<ActionResult<IEnumerable<BookDTO>>> GetBooks()
         {

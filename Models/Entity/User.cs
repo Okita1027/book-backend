@@ -25,7 +25,7 @@ namespace DEMO_CRUD.Models.Entity
 
         public UserRole Role { get; set; } = UserRole.Member; // 角色 (管理员/普通用户)
 
-        public DateTime RegistrationDate { get; set; } = DateTime.UtcNow;
+        public DateTime RegistrationDate { get; set; } = DateTime.Now;
 
         // --- 导航属性 ---
         public ICollection<Loan> Loans { get; set; } = new List<Loan>();
