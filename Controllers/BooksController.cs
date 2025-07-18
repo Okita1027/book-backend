@@ -201,40 +201,83 @@ namespace DEMO_CRUD.Controllers
         // POST: api/books
         // 添加新的书籍
         [HttpPost]
-        public async Task<ActionResult<string>> AddBook([FromBody]EditBookDTO book)
+        public async Task<ActionResult<string>> AddBook([FromBody] EditBookDTO bookDTO)
         {
             // 检查传入的 AuthorID 和 PublisherID 是否存在
-            var author = await _context.Authors.FindAsync(book.AuthorId);
-            var publisher = await _context.Publishers.FindAsync(book.PublisherId);
-            if (author == null || publisher == null)
+            var author = await _context.Authors.FindAsync(bookDTO.AuthorId);
+            var publisher = await _context.Publishers.FindAsync(bookDTO.PublisherId);
+            if (author == null)
             {
-                return BadRequest("作者/出版社不存在！");
+                return BadRequest("作者不存在！");
             }
+            if (publisher == null)
+            {
+                return BadRequest("出版社不存在！");
+            }
+            // 检查书籍类别是否存在
+            if (bookDTO.CategoryIds == null || bookDTO.CategoryIds.Count == 0)
+            {
+                return BadRequest("书籍至少需要一个分类！");
+            }
+            // 验证传入的所有分类ID是否存在
+            var existingCategories = await _context.Categories
+                .Where(c => bookDTO.CategoryIds.Contains(c.Id))
+                .ToListAsync();
+            if (existingCategories.Count != bookDTO.CategoryIds.Count)
+            {
+                // 找出不存在的类别ID
+                var nonExistentCategoryIds = bookDTO.CategoryIds
+                                                    .Except(existingCategories.Select(c => c.Id))
+                                                    .ToList();
+                return BadRequest($"部分或全部书籍类别不存在：{string.Join(", ", nonExistentCategoryIds)}");
+            }
+
 
             // DTO映射
             var newBook = new Book
             {
-                Title = book.Title,
-                Isbn = book.Isbn,
-                PublishedDate = book.PublishedDate,
-                Stock = book.Stock,
-                Available = book.Stock, // 初始可用数量等于库存数量
-                AuthorId = book.AuthorId,
-                PublisherId = book.PublisherId
+                Title = bookDTO.Title,
+                Isbn = bookDTO.Isbn,
+                PublishedDate = bookDTO.PublishedDate,
+                Stock = bookDTO.Stock,
+                Available = bookDTO.Stock, // 初始可用数量等于库存数量
+                AuthorId = bookDTO.AuthorId,
+                PublisherId = bookDTO.PublisherId
             };
 
-            // 将新实体添加到数据库上下文中
+            // 将书籍的新实体添加到数据库上下文中
             _context.Books.Add(newBook);
-            // 保存更改到数据库
-            await _context.SaveChangesAsync();
 
-            return Ok("创建成功！");
+            // 添加书籍类别和书籍的关联(处理联结表BookCategory)
+            // 在保存newBook后，它会获得数据库生成的主键ID
+            // 但在SaveChanges()之前，就可以建立BookCategory的关系
+            foreach (var category in existingCategories)
+            {
+                newBook.BookCategories.Add(new BookCategory
+                {
+                    Category = category,
+                });
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                // 处理数据库更新异常，例如约束冲突等
+                // 打印详细错误信息有助于调试
+                Console.WriteLine($"Error saving book and categories: {ex.InnerException?.Message ?? ex.Message}");
+                return StatusCode(500, "创建书籍失败，请稍后再试。");
+            }
+
+            return StatusCode(201, "书籍创建成功！");
         }
 
         // PUT: api/books/{id}
         // 修改图书
         [HttpPut("{id}")]
-        public async Task<ActionResult<string>> UpdateBook(int id, [FromBody]EditBookDTO bookDTO)
+        public async Task<ActionResult<string>> UpdateBook(int id, [FromBody] EditBookDTO bookDTO)
         {
             // 查找要更新的书籍
             var book = await _context.Books.FindAsync(id);
