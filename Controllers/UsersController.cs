@@ -175,7 +175,7 @@ namespace DEMO_CRUD.Controllers
                 new Claim(ClaimTypes.Name, user.Name), // 用户名
                 new Claim(ClaimTypes.Email, user.Email), // 邮箱
                 // 可以根据需要添加其他自定义声明，如用户角色
-                new Claim(ClaimTypes.Role, user.Role.ToString()), // 假设 User 实体有 Role 属性
+                new Claim(ClaimTypes.Role, nameof(user.Role)), // 假设 User 实体有 Role 属性
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) // JWT 的唯一 ID，用于黑名单（可选）
             };
 

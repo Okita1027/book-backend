@@ -1,5 +1,6 @@
 ﻿using DEMO_CRUD.Data;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DEMO_CRUD.Models.Entity
 {
@@ -29,11 +30,11 @@ namespace DEMO_CRUD.Models.Entity
 
         // --- 导航属性 ---
         public ICollection<Loan> Loans { get; set; } = new List<Loan>();
-        public ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
         public ICollection<Fine> Fines { get; set; } = new List<Fine>();
 
 
         // 通用属性：创建时间、更新时间
+        [Column(TypeName = "datetime(0)")]
         public DateTime CreatedTime { get; set; } = DateTime.Now;
         //public DateTime UpdatedTime { get; set; } = DateTime.Now;
     }

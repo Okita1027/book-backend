@@ -19,13 +19,19 @@ namespace DEMO_CRUD.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Loan> Loans { get; set; }
-        public DbSet<Reservation> Reservations { get; set; }
         public DbSet<Fine> Fines { get; set; }
 
         // Fluent API 设定
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // 去除时间类型的默认精度（Fluent API方式）
+            //modelBuilder.Entity<Author>(entity =>
+            //{
+            //    entity.Property(a => a.CreatedTime)
+            //          .HasColumnType("datetime(0)"); // MySQL 示例，表示不保留小数
+            //});
 
             // 在此进行模型设定...
             // 1. 定义复合主键

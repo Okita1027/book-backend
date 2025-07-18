@@ -5,6 +5,7 @@
         public int Id { get; set; }
         public string Title { get; set; }
         public string Isbn { get; set; }
+        public string PublishedDate { get; set; }
         public int Stock { get; set; }
         public int Available { get; set; }
 

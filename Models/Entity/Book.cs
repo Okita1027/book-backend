@@ -1,5 +1,6 @@
 ﻿using DEMO_CRUD.Data;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DEMO_CRUD.Models.Entity
 {
@@ -42,11 +43,9 @@ namespace DEMO_CRUD.Models.Entity
         // 一个 Book 可以有多个借阅记录
         public ICollection<Loan> Loans { get; set; } = new List<Loan>();
 
-        // 一个 Book 可以有多个预约记录
-        public ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
-
 
         // 通用属性：创建时间、更新时间
+        [Column(TypeName="datetime(0)")]
         public DateTime CreatedTime { get; set; } = DateTime.Now;
         //public DateTime UpdatedTime { get; set; } = DateTime.Now;
 

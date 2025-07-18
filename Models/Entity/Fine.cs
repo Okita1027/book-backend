@@ -21,6 +21,7 @@ namespace DEMO_CRUD.Models.Entity
         public User User { get; set; }
 
         // 通用属性：创建时间、更新时间
+        [Column(TypeName = "datetime(0)")]
         public DateTime CreatedTime { get; set; } = DateTime.Now;
         //public DateTime UpdatedTime { get; set; } = DateTime.UtcNow;
     }

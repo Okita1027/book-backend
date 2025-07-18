@@ -4,6 +4,7 @@ using DEMO_CRUD.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DEMO_CRUD.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250718031228_CancelReversion")]
+    partial class CancelReversion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +37,7 @@ namespace DEMO_CRUD.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime(0)");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -42,7 +45,7 @@ namespace DEMO_CRUD.Migrations
                         .HasColumnType("varchar(100)");
 
                     b.Property<DateTime>("UpdatedTime")
-                        .HasColumnType("datetime(0)");
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
@@ -64,7 +67,7 @@ namespace DEMO_CRUD.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime(0)");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Isbn")
                         .IsRequired()
@@ -86,7 +89,7 @@ namespace DEMO_CRUD.Migrations
                         .HasColumnType("varchar(200)");
 
                     b.Property<DateTime>("UpdatedTime")
-                        .HasColumnType("datetime(0)");
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
@@ -106,10 +109,10 @@ namespace DEMO_CRUD.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime(0)");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("UpdatedTime")
-                        .HasColumnType("datetime(0)");
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("BookId", "CategoryId");
 
@@ -127,7 +130,7 @@ namespace DEMO_CRUD.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime(0)");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -135,7 +138,7 @@ namespace DEMO_CRUD.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.Property<DateTime>("UpdatedTime")
-                        .HasColumnType("datetime(0)");
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
@@ -154,7 +157,7 @@ namespace DEMO_CRUD.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime(0)");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("LoanId")
                         .HasColumnType("int");
@@ -167,7 +170,7 @@ namespace DEMO_CRUD.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("UpdatedTime")
-                        .HasColumnType("datetime(0)");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -194,7 +197,7 @@ namespace DEMO_CRUD.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime(0)");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime(6)");
@@ -206,7 +209,7 @@ namespace DEMO_CRUD.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("UpdatedTime")
-                        .HasColumnType("datetime(0)");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -229,7 +232,7 @@ namespace DEMO_CRUD.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime(0)");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -237,7 +240,7 @@ namespace DEMO_CRUD.Migrations
                         .HasColumnType("varchar(150)");
 
                     b.Property<DateTime>("UpdatedTime")
-                        .HasColumnType("datetime(0)");
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
@@ -253,7 +256,7 @@ namespace DEMO_CRUD.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime(0)");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -277,7 +280,7 @@ namespace DEMO_CRUD.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedTime")
-                        .HasColumnType("datetime(0)");
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
