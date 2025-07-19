@@ -1,39 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using DEMO_CRUD.Data;
+using DEMO_CRUD.Models.DTO;
+using DEMO_CRUD.Models.Entity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using DEMO_CRUD.Data;
-using DEMO_CRUD.Models.Entity;
-using DEMO_CRUD.Models.DTO;
 
 namespace DEMO_CRUD.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthorsController : ControllerBase
+    public class AuthorsController(ApplicationDbContext context) : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        // 下面是传统的构造函数写法，上面是C#特有的语法
+        /*private readonly ApplicationDbContext _context;
 
         public AuthorsController(ApplicationDbContext context)
         {
             _context = context;
-        }
+        }*/
 
         // GET: api/Authors
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Author>>> GetAuthors()
         {
-            return await _context.Authors.ToListAsync();
+            return await context.Authors.ToListAsync();
         }
 
         // GET: api/Authors/5
-        [HttpGet("{id}")]
+        // {id:int}作用：类型限制，若转换失败，则返回400 Bad Request
+        [HttpGet("{id:int}")]
         public async Task<ActionResult<Author>> GetAuthor(int id)
         {
-            var author = await _context.Authors.FindAsync(id);
+            var author = await context.Authors.FindAsync(id);
 
             if (author == null)
             {
@@ -44,7 +42,8 @@ namespace DEMO_CRUD.Controllers
         }
 
         // PUT: api/Authors/5
-        [HttpPut("{id}")]
+        [HttpPut("{id:int}")]
+        [Authorize(Roles = nameof(UserRole.Admin))]
         public async Task<IActionResult> PutAuthor(int id, EditAuthorDTO editAuthorDTO)
         {
             // 1.判断请求数据是否有效【符合注解的要求】
@@ -52,40 +51,25 @@ namespace DEMO_CRUD.Controllers
             {
                 return BadRequest(ModelState);
             }
+
             // 2.查找现有实体
-            var existingAuthor = await _context.Authors.FindAsync(id);
+            var existingAuthor = await context.Authors.FindAsync(id);
             if (existingAuthor == null)
             {
                 return NotFound("此作者不存在！");
             }
+
             // 3.更新现有实体的属性
             existingAuthor.Name = editAuthorDTO.Name;
             existingAuthor.Biography = editAuthorDTO.Biography;
 
-            // 4.尝试保存更改
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            // 5.处理并发异常
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AuthorExists(id))
-                {
-                    // 如果在尝试保存时发现实体不存在，说明已经被另一个操作删除了
-                    return NotFound("此作者不存在！");
-                }
-                else
-                {
-                    throw; // 重新抛出异常以供全局异常处理器处理
-                }
-            }
-
+            await context.SaveChangesAsync();
             return NoContent();
         }
 
         // POST: api/Authors
         [HttpPost]
+        [Authorize(Roles = nameof(UserRole.Admin))]
         public async Task<ActionResult<Author>> PostAuthor(EditAuthorDTO editAuthorDTO)
         {
             var author = new Author
@@ -93,31 +77,32 @@ namespace DEMO_CRUD.Controllers
                 Name = editAuthorDTO.Name,
                 Biography = editAuthorDTO.Biography
             };
-            _context.Authors.Add(author);
-            await _context.SaveChangesAsync();
+            context.Authors.Add(author);
+            await context.SaveChangesAsync();
 
             return CreatedAtAction("GetAuthor", new { id = author.Id }, author);
         }
 
         // DELETE: api/Authors/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
+        [Authorize(Roles = nameof(UserRole.Admin))]
         public async Task<IActionResult> DeleteAuthor(int id)
         {
-            var author = await _context.Authors.FindAsync(id);
+            var author = await context.Authors.FindAsync(id);
             if (author == null)
             {
                 return NotFound();
             }
 
-            _context.Authors.Remove(author);
-            await _context.SaveChangesAsync();
+            context.Authors.Remove(author);
+            await context.SaveChangesAsync();
 
             return NoContent();
         }
 
         private bool AuthorExists(int id)
         {
-            return _context.Authors.Any(e => e.Id == id);
+            return context.Authors.Any(e => e.Id == id);
         }
     }
 }

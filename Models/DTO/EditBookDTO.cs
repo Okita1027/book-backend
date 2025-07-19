@@ -9,7 +9,7 @@ namespace DEMO_CRUD.Models.DTO
         public string Title { get; set; }
 
         [Required]
-        [StringLength(13, MinimumLength = 10)] // ISBN can be 10 or 13
+        [StringLength(13, MinimumLength = 10)] // ISBN最小10，最大13
         public string Isbn { get; set; }
 
         public DateTime PublishedDate { get; set; }
@@ -29,6 +29,6 @@ namespace DEMO_CRUD.Models.DTO
 
         [Required]
         [MinLength(1, ErrorMessage = "书籍至少需要一个分类")]
-        public List<int> CategoryIds { get; set; } = new List<int>();
+        public List<int> CategoryIds { get; set; } = [];
     }
 }

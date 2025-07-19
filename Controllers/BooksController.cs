@@ -10,9 +10,11 @@ namespace DEMO_CRUD.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    // [Authorize]  // 为所有方法添加鉴权
     public class BooksController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+
         public BooksController(ApplicationDbContext context)
         {
             _context = context;
@@ -21,19 +23,12 @@ namespace DEMO_CRUD.Controllers
         // GET: api/books
         // 获取所有书籍
         [HttpGet]
-        [AllowAnonymous]    // 允许匿名访问
-        //public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
+        // [AllowAnonymous]    // 忽略类上的[Authorize]注解，允许匿名访问
         public async Task<ActionResult<IEnumerable<BookDTO>>> GetBooks()
         {
-            //// 使用 ToListAsync() 以异步方式获取所有书籍
-            //List<Book> books = await _context.Books
-            //    .Include(b => b.Author)     // 同时加载关联的 Author 实体
-            //    .Include(b => b.Publisher)  // 同时加载关联的 Publisher 实体
-            //    .ToListAsync();
-
             var books = await _context.Books
-                .Include(b => b.Author)     // 同时加载关联的 Author 实体
-                .Include(b => b.Publisher)  // 同时加载关联的 Publisher 实体
+                .Include(b => b.Author) // 同时加载关联的 Author 实体
+                .Include(b => b.Publisher) // 同时加载关联的 Publisher 实体
                 .Select(book => new BookDTO
                 {
                     Id = book.Id,
@@ -46,7 +41,7 @@ namespace DEMO_CRUD.Controllers
                 })
                 .ToListAsync();
 
-            return Ok(books);   // 回传 HTTP 200 状态码和书籍列表
+            return Ok(books);
         }
 
         // GET: api/books/{id}
@@ -56,8 +51,8 @@ namespace DEMO_CRUD.Controllers
         {
             // 使用 FindAsync() 以异步方式查找特定书籍
             var book = await _context.Books
-                .Include(b => b.Author)     // 同时加载关联的 Author 实体
-                .Include(b => b.Publisher)  // 同时加载关联的 Publisher 实体
+                .Include(b => b.Author) // 同时加载关联的 Author 实体
+                .Include(b => b.Publisher) // 同时加载关联的 Publisher 实体
                 .Select(book => new BookDTO
                 {
                     Id = book.Id,
@@ -73,10 +68,20 @@ namespace DEMO_CRUD.Controllers
             {
                 return NotFound(); // 如果未找到书籍，回传 HTTP 404 状态码
             }
-            return Ok(book); // 回传 HTTP 200 状态码和书籍详情
+
+            return Ok(book);
         }
 
-        // 根据 书名/ISBN/作者名/出版社名/出版日期 模糊搜索书籍
+        /// <summary>
+        /// 根据 书名/ISBN/作者名/出版社名/出版日期 模糊搜索书籍
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="isbn"></param>
+        /// <param name="authorName"></param>
+        /// <param name="publisherName"></param>
+        /// <param name="publishedDateBegin"></param>
+        /// <param name="publishedDateEnd"></param>
+        /// <returns></returns>
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<BookDTO>>> GetBooks(
             [FromQuery] string title = null,
@@ -86,35 +91,41 @@ namespace DEMO_CRUD.Controllers
             [FromQuery] DateTime? publishedDateBegin = null,
             [FromQuery] DateTime? publishedDateEnd = null)
         {
-            // 使用 LINQ 查询构建动态查询
             var query = _context.Books
                 .Include(b => b.Author)
                 .Include(b => b.Publisher)
                 .AsQueryable();
+
             if (!string.IsNullOrEmpty(title))
             {
                 query = query.Where(b => b.Title.Contains(title));
             }
+
             if (!string.IsNullOrEmpty(isbn))
             {
                 query = query.Where(b => b.Isbn.Contains(isbn));
             }
+
             if (!string.IsNullOrEmpty(authorName))
             {
                 query = query.Where(b => b.Author.Name.Contains(authorName));
             }
+
             if (!string.IsNullOrEmpty(publisherName))
             {
                 query = query.Where(b => b.Publisher.Name.Contains(publisherName));
             }
+
             if (publishedDateBegin.HasValue)
             {
                 query = query.Where(b => b.PublishedDate >= publishedDateBegin.Value);
             }
+
             if (publishedDateEnd.HasValue)
             {
                 query = query.Where(b => b.PublishedDate <= publishedDateEnd.Value);
             }
+
             var books = await query.Select(book => new BookDTO
             {
                 Id = book.Id,
@@ -129,10 +140,15 @@ namespace DEMO_CRUD.Controllers
             return Ok(books);
         }
 
-        // 借书
-        [HttpPost("borrow")]
+        /// <summary>
+        /// 借书
+        /// </summary>
+        /// <param name="id"></param> 书籍的ID
+        /// <param name="username"></param>用户的名称
+        /// <returns>借阅结果</returns>
+        [HttpPost("loan")]
         [Authorize]
-        public async Task<ActionResult<string>> BorrowBook(int id, string userName)
+        public async Task<ActionResult<string>> LoanBook(int id, string username)
         {
             // 判断是否存在该id的书籍，并判断该书籍是否有可借数量
             var book = await _context.Books.FindAsync(id);
@@ -140,16 +156,19 @@ namespace DEMO_CRUD.Controllers
             {
                 return NotFound("书籍未找到！");
             }
+
             if (book.Available <= 0)
             {
                 return BadRequest("该书籍已无可借数量！");
             }
+
             // 判断用户是否存在
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == userName);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == username);
             if (user == null)
             {
                 return NotFound("用户未找到！");
             }
+
             // 创建借书记录
             var loan = new Loan
             {
@@ -171,36 +190,63 @@ namespace DEMO_CRUD.Controllers
             }
             catch (DbUpdateException ex)
             {
-                // 处理数据库更新异常
                 return BadRequest($"借书失败: {ex.Message}");
             }
+
             return Ok("借书成功！");
         }
 
-        // 还书
+        /// <summary>
+        /// 还书
+        /// </summary>
+        /// <param name="id">书籍的ID</param>
+        /// <param name="username">用户的名称</param>
+        /// <returns>还书结果</returns>
         [HttpPost("return")]
-        public async Task<ActionResult<string>> ReturnBook(int id, string userName)
+        [Authorize]
+        public async Task<ActionResult<string>> ReturnBook(int id, string username)
         {
             // 查找借书记录
             var loan = await _context.Loans
-                .Include(l => l.Book) // 同时加载关联的 Book 实体
-                .FirstOrDefaultAsync(l => l.BookId == id && l.User.Name == userName && l.ReturnDate == null);
+                .Include(l => l.Book) // 同时加载关联的 Book
+                .FirstOrDefaultAsync(l => l.BookId == id && l.User.Name == username && l.ReturnDate == null);
             if (loan == null)
             {
                 return NotFound("借书记录未找到或已归还！");
             }
+
             // 更新还书日期
             loan.ReturnDate = DateTime.Now;
+            // 若超期还书，则生成罚款单
+            if (loan.DueDate < loan.ReturnDate)
+            {
+                TimeSpan span = loan.ReturnDate.Value - loan.DueDate;
+                // span.Days VS span.TotalDays : 前者是整数，后者带小数
+                int spanDays = span.Days;
+                var fine = new Fine
+                {
+                    Amount = 0.5m * spanDays,
+                    Reason = "超期还书",
+                    LoanId = loan.Id,
+                    UserId = loan.UserId
+                };
+                _context.Fines.Add(fine);
+            }
+
             // 更新书籍的可用数量
-            loan.Book.Available += 1; // 归还一本书，增加可用数量
-            // 保存更改到数据库
+            loan.Book.Available += 1;
+
             await _context.SaveChangesAsync();
             return Ok("还书成功！");
         }
 
-        // POST: api/books
-        // 添加新的书籍
+        /// <summary>
+        /// 添加新的书籍
+        /// </summary>
+        /// <param name="bookDTO">书籍类的部分字段</param>
+        /// <returns>添加结果</returns>
         [HttpPost]
+        [Authorize(Roles = nameof(UserRole.Admin))]
         public async Task<ActionResult<string>> AddBook([FromBody] EditBookDTO bookDTO)
         {
             // 检查传入的 AuthorID 和 PublisherID 是否存在
@@ -210,15 +256,18 @@ namespace DEMO_CRUD.Controllers
             {
                 return BadRequest("作者不存在！");
             }
+
             if (publisher == null)
             {
                 return BadRequest("出版社不存在！");
             }
+
             // 检查书籍类别是否存在
-            if (bookDTO.CategoryIds == null || bookDTO.CategoryIds.Count == 0)
+            if (bookDTO.CategoryIds.Count == 0)
             {
                 return BadRequest("书籍至少需要一个分类！");
             }
+
             // 验证传入的所有分类ID是否存在
             var existingCategories = await _context.Categories
                 .Where(c => bookDTO.CategoryIds.Contains(c.Id))
@@ -227,11 +276,10 @@ namespace DEMO_CRUD.Controllers
             {
                 // 找出不存在的类别ID
                 var nonExistentCategoryIds = bookDTO.CategoryIds
-                                                    .Except(existingCategories.Select(c => c.Id))
-                                                    .ToList();
+                    .Except(existingCategories.Select(c => c.Id))
+                    .ToList();
                 return BadRequest($"部分或全部书籍类别不存在：{string.Join(", ", nonExistentCategoryIds)}");
             }
-
 
             // DTO映射
             var newBook = new Book
@@ -259,24 +307,19 @@ namespace DEMO_CRUD.Controllers
                 });
             }
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException ex)
-            {
-                // 处理数据库更新异常，例如约束冲突等
-                // 打印详细错误信息有助于调试
-                Console.WriteLine($"Error saving book and categories: {ex.InnerException?.Message ?? ex.Message}");
-                return StatusCode(500, "创建书籍失败，请稍后再试。");
-            }
+            await _context.SaveChangesAsync();
+            return StatusCode(500, "创建书籍失败，请稍后再试。");
 
-            return StatusCode(201, "书籍创建成功！");
+            return Ok("书籍创建成功！");
         }
 
-        // PUT: api/books/{id}
-        // 修改图书
-        [HttpPut("{id}")]
+        /// <summary>
+        /// 修改图书
+        /// </summary>
+        /// <param name="id">书籍的ID</param>
+        /// <param name="bookDTO">更新书籍所需要的字段</param>
+        /// <returns>更新结果</returns>
+        [HttpPut("{id:int}")]
         public async Task<ActionResult<string>> UpdateBook(int id, [FromBody] EditBookDTO bookDTO)
         {
             // 查找要更新的书籍
@@ -285,6 +328,7 @@ namespace DEMO_CRUD.Controllers
             {
                 return NotFound("书籍未找到！");
             }
+
             // 检查传入的 AuthorID 和 PublisherID 是否存在
             var author = await _context.Authors.FindAsync(bookDTO.AuthorId);
             var publisher = await _context.Publishers.FindAsync(bookDTO.PublisherId);
@@ -313,7 +357,7 @@ namespace DEMO_CRUD.Controllers
 
         // DELETE: api/books/{id}
         // 删除图书
-        [HttpDelete("id")]
+        [HttpDelete("{id:int}")]
         public async Task<ActionResult<string>> DeleteBook(int id)
         {
             // 查找要删除的书籍
@@ -322,6 +366,7 @@ namespace DEMO_CRUD.Controllers
             {
                 return NotFound("书籍未找到！");
             }
+
             // 从数据库上下文中移除书籍
             _context.Books.Remove(book);
             // 保存更改到数据库

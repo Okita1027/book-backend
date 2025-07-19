@@ -24,11 +24,4 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.12.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\VO\" />
-    <Folder Include="Utils\" />
-    <Folder Include="Services\" />
-    <Folder Include="Repositories\" />
-  </ItemGroup>
-
 </Project>

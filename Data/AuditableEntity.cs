@@ -2,9 +2,9 @@
 
 namespace DEMO_CRUD.Data
 {
-    public class IAuditableEntity
+    public class AuditableEntity
     {
         [Column(TypeName = "datetime(0)")]
-        public DateTime UpdatedTime { get; set; } = DateTime.Now;
+        public DateTime UpdatedTime { get; set; }
     }
 }

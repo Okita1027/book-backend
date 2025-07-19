@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using DEMO_CRUD.Data;
+using DEMO_CRUD.Models.DTO;
+using DEMO_CRUD.Models.Entity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using DEMO_CRUD.Data;
-using DEMO_CRUD.Models.Entity;
-using DEMO_CRUD.Models.DTO;
 
 namespace DEMO_CRUD.Controllers
 {
@@ -30,7 +26,7 @@ namespace DEMO_CRUD.Controllers
         }
 
         // GET: api/Publishers/5
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<ActionResult<Publisher>> GetPublisher(int id)
         {
             var publisher = await _context.Publishers.FindAsync(id);
@@ -44,7 +40,8 @@ namespace DEMO_CRUD.Controllers
         }
 
         // PUT: api/Publishers/5
-        [HttpPut("{id}")]
+        [HttpPut("{id:int}")]
+        [Authorize(Roles = nameof(UserRole.Admin))]
         public async Task<IActionResult> PutPublisher(int id, EditPublisherDTO editPublisherDTO)
         {
             // 1.判断请求数据是否有效【符合注解的要求】
@@ -52,37 +49,23 @@ namespace DEMO_CRUD.Controllers
             {
                 return BadRequest(ModelState);
             }
+
             // 2.查找现有实体
             var existingPublisher = await _context.Publishers.FindAsync(id);
             if (existingPublisher == null)
             {
                 return NotFound("此出版社不存在！");
             }
+
             // 3.更新现有实体的属性
             existingPublisher.Name = editPublisherDTO.Name;
-            // 4.尝试保存更改
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PublisherExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            await _context.SaveChangesAsync();
             return NoContent();
         }
 
         // POST: api/Publishers
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Roles = nameof(UserRole.Admin))]
         public async Task<ActionResult<Publisher>> PostPublisher(EditPublisherDTO editPublisherDTO)
         {
             var publisher = new Publisher
@@ -97,6 +80,7 @@ namespace DEMO_CRUD.Controllers
 
         // DELETE: api/Publishers/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = nameof(UserRole.Admin))]
         public async Task<IActionResult> DeletePublisher(int id)
         {
             var publisher = await _context.Publishers.FindAsync(id);

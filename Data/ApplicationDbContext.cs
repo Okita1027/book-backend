@@ -6,7 +6,6 @@ namespace DEMO_CRUD.Data
     public class ApplicationDbContext : DbContext
     {
 
-        // 这个建构函式是让依赖注入（DI）系统能够传入配置资讯的关键
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
@@ -33,7 +32,7 @@ namespace DEMO_CRUD.Data
             //          .HasColumnType("datetime(0)"); // MySQL 示例，表示不保留小数
             //});
 
-            // 在此进行模型设定...
+            // 开始设定模型
             // 1. 定义复合主键
             modelBuilder.Entity<BookCategory>()
                 .HasKey(bc => new { bc.BookId, bc.CategoryId });
@@ -54,8 +53,7 @@ namespace DEMO_CRUD.Data
                 .WithMany(c => c.BookCategories)
                 .HasForeignKey(bc => bc.CategoryId);
         }
-
-
+        
         //重写 SaveChanges 和 SaveChangesAsync 方法，用于自动更新 UpdatedTime
         public override int SaveChanges()
         {
@@ -78,17 +76,17 @@ namespace DEMO_CRUD.Data
             // 获取所有处于 Added (新增) 或 Modified (修改) 状态的实体条目
             foreach (var entry in ChangeTracker.Entries())
             {
-                if (entry.Entity is IAuditableEntity auditableEntity) // 检查实体是否实现了 IAuditableEntity 接口
+                if (entry.Entity is AuditableEntity auditableEntity) // 检查实体是否实现了 AuditableEntity
                 {
                     if (entry.State == EntityState.Modified)
                     {
                         // 如果实体被修改，更新 UpdatedTime
                         auditableEntity.UpdatedTime = DateTime.Now;
 
-                        // 可选：如果你想确保 CreatedTime 不被修改，可以在这里处理
-                        // entry.Property(nameof(IAuditableEntity.CreatedTime)).IsModified = false;
+                        // 可选：如果想确保 CreatedTime 不被修改，可以在这里处理
+                        // entry.Property(nameof(AuditableEntity.CreatedTime)).IsModified = false;
                     }
-                    // 你也可以在这里处理 EntityState.Added 状态的实体，如果它们的 CreatedTime 没有在构造函数中设置
+                    // 也可以在这里处理 EntityState.Added 状态的实体，如果它们的 CreatedTime 没有在构造函数中设置
                     // else if (entry.State == EntityState.Added)
                     // {
                     //     auditableEntity.CreatedTime = DateTime.Now;
