@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text;
 using DEMO_CRUD.Data;
 using Microsoft.EntityFrameworkCore;
@@ -12,12 +13,14 @@ var builder = WebApplication.CreateBuilder(args);
 var logPath = builder.Configuration["Logging:LogPath"] ?? "Logs/";
 var logFilePath = Path.Combine(logPath, "log-.txt");
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Information()
-    .WriteTo.File(
-        new RenderedCompactJsonFormatter(), // 日志格式化为JSON
-        logFilePath,
-        rollingInterval: RollingInterval.Day,
-        retainedFileCountLimit: 7)  // 保留最近7天的日志
+    .ReadFrom.Configuration(builder.Configuration)
+    .Destructure.ByTransforming<DateTime>(datetime => datetime.ToLocalTime())
+    // .MinimumLevel.Information()
+    // .WriteTo.File(
+    //     new RenderedCompactJsonFormatter(), // 日志格式化为JSON
+    //     logFilePath,
+    //     rollingInterval: RollingInterval.Day,
+    //     retainedFileCountLimit: 7)  // 保留最近7天的日志
     .CreateLogger();
 
 
@@ -89,7 +92,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseDeveloperExceptionPage();
+    // app.UseDeveloperExceptionPage();
+    app.UseExceptionHandler("/Exceptions");
 }
 else
 {

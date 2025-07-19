@@ -23,6 +23,11 @@ namespace DEMO_CRUD.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Author>>> GetAuthors()
         {
+            int[] arr = [1, 2, 3];
+            for (int i = 0; i < arr.Length + 1; i++)
+            {
+                Console.WriteLine(arr[i]);
+            }
             return await context.Authors.ToListAsync();
         }
 
@@ -38,7 +43,7 @@ namespace DEMO_CRUD.Controllers
                 return NotFound();
             }
 
-            return author;
+            return Ok(author);
         }
 
         // PUT: api/Authors/5
@@ -80,7 +85,7 @@ namespace DEMO_CRUD.Controllers
             context.Authors.Add(author);
             await context.SaveChangesAsync();
 
-            return CreatedAtAction("GetAuthor", new { id = author.Id }, author);
+            return CreatedAtAction(nameof(GetAuthor), new { id = author.Id }, author);
         }
 
         // DELETE: api/Authors/5
@@ -91,7 +96,7 @@ namespace DEMO_CRUD.Controllers
             var author = await context.Authors.FindAsync(id);
             if (author == null)
             {
-                return NotFound();
+                return BadRequest("未找到该用户");
             }
 
             context.Authors.Remove(author);
@@ -100,9 +105,5 @@ namespace DEMO_CRUD.Controllers
             return NoContent();
         }
 
-        private bool AuthorExists(int id)
-        {
-            return context.Authors.Any(e => e.Id == id);
-        }
     }
 }

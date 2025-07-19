@@ -66,8 +66,14 @@ namespace DEMO_CRUD.Controllers
         // POST: api/Publishers
         [HttpPost]
         [Authorize(Roles = nameof(UserRole.Admin))]
-        public async Task<ActionResult<Publisher>> PostPublisher(EditPublisherDTO editPublisherDTO)
+        public async Task<IActionResult> PostPublisher(EditPublisherDTO editPublisherDTO)
         {
+            // 判断该出版社是否已存在
+            var existingPublisher = await _context.Publishers.FirstOrDefaultAsync(p => p.Name == editPublisherDTO.Name);
+            if (existingPublisher != null)
+            {
+                return BadRequest("该出版社已经存在了！");
+            }
             var publisher = new Publisher
             {
                 Name = editPublisherDTO.Name
@@ -79,25 +85,20 @@ namespace DEMO_CRUD.Controllers
         }
 
         // DELETE: api/Publishers/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         [Authorize(Roles = nameof(UserRole.Admin))]
         public async Task<IActionResult> DeletePublisher(int id)
         {
             var publisher = await _context.Publishers.FindAsync(id);
             if (publisher == null)
             {
-                return NotFound();
+                return BadRequest("不存在该出版社");
             }
 
             _context.Publishers.Remove(publisher);
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool PublisherExists(int id)
-        {
-            return _context.Publishers.Any(e => e.Id == id);
         }
     }
 }

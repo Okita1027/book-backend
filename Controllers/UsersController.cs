@@ -48,7 +48,7 @@ namespace DEMO_CRUD.Controllers
                 return NotFound();
             }
 
-            return user;
+            return Ok(user);
         }
 
         // PUT: api/Users/5
@@ -66,7 +66,7 @@ namespace DEMO_CRUD.Controllers
             var existingUser = await _context.Users.FindAsync(id);
             if (existingUser == null)
             {
-                return NotFound("此用户不存在！");
+                return BadRequest("此用户不存在！");
             }
 
             // 3.更新现有实体的属性
@@ -77,7 +77,11 @@ namespace DEMO_CRUD.Controllers
             return NoContent();
         }
 
-        // POST: api/Users
+        /// <summary>
+        /// 用户注册
+        /// </summary>
+        /// <param name="editUserDTO">用户名称、邮箱、密码</param>
+        /// <returns>注册结果</returns>
         [HttpPost("register")]
         public async Task<ActionResult<User>> RegisterUser(EditUserDTO editUserDTO)
         {
@@ -114,7 +118,7 @@ namespace DEMO_CRUD.Controllers
                 return NotFound("用户不存在");
             }
 
-            // 使用 MD5 比较密码
+            // 使用 MD5 校验密码
             if (user.PasswordHash != password.MDString())
             {
                 return Unauthorized("密码错误");
@@ -139,7 +143,7 @@ namespace DEMO_CRUD.Controllers
             var user = await _context.Users.FindAsync(id);
             if (user == null)
             {
-                return NotFound();
+                return BadRequest("不存在该用户");
             }
 
             _context.Users.Remove(user);
@@ -148,10 +152,6 @@ namespace DEMO_CRUD.Controllers
             return NoContent();
         }
 
-        private bool UserExists(int id)
-        {
-            return _context.Users.Any(e => e.Id == id);
-        }
 
         /// <summary>
         /// 生成JWT Token的辅助方法

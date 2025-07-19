@@ -15,12 +15,16 @@ public class ExceptionsController(ILogger<ExceptionsController> logger, IHostEnv
 
         if (exception != null && environment.IsDevelopment())
         {
+            string originalPath = feature?.Path ?? HttpContext.Request.Path;
+            string user = User.Identity?.Name ?? "anonymous";
+            string remoteIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
             logger.LogError(
                 exception,
-                "发生未处理的异常，请求路径：{Path}，用户：{User}，IP：{RemoteIP}",
-                HttpContext.Request.Path,
-                User.Identity?.Name ?? "anonymous",
-                HttpContext.Connection.RemoteIpAddress);
+                "发生未处理的异常，请求路径：{OriginalPath}，用户：{User}，IP：{RemoteIP}",
+                originalPath,
+                user,
+                remoteIp);
         }
 
         if (environment.IsProduction())

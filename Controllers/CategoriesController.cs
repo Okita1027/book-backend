@@ -60,15 +60,15 @@ namespace DEMO_CRUD.Controllers
             // 3.更新现有实体的属性
             existingCategory.Name = editCategoryDTO.Name;
 
-            // 4.尝试保存更改
+            // 4.保存更改
             await _context.SaveChangesAsync();
-            return Ok("修改成功");
+            return NoContent();
         }
 
         // POST: api/Categories
         [HttpPost]
         [Authorize(Roles = nameof(UserRole.Admin))]
-        public async Task<ActionResult<Category>> PostCategory(EditCategoryDTO editCategoryDTO)
+        public async Task<IActionResult> PostCategory(EditCategoryDTO editCategoryDTO)
         {
             var category = new Category
             {
@@ -88,7 +88,7 @@ namespace DEMO_CRUD.Controllers
             var category = await _context.Categories.FindAsync(id);
             if (category == null)
             {
-                return NotFound();
+                return BadRequest("该分类不存在");
             }
 
             _context.Categories.Remove(category);
@@ -97,9 +97,5 @@ namespace DEMO_CRUD.Controllers
             return NoContent();
         }
 
-        private bool CategoryExists(int id)
-        {
-            return _context.Categories.Any(e => e.Id == id);
-        }
     }
 }
