@@ -2,6 +2,7 @@
 using DEMO_CRUD.Models.DTO;
 using DEMO_CRUD.Models.Entity;
 using Microsoft.EntityFrameworkCore;
+using static DEMO_CRUD.Constants.IServiceConstants;
 
 namespace DEMO_CRUD.Services.Impl
 {
@@ -120,18 +121,18 @@ namespace DEMO_CRUD.Services.Impl
             var book = await _context.Books.FindAsync(id);
             if (book == null)
             {
-                return "书籍未找到！";
+                return BOOK_NOT_FOUND;
             }
 
             if (book.Available <= 0)
             {
-                return "该书籍已无可借数量！";
+                return NOT_ENOUGH_AVAILABLE;
             }
 
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == username);
             if (user == null)
             {
-                return "未找到该用户！";
+                return USER_NOT_FOUND;
             }
 
             var loan = new Loan
@@ -158,7 +159,7 @@ namespace DEMO_CRUD.Services.Impl
                 .FirstOrDefaultAsync(l => l.BookId == id && l.User.Name == username && l.ReturnDate == null);
             if (loan == null)
             {
-                return "借书记录未找到！";
+                return RECORD_NOT_FOUND;
             }
 
             loan.ReturnDate = DateTime.Now;
@@ -181,7 +182,7 @@ namespace DEMO_CRUD.Services.Impl
             // 更新书籍的可用数量
             loan.Book.Available += 1;
             await _context.SaveChangesAsync();
-            return "还书成功！";
+            return OPERATION_SUCCESS;
         }
 
         public async Task<int> AddBookAsync(EditBookDTO bookDTO)
@@ -189,23 +190,23 @@ namespace DEMO_CRUD.Services.Impl
             var author = await _context.Authors.FindAsync(bookDTO.AuthorId);
             if (author == null)
             {
-                throw new ArgumentException("作者不存在！");
+                throw new ArgumentException(AUTHOR_NOT_FOUND);
             }
 
             var publisher = await _context.Publishers.FindAsync(bookDTO.PublisherId);
             if (publisher == null)
             {
-                throw new ArgumentException("出版社不存在！");
+                throw new ArgumentException(PUBLISHER_NOT_FOUND);
             }
 
             if (await _context.Books.FirstOrDefaultAsync(b => b.Isbn == bookDTO.Isbn) != null)
             {
-                throw new ArgumentException("ISBN已存在！");
+                throw new ArgumentException(ISBN_ALREADY_EXISTS);
             }
 
             if (bookDTO.CategoryIds.Count == 0)
             {
-                throw new ArgumentException("书籍至少需要一个分类！");
+                throw new ArgumentException(ONE_CATEGORY_NEED);
             }
 
             // 验证传入的所有分类ID是否存在
@@ -254,30 +255,30 @@ namespace DEMO_CRUD.Services.Impl
             var book = await _context.Books.FindAsync(id);
             if (book == null)
             {
-                throw new ArgumentException("书籍未找到！");
+                throw new ArgumentException(BOOK_NOT_FOUND);
             }
             
             var existingBook = await _context.Books.FirstOrDefaultAsync(b => b.Isbn == bookDTO.Isbn && b.Id != id);
             if (existingBook != null)
             {
-                throw new ArgumentException("ISBN已存在！");
+                throw new ArgumentException(ISBN_ALREADY_EXISTS);
             }
 
             var author = await _context.Authors.FindAsync(bookDTO.AuthorId);
             if (author == null)
             {
-                throw new ArgumentException("作者不存在！");
+                throw new ArgumentException(AUTHOR_NOT_FOUND);
             }
 
             var publisher = await _context.Publishers.FindAsync(bookDTO.PublisherId);
             if (publisher == null)
             {
-                throw new ArgumentException("出版社不存在！");
+                throw new ArgumentException(PUBLISHER_NOT_FOUND);
             }
 
             if (bookDTO.Available > bookDTO.Stock)
             {
-                throw new ArgumentException("可用库存不能大于总库存！");
+                throw new ArgumentException(AVAILABLE_EXCEEDS_STOCK);
             }
 
             // 更新书籍属性
@@ -323,7 +324,7 @@ namespace DEMO_CRUD.Services.Impl
             var book = await _context.Books.FindAsync(id);
             if (book == null)
             {
-                throw new ArgumentException("不存在该书籍！");
+                throw new ArgumentException(BOOK_NOT_FOUND);
             }
 
             _context.Books.Remove(book);
@@ -332,10 +333,10 @@ namespace DEMO_CRUD.Services.Impl
 
         public async Task DeleteBooksAsync(List<int> ids)
         {
-            var books = await _context.Books.Where(book => ids.Contains(book.Id)).ToListAsync();
+            List<Book> books = await _context.Books.Where(book => ids.Contains(book.Id)).ToListAsync();
             if (books.Count == 0)
             {
-                throw new ArgumentException("没有找到任何要删除的书籍");
+                throw new ArgumentException(BOOK_NOT_FOUND);
             }
             _context.Books.RemoveRange(books);
             await _context.SaveChangesAsync();

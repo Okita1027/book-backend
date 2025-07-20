@@ -13,7 +13,7 @@ public class ExceptionsController(ILogger<ExceptionsController> logger, IHostEnv
         var feature = HttpContext.Features.Get<IExceptionHandlerFeature>();
         var exception = feature?.Error;
 
-        if (exception != null && environment.IsDevelopment())
+        if (exception != null)
         {
             string originalPath = feature?.Path ?? HttpContext.Request.Path;
             string user = User.Identity?.Name ?? "anonymous";

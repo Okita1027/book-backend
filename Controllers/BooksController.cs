@@ -160,7 +160,11 @@ namespace DEMO_CRUD.Controllers
             }
         }
         
-        // 批量删除书籍
+        /// <summary>
+        /// 批量删除书籍
+        /// </summary>
+        /// <param name="ids">ID的集合</param>
+        /// <returns>删除结果</returns>
         [HttpDelete]
         public async Task<IActionResult> DeleteBooks([FromBody] List<int> ids)
         {

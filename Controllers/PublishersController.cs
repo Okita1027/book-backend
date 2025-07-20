@@ -4,6 +4,8 @@ using DEMO_CRUD.Models.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static DEMO_CRUD.Constants.IServiceConstants;
+
 
 namespace DEMO_CRUD.Controllers
 {
@@ -54,7 +56,7 @@ namespace DEMO_CRUD.Controllers
             var existingPublisher = await _context.Publishers.FindAsync(id);
             if (existingPublisher == null)
             {
-                return NotFound("此出版社不存在！");
+                return BadRequest(RECORD_NOT_FOUND);
             }
 
             // 3.更新现有实体的属性
@@ -72,7 +74,7 @@ namespace DEMO_CRUD.Controllers
             var existingPublisher = await _context.Publishers.FirstOrDefaultAsync(p => p.Name == editPublisherDTO.Name);
             if (existingPublisher != null)
             {
-                return BadRequest("该出版社已经存在了！");
+                return BadRequest(PUBLISHER_ALREADY_EXISTS);
             }
             var publisher = new Publisher
             {
@@ -92,7 +94,7 @@ namespace DEMO_CRUD.Controllers
             var publisher = await _context.Publishers.FindAsync(id);
             if (publisher == null)
             {
-                return BadRequest("不存在该出版社");
+                return BadRequest(PUBLISHER_NOT_FOUND);
             }
 
             _context.Publishers.Remove(publisher);

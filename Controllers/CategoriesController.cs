@@ -4,6 +4,7 @@ using DEMO_CRUD.Models.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static DEMO_CRUD.Constants.IServiceConstants;
 
 namespace DEMO_CRUD.Controllers
 {
@@ -36,7 +37,7 @@ namespace DEMO_CRUD.Controllers
                 return NotFound();
             }
 
-            return category;
+            return Ok(category);
         }
 
         // PUT: api/Categories/5
@@ -54,7 +55,7 @@ namespace DEMO_CRUD.Controllers
             var existingCategory = await _context.Categories.FindAsync(id);
             if (existingCategory == null)
             {
-                return NotFound("此分类不存在！");
+                return NotFound(CATEGORY_NOT_FOUND);
             }
 
             // 3.更新现有实体的属性
@@ -88,10 +89,27 @@ namespace DEMO_CRUD.Controllers
             var category = await _context.Categories.FindAsync(id);
             if (category == null)
             {
-                return BadRequest("该分类不存在");
+                return BadRequest(CATEGORY_NOT_FOUND);
             }
 
             _context.Categories.Remove(category);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+        
+        // 批量删除
+        [HttpDelete]
+        [Authorize(Roles = nameof(UserRole.Admin))]
+        public async Task<IActionResult> DeleteCategories([FromBody] List<int> ids)
+        {
+            var categories = await _context.Categories.Where(c => ids.Contains(c.Id)).ToListAsync();
+            if (categories.Count == 0)
+            {
+                return BadRequest(CATEGORY_NOT_FOUND);
+            }
+
+            _context.Categories.RemoveRange(categories);
             await _context.SaveChangesAsync();
 
             return NoContent();

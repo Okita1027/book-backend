@@ -1,19 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using DEMO_CRUD.Data;
+﻿using DEMO_CRUD.Models.DTO;
 using DEMO_CRUD.Models.Entity;
-using DEMO_CRUD.Models.DTO;
-using Masuit.Tools.Security;
+using DEMO_CRUD.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DEMO_CRUD.Controllers
 {
@@ -21,33 +10,30 @@ namespace DEMO_CRUD.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        private readonly IConfiguration _configuration;
+        private readonly IUsersService _usersService;
 
-        public UsersController(ApplicationDbContext context, IConfiguration configuration)
+        public UsersController(IUsersService usersService)
         {
-            _context = context;
-            _configuration = configuration;
+            _usersService = usersService;
         }
 
         // GET: api/Users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            var users = await _usersService.GetAllUsersAsync();
+            return Ok(users);
         }
 
         // GET: api/Users/5
         [HttpGet("{id:int}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
-
+            var user = await _usersService.GetUserByIdAsync(id);
             if (user == null)
             {
                 return NotFound();
             }
-
             return Ok(user);
         }
 
@@ -56,27 +42,23 @@ namespace DEMO_CRUD.Controllers
         [Authorize]
         public async Task<IActionResult> PutUser(int id, EditUserDTO editUserDTO)
         {
-            // 1.判断请求数据是否有效【符合注解的要求】
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            // 2.查找现有实体
-            var existingUser = await _context.Users.FindAsync(id);
-            if (existingUser == null)
+            try
             {
-                return BadRequest("此用户不存在！");
+                await _usersService.UpdateUserAsync(id, editUserDTO);
+                return NoContent();
             }
-
-            // 3.更新现有实体的属性
-            existingUser.Name = editUserDTO.Name;
-            existingUser.Email = editUserDTO.Email;
-            existingUser.PasswordHash = editUserDTO.PasswordHash.MDString();
-            await _context.SaveChangesAsync();
-            return NoContent();
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
+        // POST: api/Users/register
         /// <summary>
         /// 用户注册
         /// </summary>
@@ -85,24 +67,18 @@ namespace DEMO_CRUD.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<User>> RegisterUser(EditUserDTO editUserDTO)
         {
-            if (await _context.Users.AnyAsync(u => u.Email == editUserDTO.Email)) // 使用 Email 作为唯一标识
+            try
             {
-                return BadRequest("该邮箱已被注册!");
+                var user = await _usersService.RegisterUserAsync(editUserDTO);
+                return CreatedAtAction("GetUser", new { id = user.Id }, user);
             }
-
-            var user = new User
+            catch (ArgumentException ex)
             {
-                Name = editUserDTO.Name,
-                Email = editUserDTO.Email,
-                PasswordHash = editUserDTO.PasswordHash.MDString(),
-                RegistrationDate = DateTime.Now,
-            };
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+                return BadRequest(ex.Message);
+            }
         }
 
+        // POST: api/Users/login
         /// <summary>
         /// 用户登录
         /// </summary>
@@ -112,27 +88,15 @@ namespace DEMO_CRUD.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<AuthResponseDTO>> LoginUser(string email, string password)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
-            if (user == null)
+            try
             {
-                return NotFound("用户不存在");
+                AuthResponseDTO authResponseDto = await _usersService.LoginUserAsync(email, password);
+                return Ok(authResponseDto);
             }
-
-            // 使用 MD5 校验密码
-            if (user.PasswordHash != password.MDString())
+            catch (ArgumentException ex)
             {
-                return Unauthorized("密码错误");
+                return BadRequest(ex.Message);
             }
-
-            // 登录成功,生成JWT TOKEN
-            (string Token, DateTime ExpiresAt) jwtToken = GenerateJwtToken(user);
-            return Ok(new AuthResponseDTO()
-            {
-                Token = jwtToken.Token,
-                Name = user.Name,
-                Role = user.Role.ToString(),
-                ExpiresAt = jwtToken.ExpiresAt
-            });
         }
 
         // DELETE: api/Users/5
@@ -140,74 +104,31 @@ namespace DEMO_CRUD.Controllers
         [Authorize(Roles = nameof(UserRole.Admin))]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
+            try
             {
-                return BadRequest("不存在该用户");
+                await _usersService.DeleteUserAsync(id);
+                return NoContent();
             }
-
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
-
-
-        /// <summary>
-        /// 生成JWT Token的辅助方法
-        /// </summary>
-        /// <param name="user">用户的信息</param>
-        /// <returns>TOKEN和过期时间</returns>
-        private (string Token, DateTime ExpiresAt) GenerateJwtToken(User user)
+        
+        // 批量删除用户
+        [HttpDelete]
+        [Authorize(Roles = nameof(UserRole.Admin))]
+        public async Task<IActionResult> DeleteUsers([FromBody] List<int> ids)
         {
-            var jwtSettings = _configuration.GetSection("JwtSettings");
-            var secretKey = jwtSettings["SecretKey"]!;
-            var issuer = jwtSettings["Issuer"]!;
-            var audience = jwtSettings["Audience"]!;
-
-            // 加密算法需要字节数组形式的密钥
-            var key = Encoding.ASCII.GetBytes(secretKey);
-
-            // JWT 声明 (Claims)：这些信息将包含在令牌中
-            var claims = new[]
+            try
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Name),
-                new Claim(ClaimTypes.Email, user.Email),
-                // 可以根据需要添加其他自定义声明，如用户角色(一般用户/管理员)
-                new Claim(ClaimTypes.Role, user.Role.ToString()),
-            };
-            /*
-             // 集合表达式写法（C#12）
-             Claim[] claims =
-            [
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Name),
-                new(ClaimTypes.Email, user.Email),
-                new(ClaimTypes.Role, user.Role.ToString())
-            ];*/
-
-            // 创建、读取和验证 JWT 令牌的核心类
-            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-            var expires = DateTime.Now.AddHours(1); // 设置令牌有效期为 1 小时
-
-            SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
+                await _usersService.DeleteUsersAsync(ids);
+                return NoContent();
+            }
+            catch (ArgumentException ex)
             {
-                // 令牌主体
-                Subject = new ClaimsIdentity(claims),
-                Expires = expires,
-                // 签名凭证（防篡改）
-                SigningCredentials =
-                    new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
-                // 令牌颁发者
-                Issuer = issuer,
-                // 令牌的受众
-                Audience = audience
-            };
-
-            SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
-
-            return (tokenHandler.WriteToken(token), expires);
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

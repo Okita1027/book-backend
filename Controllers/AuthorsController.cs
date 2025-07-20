@@ -4,6 +4,7 @@ using DEMO_CRUD.Models.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static DEMO_CRUD.Constants.IServiceConstants;
 
 namespace DEMO_CRUD.Controllers
 {
@@ -23,16 +24,11 @@ namespace DEMO_CRUD.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Author>>> GetAuthors()
         {
-            int[] arr = [1, 2, 3];
-            for (int i = 0; i < arr.Length + 1; i++)
-            {
-                Console.WriteLine(arr[i]);
-            }
             return await context.Authors.ToListAsync();
         }
 
         // GET: api/Authors/5
-        // {id:int}作用：类型限制，若转换失败，则返回400 Bad Request
+        // {id:int}作用：类型限制，若转换失败，则返回 400 Bad Request
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Author>> GetAuthor(int id)
         {
@@ -61,7 +57,7 @@ namespace DEMO_CRUD.Controllers
             var existingAuthor = await context.Authors.FindAsync(id);
             if (existingAuthor == null)
             {
-                return NotFound("此作者不存在！");
+                return NotFound(AUTHOR_NOT_FOUND);
             }
 
             // 3.更新现有实体的属性
@@ -96,10 +92,27 @@ namespace DEMO_CRUD.Controllers
             var author = await context.Authors.FindAsync(id);
             if (author == null)
             {
-                return BadRequest("未找到该用户");
+                return BadRequest(USER_NOT_FOUND);
             }
 
             context.Authors.Remove(author);
+            await context.SaveChangesAsync();
+
+            return NoContent();
+        }
+        
+        // 批量删除
+        [HttpDelete]
+        [Authorize(Roles = nameof(UserRole.Admin))]
+        public async Task<IActionResult> DeleteAuthors([FromBody] List<int> ids)
+        {
+            var authors = await context.Authors.Where(a => ids.Contains(a.Id)).ToListAsync();
+            if (authors.Count == 0)
+            {
+                return BadRequest(RECORD_NOT_FOUND);
+            }
+
+            context.Authors.RemoveRange(authors);
             await context.SaveChangesAsync();
 
             return NoContent();

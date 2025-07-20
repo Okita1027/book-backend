@@ -28,6 +28,7 @@ Log.Logger = new LoggerConfiguration()
 
 // Add services to the container.
 builder.Services.AddScoped<IBooksService, BooksServiceImpl>();
+builder.Services.AddScoped<IUsersService, UsersServiceImpl>();
 // JWT≈‰÷√ø™ º
 IConfigurationSection jwtSettings = builder.Configuration.GetSection("JwtSettings");
 string secretKey = jwtSettings["SecretKey"]; // JWT«©√˚√‹‘ø
