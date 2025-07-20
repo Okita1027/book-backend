@@ -3,6 +3,7 @@ using System.Text;
 using DEMO_CRUD.Data;
 using DEMO_CRUD.Services;
 using DEMO_CRUD.Services.Impl;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -81,6 +82,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //    {
 //        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
 //    });
+
+// 注册Mapster核心服务
+builder.Services.AddMapster();
+// 执行自定义的Mapster映射配置
+MapsterConfig.Configure();
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

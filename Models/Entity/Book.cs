@@ -17,6 +17,7 @@ namespace DEMO_CRUD.Models.Entity
         // ISBN-13 标准长度为 13
         public string Isbn { get; set; } // 国际标准书号，唯一标识
 
+        [Column(TypeName = "datetime(0)")]
         public DateTime PublishedDate { get; set; } //出版日期
 
         [Required]

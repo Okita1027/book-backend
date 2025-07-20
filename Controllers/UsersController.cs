@@ -34,13 +34,14 @@ namespace DEMO_CRUD.Controllers
             {
                 return NotFound();
             }
+
             return Ok(user);
         }
 
         // PUT: api/Users/5
         [HttpPut("{id:int}")]
         [Authorize]
-        public async Task<IActionResult> PutUser(int id, EditUserDTO editUserDTO)
+        public async Task<IActionResult> PutUser(int id, [FromBody] EditUserDTO editUserDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -65,7 +66,7 @@ namespace DEMO_CRUD.Controllers
         /// <param name="editUserDTO">用户名称、邮箱、密码</param>
         /// <returns>注册结果</returns>
         [HttpPost("register")]
-        public async Task<ActionResult<User>> RegisterUser(EditUserDTO editUserDTO)
+        public async Task<ActionResult<User>> RegisterUser([FromBody] EditUserDTO editUserDTO)
         {
             try
             {
@@ -114,7 +115,7 @@ namespace DEMO_CRUD.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
         // 批量删除用户
         [HttpDelete]
         [Authorize(Roles = nameof(UserRole.Admin))]

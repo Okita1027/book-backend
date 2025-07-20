@@ -4,6 +4,7 @@ using System.Text;
 using DEMO_CRUD.Data;
 using DEMO_CRUD.Models.DTO;
 using DEMO_CRUD.Models.Entity;
+using Mapster;
 using Masuit.Tools.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -40,13 +41,9 @@ public class UsersServiceImpl : IUsersService
             throw new ArgumentException(EMAIL_ALREADY_REGISTERED);
         }
 
-        var user = new User
-        {
-            Name = editUserDTO.Name,
-            Email = editUserDTO.Email,
-            PasswordHash = editUserDTO.PasswordHash.MDString(),
-            RegistrationDate = DateTime.Now,
-        };
+        // Adapt<T>()用于运行时对象映射
+        User user = editUserDTO.Adapt<User>();
+        user.RegistrationDate = DateTime.Now;
 
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
@@ -75,15 +72,13 @@ public class UsersServiceImpl : IUsersService
 
     public async Task UpdateUserAsync(int id, EditUserDTO editUserDTO)
     {
-        var existingUser = await _context.Users.FindAsync(id);
+        User existingUser = await _context.Users.FindAsync(id);
         if (existingUser == null)
         {
             throw new ArgumentException(USER_NOT_FOUND);
         }
 
-        existingUser.Name = editUserDTO.Name;
-        existingUser.Email = editUserDTO.Email;
-        existingUser.PasswordHash = editUserDTO.PasswordHash.MDString();
+        editUserDTO.Adapt(existingUser);
 
         await _context.SaveChangesAsync();
     }

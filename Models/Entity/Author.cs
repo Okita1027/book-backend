@@ -10,9 +10,12 @@ public class Author : AuditableEntity
 
     [Required]
     [MaxLength(100)]
-    public required string Name { get; set; } // 作者名
+    public required string Name { get; set; }
 
-    public string? Biography { get; set; } = string.Empty;  // 作者简介 (可选)
+    /// <summary>
+    /// 作者的介绍
+    /// </summary>
+    public string? Biography { get; set; }
 
     // --- 导航属性 ---
     // 一个作者可以写多本书

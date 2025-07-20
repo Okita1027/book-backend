@@ -7,9 +7,21 @@ namespace DEMO_CRUD.Models.Entity
     {
         public int Id { get; set; }
 
-        public DateTime LoanDate { get; set; } // 借出日期
-        public DateTime DueDate { get; set; }  // 应还日期
-        public DateTime? ReturnDate { get; set; } // 实际归还日期 (nullable, 如果未还则为 null)
+        /// <summary>
+        /// 借出日期
+        /// </summary>
+        [Column(TypeName = "datetime(0)")]
+        public DateTime LoanDate { get; set; }
+        /// <summary>
+        /// 应还日期
+        /// </summary>
+        [Column(TypeName = "datetime(0)")]
+        public DateTime DueDate { get; set; }
+        /// <summary>
+        /// 实际归还日期
+        /// </summary>
+        [Column(TypeName = "datetime(0)")]
+        public DateTime? ReturnDate { get; set; }
 
         // --- 导航属性 ---
         public int BookId { get; set; }

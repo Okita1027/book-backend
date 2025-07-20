@@ -1,6 +1,7 @@
 ﻿using DEMO_CRUD.Data;
 using DEMO_CRUD.Models.DTO;
 using DEMO_CRUD.Models.Entity;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using static DEMO_CRUD.Constants.IServiceConstants;
 
@@ -22,19 +23,7 @@ namespace DEMO_CRUD.Services.Impl
                 .Include(b => b.Author)
                 .Include(b => b.Publisher)
                 // 将原本的 Book 实体映射为 BookVO
-                .Select(book => new BookVO
-                {
-                    Id = book.Id,
-                    Title = book.Title,
-                    Isbn = book.Isbn,
-                    Stock = book.Stock,
-                    Available = book.Available,
-                    AuthorName = book.Author.Name,
-                    PublisherName = book.Publisher.Name,
-                    PublishedDate = book.PublishedDate,
-                    // 获取书籍的分类名称
-                    CategoryNames = book.BookCategories.Select(bc => bc.Category.Name).ToList()
-                })
+                .ProjectToType<BookVO>()
                 .ToListAsync();
         }
 
@@ -45,26 +34,14 @@ namespace DEMO_CRUD.Services.Impl
                 .Include(b => b.Author)
                 .Include(b => b.Publisher)
                 // 将原本的 Book 实体映射为 BookVO
-                .Select(book => new BookVO
-                {
-                    Id = book.Id,
-                    Title = book.Title,
-                    Isbn = book.Isbn,
-                    Stock = book.Stock,
-                    Available = book.Available,
-                    AuthorName = book.Author.Name,
-                    PublisherName = book.Publisher.Name,
-                    PublishedDate = book.PublishedDate,
-                    // 获取书籍的分类名称
-                    CategoryNames = book.BookCategories.Select(bc => bc.Category.Name).ToList()
-                })
+                .ProjectToType<BookVO>()
                 .FirstOrDefaultAsync(b => b.Id == id);
         }
 
         public async Task<IEnumerable<BookVO>> SearchBooksAsync(string title, string isbn, string authorName,
             string publisherName, DateTime? publishedDateBegin, DateTime? publishedDateEnd)
         {
-            // 获取所有书籍、加载关联的 Author 和 Publisher、转为LINQ查询
+            // 获取所有书籍、加载关联的 Author 和 Publisher,然后转为LINQ查询
             var query = _context.Books
                 .Include(b => b.Author)
                 .Include(b => b.Publisher)
@@ -101,19 +78,8 @@ namespace DEMO_CRUD.Services.Impl
                 query = query.Where(b => b.PublishedDate <= publishedDateEnd.Value);
             }
 
-            // 投影
-            return await query.Select(book => new BookVO
-            {
-                Id = book.Id,
-                Title = book.Title,
-                Isbn = book.Isbn,
-                Stock = book.Stock,
-                Available = book.Available,
-                AuthorName = book.Author.Name,
-                PublisherName = book.Publisher.Name,
-                PublishedDate = book.PublishedDate,
-                CategoryNames = book.BookCategories.Select(bc => bc.Category.Name).ToList()
-            }).ToListAsync();
+            List<BookVO> bookVos = await query.ProjectToType<BookVO>().ToListAsync();
+            return bookVos;
         }
 
         public async Task<string> LoanBookAsync(int id, string username)
@@ -222,18 +188,7 @@ namespace DEMO_CRUD.Services.Impl
                 throw new ArgumentException($"部分或全部书籍类别不存在：{string.Join(", ", nonExistentCategoryIds)}");
             }
 
-            // 迁移属性
-            Book book = new Book
-            {
-                Title = bookDTO.Title,
-                Isbn = bookDTO.Isbn,
-                PublishedDate = bookDTO.PublishedDate,
-                Stock = bookDTO.Stock,
-                Available = bookDTO.Stock,
-                AuthorId = bookDTO.AuthorId,
-                PublisherId = bookDTO.PublisherId
-            };
-
+            Book book = bookDTO.Adapt<Book>();
             _context.Books.Add(book);
 
             // 添加书籍类别和书籍的关联(处理联结表BookCategory)
@@ -282,13 +237,7 @@ namespace DEMO_CRUD.Services.Impl
             }
 
             // 更新书籍属性
-            book.Title = bookDTO.Title;
-            book.Isbn = bookDTO.Isbn;
-            book.PublishedDate = bookDTO.PublishedDate;
-            book.Stock = bookDTO.Stock;
-            book.Available = bookDTO.Available;
-            book.AuthorId = bookDTO.AuthorId;
-            book.PublisherId = bookDTO.PublisherId;
+            bookDTO.Adapt(book);
 
             // 获取当前书籍的类别关联
             List<BookCategory> currentBookCategories = await _context.BookCategories
