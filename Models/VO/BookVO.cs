@@ -1,6 +1,6 @@
 ﻿namespace DEMO_CRUD.Models.DTO
 {
-    public class BookDTO
+    public class BookVO
     {
         public int Id { get; set; }
         public string Title { get; set; }

@@ -1,6 +1,8 @@
 using System.Reflection;
 using System.Text;
 using DEMO_CRUD.Data;
+using DEMO_CRUD.Services;
+using DEMO_CRUD.Services.Impl;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -10,8 +12,8 @@ using Serilog.Formatting.Compact;
 var builder = WebApplication.CreateBuilder(args);
 
 // 配置日志
-var logPath = builder.Configuration["Logging:LogPath"] ?? "Logs/";
-var logFilePath = Path.Combine(logPath, "log-.txt");
+// var logPath = builder.Configuration["Logging:LogPath"] ?? "Logs/";
+// var logFilePath = Path.Combine(logPath, "log-.txt");
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .Destructure.ByTransforming<DateTime>(datetime => datetime.ToLocalTime())
@@ -25,6 +27,7 @@ Log.Logger = new LoggerConfiguration()
 
 
 // Add services to the container.
+builder.Services.AddScoped<IBooksService, BooksServiceImpl>();
 // JWT配置开始
 IConfigurationSection jwtSettings = builder.Configuration.GetSection("JwtSettings");
 string secretKey = jwtSettings["SecretKey"]; // JWT签名密钥
@@ -67,8 +70,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 // 注册DbContext服务
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    // 告诉 DbContext 使用 MySQL 数据库
-    // 使用 AutoDetect 可以让 Pomelo 自动侦测MySQL版本并套用最佳设定
+    // AutoDetect 可以让 Pomelo 自动侦测MySQL版本并套用最佳设定
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
 
@@ -92,8 +94,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    // app.UseDeveloperExceptionPage();
-    app.UseExceptionHandler("/Exceptions");
+    app.UseDeveloperExceptionPage();
+    // app.UseExceptionHandler("/exceptions");
 }
 else
 {

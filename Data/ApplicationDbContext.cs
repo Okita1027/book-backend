@@ -1,14 +1,16 @@
 ﻿using DEMO_CRUD.Models.Entity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace DEMO_CRUD.Data
 {
     public class ApplicationDbContext : DbContext
     {
 
+        // : base(options) 代表调用父类的构造器
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-
+            
         }
 
         // 为每个需要映射到资料库表格的实体建立一个 DbSet
@@ -19,22 +21,34 @@ namespace DEMO_CRUD.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Loan> Loans { get; set; }
         public DbSet<Fine> Fines { get; set; }
+        // 在操纵Book类时，系统会自动生成BooksCategories关联表的记录
+        // 但为了更方便地操作中间表，还是在这里进行声明
+        public DbSet<BookCategory> BookCategories { get; set; }
+        
 
         // Fluent API 设定
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // 去除时间类型的默认精度（Fluent API方式）
-            //modelBuilder.Entity<Author>(entity =>
-            //{
-            //    entity.Property(a => a.CreatedTime)
-            //          .HasColumnType("datetime(0)"); // MySQL 示例，表示不保留小数
-            //});
+            // 批量设置所有实体在数据库中的表名称
+            /*foreach (IMutableEntityType entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                entityType.SetTableName(entityType.Name);           // 实体类名
+                entityType.SetTableName(entityType.ClrType.Name);   // 运行时类名
+            }*/
+            
+            // 去除时间类型的默认精度
+            /*modelBuilder.Entity<Author>(entity =>
+            {
+                entity.Property(a => a.CreatedTime)
+                      .HasColumnType("datetime(0)"); // MySQL 示例，表示不保留小数；SQL Server要写成datetime2(0)
+            });*/
 
             // 开始设定模型
-            // 1. 定义复合主键
+            // 1. 定义复合主键、手动指定表名称
             modelBuilder.Entity<BookCategory>()
+                .ToTable("bookcategory")
                 .HasKey(bc => new { bc.BookId, bc.CategoryId });
 
             // 2. 设定从 BookCategory 到 Book 的关系

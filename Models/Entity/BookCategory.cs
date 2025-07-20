@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DEMO_CRUD.Models.Entity
 {
     // 复合主键将在 DbContext 中使用 Fluent API 配置
+    // [Table("bookcategory")]  // 手动指定表名称
     public class BookCategory : AuditableEntity
     {
         public int BookId { get; set; }

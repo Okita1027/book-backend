@@ -12,7 +12,7 @@ namespace DEMO_CRUD.Controllers
     [ApiController]
     public class FinesController(ApplicationDbContext context) : ControllerBase
     {
-        [HttpPost("fine")]
+        [HttpPost]
         [Authorize]
         public async Task<IActionResult> Fine(int loanId, int userId)
         {
