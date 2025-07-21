@@ -1,6 +1,7 @@
 ﻿using DEMO_CRUD.Data;
 using DEMO_CRUD.Models.DTO;
 using DEMO_CRUD.Models.Entity;
+using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -71,10 +72,12 @@ namespace DEMO_CRUD.Controllers
         [Authorize(Roles = nameof(UserRole.Admin))]
         public async Task<IActionResult> PostCategory(EditCategoryDTO editCategoryDTO)
         {
-            var category = new Category
+            var existingCategory = await _context.Categories.FirstOrDefaultAsync(c => c.Name == editCategoryDTO.Name);
+            if (existingCategory != null)
             {
-                Name = editCategoryDTO.Name
-            };
+                return BadRequest(CATEGORY_ALREADY_EXISTS);
+            }
+            var category = editCategoryDTO.Adapt<Category>();
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
 

@@ -1,5 +1,7 @@
 using DEMO_CRUD.Data;
 using DEMO_CRUD.Models.Entity;
+using DEMO_CRUD.Models.VO;
+using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,22 +16,24 @@ namespace DEMO_CRUD.Controllers
     {
         // 查询所有罚款记录
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Fine>>> GetFines()
+        public async Task<ActionResult<IEnumerable<FineVO>>> GetFines()
         {
-            return await context.Fines.Include(f => f.Loan).Include(f => f.User).ToListAsync();
+            List<Fine> fines = await context.Fines.Include(f => f.Loan).Include(f => f.User).ToListAsync();
+            List<FineVO> result = fines.Adapt<List<FineVO>>();
+            return result;
         }
 
         //根据ID查询某个罚款记录
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<Fine>> GetFine(int id)
+        public async Task<ActionResult<FineVO>> GetFine([FromRoute] int id)
         {
             var fine = await context.Fines.FindAsync(id);
             if (fine == null)
             {
                 return NotFound();
             }
-
-            return Ok(fine);
+            FineVO fineVO = fine.Adapt<FineVO>();
+            return Ok(fineVO);
         }
 
 

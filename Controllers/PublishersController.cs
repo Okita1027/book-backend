@@ -102,5 +102,22 @@ namespace DEMO_CRUD.Controllers
 
             return NoContent();
         }
+
+        // 批量删除出版社
+        [HttpDelete]
+        [Authorize(Roles = nameof(UserRole.Admin))]
+        public async Task<IActionResult> DeletePublishers([FromBody] List<int> ids)
+        {
+            var publishers = await _context.Publishers.Where(p => ids.Contains(p.Id)).ToListAsync();
+            if (publishers.Count == 0)
+            {
+                return BadRequest(RECORD_NOT_FOUND);
+            }
+
+            _context.Publishers.RemoveRange(publishers);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }

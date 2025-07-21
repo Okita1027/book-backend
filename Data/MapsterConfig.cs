@@ -2,6 +2,7 @@
 using DEMO_CRUD.Models.DTO;
 using DEMO_CRUD.Models.Entity;
 using Masuit.Tools.Security;
+using DEMO_CRUD.Models.VO;
 
 namespace DEMO_CRUD.Data
 {
@@ -60,6 +61,17 @@ namespace DEMO_CRUD.Data
                 .Map(dest => dest.PublisherName, src => src.Publisher.Name)
                 .Map(dest => dest.PublishedDate, src => src.PublishedDate)
                 .Map(dest => dest.CategoryNames, src => src.BookCategories.Select(bc => bc.Category.Name).ToList())
+                .IgnoreNullValues(true);
+
+            // Fine => FineVO 映射
+            TypeAdapterConfig<Fine, FineVO>.NewConfig()
+                .Map(dest => dest.LoadId, src => src.Loan.Id)
+                .Map(dest => dest.UserId, src => src.User.Id)
+                .Map(dest => dest.Username, src => src.User.Name)
+                .Map(dest => dest.Amount, src => src.Amount)
+                .Map(dest => dest.Reason, src => src.Reason)
+                .Map(dest => dest.PaidDate, src => src.PaidDate)
+                .Map(dest => dest.CreatedTime, src => src.CreatedTime)
                 .IgnoreNullValues(true);
         }
     }

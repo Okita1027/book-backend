@@ -12,6 +12,7 @@ public interface IServiceConstants
     const string ONE_CATEGORY_NEED = "至少需要一个分类";
     const string ISBN_ALREADY_EXISTS = "ISBN已存在";
     const string PUBLISHER_ALREADY_EXISTS = "出版社已存在";
+    const string CATEGORY_ALREADY_EXISTS = "分类已存在";
     const string AUTHOR_NOT_FOUND = "作者不存在";
     const string PUBLISHER_NOT_FOUND = "出版社不存在";
     const string AVAILABLE_EXCEEDS_STOCK = "可用库存不能大于总库存";
