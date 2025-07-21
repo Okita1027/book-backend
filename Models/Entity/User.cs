@@ -26,6 +26,7 @@ namespace DEMO_CRUD.Models.Entity
 
         public UserRole Role { get; set; } = UserRole.Member; // 角色 (管理员/普通用户)
 
+        [Column(TypeName = "datetime(0)")]
         public DateTime RegistrationDate { get; set; } = DateTime.Now;
 
         // --- 导航属性 ---

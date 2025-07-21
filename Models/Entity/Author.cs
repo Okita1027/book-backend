@@ -27,5 +27,4 @@ public class Author : AuditableEntity
     public DateTime CreatedTime { get; init; } = DateTime.Now;
     //public DateTime UpdatedTime { get; set; } = DateTime.Now;
 
-    public DateTime UpdatedTime { get; set; }
 }
