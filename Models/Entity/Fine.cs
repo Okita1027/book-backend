@@ -11,6 +11,7 @@ namespace DEMO_CRUD.Models.Entity
         public decimal Amount { get; set; } // 罚款金额
 
         public string Reason { get; set; } = "Overdue book"; // 罚款原因
+        
         [Column(TypeName = "datetime(0)")]
         public DateTime? PaidDate { get; set; }
 

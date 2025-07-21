@@ -1,4 +1,5 @@
 ﻿using DEMO_CRUD.Data;
+using DEMO_CRUD.Exceptions;
 using DEMO_CRUD.Models.DTO;
 using DEMO_CRUD.Models.Entity;
 using Mapster;
@@ -87,18 +88,18 @@ namespace DEMO_CRUD.Services.Impl
             var book = await _context.Books.FindAsync(id);
             if (book == null)
             {
-                return BOOK_NOT_FOUND;
+                throw new ArgumentException(BOOK_NOT_FOUND);
             }
 
             if (book.Available <= 0)
             {
-                return NOT_ENOUGH_AVAILABLE;
+                throw new BusinessException(NOT_ENOUGH_AVAILABLE);
             }
 
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == username);
             if (user == null)
             {
-                return USER_NOT_FOUND;
+                throw new ArgumentException(USER_NOT_FOUND);
             }
 
             var loan = new Loan
@@ -125,7 +126,7 @@ namespace DEMO_CRUD.Services.Impl
                 .FirstOrDefaultAsync(l => l.BookId == id && l.User.Name == username && l.ReturnDate == null);
             if (loan == null)
             {
-                return RECORD_NOT_FOUND;
+                throw new ArgumentException(RECORD_NOT_FOUND);
             }
 
             loan.ReturnDate = DateTime.Now;

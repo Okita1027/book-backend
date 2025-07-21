@@ -22,6 +22,7 @@ namespace DEMO_CRUD.Controllers
 
         // GET: api/Publishers
         [HttpGet]
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client)]
         public async Task<ActionResult<IEnumerable<Publisher>>> GetPublishers()
         {
             return await _context.Publishers.ToListAsync();

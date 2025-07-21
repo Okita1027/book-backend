@@ -19,6 +19,7 @@ namespace DEMO_CRUD.Controllers
 
         // GET: api/Users
         [HttpGet]
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client)]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             var users = await _usersService.GetAllUsersAsync();

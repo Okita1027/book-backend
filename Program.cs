@@ -30,6 +30,7 @@ Log.Logger = new LoggerConfiguration()
 // Add services to the container.
 builder.Services.AddScoped<IBooksService, BooksServiceImpl>();
 builder.Services.AddScoped<IUsersService, UsersServiceImpl>();
+builder.Services.AddScoped<ILoansService, LoansServiceImpl>();
 // JWT配置开始
 IConfigurationSection jwtSettings = builder.Configuration.GetSection("JwtSettings");
 string secretKey = jwtSettings["SecretKey"]; // JWT签名密钥
@@ -87,7 +88,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddMapster();
 // 执行自定义的Mapster映射配置
 MapsterConfig.Configure();
-
+builder.Services.AddResponseCaching();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -97,22 +98,24 @@ builder.Host.UseSerilog();
 
 
 var app = builder.Build();
-// app.UseRouting();    // .NET 6之后，若使用了MapXXX，则自动启用UseRouting()
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseDeveloperExceptionPage();
     // app.UseExceptionHandler("/exceptions");
+    app.UseDeveloperExceptionPage();
 }
 else
 {
     app.UseExceptionHandler("/exceptions");
 }
+// app.UseRouting();    // .NET 6之后，若使用了MapXXX，则自动启用UseRouting()
 
 // 认证中间件必须在授权中间件之前
 app.UseAuthentication(); // 启用认证，解析并验证请求中的 JWT
 app.UseAuthorization(); // 启用授权，根据用户身份和策略决定是否允许访问
+
+app.UseResponseCaching();
 
 // 记录每次请求的详细信息，包括路径、状态码、耗时等。
 app.UseSerilogRequestLogging();

@@ -16,6 +16,7 @@ namespace DEMO_CRUD.Controllers
     {
         // 查询所有罚款记录
         [HttpGet]
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client)]
         public async Task<ActionResult<IEnumerable<FineVO>>> GetFines()
         {
             List<Fine> fines = await context.Fines.Include(f => f.Loan).Include(f => f.User).ToListAsync();
@@ -32,8 +33,21 @@ namespace DEMO_CRUD.Controllers
             {
                 return NotFound();
             }
-            FineVO fineVO = fine.Adapt<FineVO>();
-            return Ok(fineVO);
+
+            FineVO fineVo = fine.Adapt<FineVO>();
+            return Ok(fineVo);
+        }
+
+        // 根据用户名称查询罚款记录
+        [HttpGet]
+        [Route("/api/FinesByName")]
+        public async Task<ActionResult<IEnumerable<FineVO>>> GetFinesByUsername([FromQuery] string username)
+        {
+            List<Fine> fines = await context.Fines.Include(f => f.Loan)
+                .Include(f => f.User)
+                .Where(f => f.User.Name == username).ToListAsync();
+            List<FineVO> result = fines.Adapt<List<FineVO>>();
+            return result;
         }
 
 

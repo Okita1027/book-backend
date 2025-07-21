@@ -24,6 +24,7 @@ namespace DEMO_CRUD.Controllers
         /// </summary>
         /// <returns>处理过的用于展示的图书集</returns>
         [HttpGet]
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client)]
         // [AllowAnonymous] // 忽略类上写的的[Authorize]注解，允许匿名访问
         public async Task<ActionResult<IEnumerable<BookVO>>> GetBooks()
         {
@@ -80,6 +81,8 @@ namespace DEMO_CRUD.Controllers
         /// <returns>借书结果提示信息</returns>
         [HttpPost("loan")]
         [Authorize]
+        [Obsolete("请使用LoansController中的借书方法")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<string>> LoanBook(int id, string username)
         {
             var result = await _booksService.LoanBookAsync(id, username);
@@ -94,6 +97,8 @@ namespace DEMO_CRUD.Controllers
         /// <returns>还书提示信息</returns>
         [HttpPost("return")]
         [Authorize]
+        [Obsolete("请使用LoansController中的还书方法")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<string>> ReturnBook(int id, string username)
         {
             var result = await _booksService.ReturnBookAsync(id, username);

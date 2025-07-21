@@ -1,9 +1,11 @@
-﻿using DEMO_CRUD.Data;
+﻿using System.Diagnostics;
+using DEMO_CRUD.Data;
 using DEMO_CRUD.Models.DTO;
 using DEMO_CRUD.Models.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using static DEMO_CRUD.Constants.IServiceConstants;
 
 namespace DEMO_CRUD.Controllers
@@ -22,9 +24,11 @@ namespace DEMO_CRUD.Controllers
 
         // GET: api/Authors
         [HttpGet]
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client)]
         public async Task<ActionResult<IEnumerable<Author>>> GetAuthors()
         {
-            return await context.Authors.ToListAsync();
+            var authors = await context.Authors.ToListAsync();
+            return authors;
         }
 
         // GET: api/Authors/5

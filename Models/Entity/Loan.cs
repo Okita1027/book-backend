@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DEMO_CRUD.Models.Entity
 {
-    public class Loan : AuditableEntity // 实现通用属性接口
+    public class Loan : AuditableEntity
     {
         public int Id { get; set; }
 

@@ -22,6 +22,7 @@ namespace DEMO_CRUD.Controllers
 
         // GET: api/Categories
         [HttpGet]
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client)]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
         {
             return await _context.Categories.ToListAsync();

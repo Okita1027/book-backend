@@ -62,6 +62,15 @@ namespace DEMO_CRUD.Data
                 .Map(dest => dest.PublishedDate, src => src.PublishedDate)
                 .Map(dest => dest.CategoryNames, src => src.BookCategories.Select(bc => bc.Category.Name).ToList())
                 .IgnoreNullValues(true);
+            
+            // Loan => LoanVO 映射
+            TypeAdapterConfig<Loan, LoanVO>.NewConfig()
+                .Map(dest => dest.Title, src => src.Book.Title)
+                .Map(dest => dest.Username, src => src.User.Name)
+                .Map(dest => dest.LoanDate, src => src.LoanDate)
+                .Map(dest => dest.DueDate, src => src.DueDate)
+                .Map(dest => dest.ReturnDate, src => src.ReturnDate)
+                .IgnoreNullValues(true);
 
             // Fine => FineVO 映射
             TypeAdapterConfig<Fine, FineVO>.NewConfig()
