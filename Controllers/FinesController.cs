@@ -72,6 +72,21 @@ namespace DEMO_CRUD.Controllers
             return NoContent();
         }
 
+        // 修改罚款金额
+        [HttpPut("{id:int}")]
+        [Authorize(Roles = nameof(UserRole.Admin))]
+        public async Task<IActionResult> UpdateFine(int id, decimal Amount)
+        {
+            var fine = await context.Fines.FindAsync(id);
+            if (fine == null)
+            {
+                return BadRequest(RECORD_NOT_FOUND);
+            }
+            fine.Amount = Amount;
+            await context.SaveChangesAsync();
+            return NoContent();
+        }
+
         // 删除罚款记录
         [HttpDelete("{id:int}")]
         [Authorize(Roles = nameof(UserRole.Admin))]

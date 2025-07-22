@@ -99,6 +99,21 @@ namespace DEMO_CRUD.Controllers
             }
         }
 
+        // 修改应还日期
+        [HttpPut("{id:int}")]
+        [Authorize(Roles = nameof(UserRole.Admin))]
+        public async Task<IActionResult> UpdateDueDate([FromRoute]int id, [FromQuery]DateTime dueDate)
+        {
+            var loan = await context.Loans.FindAsync(id);
+            if (loan == null)
+            {
+                return BadRequest(RECORD_NOT_FOUND);
+            }
+            loan.DueDate = dueDate;
+            await context.SaveChangesAsync();
+            return Ok(OPERATION_SUCCESS);
+        }
+
         // 删除借阅记录
         [HttpDelete("{id:int}")]
         [Authorize(Roles = nameof(UserRole.Admin))]
