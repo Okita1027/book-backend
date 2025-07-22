@@ -96,7 +96,8 @@ namespace DEMO_CRUD.Controllers
             var author = await context.Authors.FindAsync(id);
             if (author == null)
             {
-                return BadRequest(USER_NOT_FOUND);
+                // return BadRequest(USER_NOT_FOUND);
+                throw new ArgumentException();
             }
 
             context.Authors.Remove(author);

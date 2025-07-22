@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Text;
 using DEMO_CRUD.Data;
+using DEMO_CRUD.Exceptions;
 using DEMO_CRUD.Services;
 using DEMO_CRUD.Services.Impl;
 using Mapster;
@@ -89,7 +90,10 @@ builder.Services.AddMapster();
 // 执行自定义的Mapster映射配置
 MapsterConfig.Configure();
 builder.Services.AddResponseCaching();
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add(new ArgumentExceptionFilter());
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
