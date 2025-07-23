@@ -11,7 +11,7 @@ using static DEMO_CRUD.Constants.IServiceConstants;
 namespace DEMO_CRUD.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
+    [ApiController] // 不加的结果===============【模型绑定】=====================
     public class AuthorsController(ApplicationDbContext context) : ControllerBase
     {
         // 下面是传统的构造函数写法，上面是C#特有的语法
