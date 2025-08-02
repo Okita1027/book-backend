@@ -61,7 +61,10 @@ namespace DEMO_CRUD.Controllers
             return loanVos;
         }
 
-        // 借书
+        /// <summary>
+        /// 借书
+        /// 函数签名不完整！！！！！！！！
+        /// </summary>
         [HttpPost]
         [Authorize]
         [Route("/api/Loan")]
