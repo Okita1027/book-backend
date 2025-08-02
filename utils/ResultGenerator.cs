@@ -5,6 +5,16 @@
 /// </summary>
 public class ResultGenerator
 {
+
+    public static Result<T> CreatedAtAction<T>(string message = "操作成功", T data = default(T))
+    {
+        return new Result<T>(201, message, data);
+    }
+    public static Result<T> NoContent<T>(string message = "操作成功", T data = default(T))
+    {
+        return new Result<T>(204, message, data);
+    }
+    
     /// <summary>
     /// 操作成功
     /// </summary>
@@ -24,6 +34,11 @@ public class ResultGenerator
     public static Result Success(string message = "操作成功")
     {
         return new Result(200, message, null);
+    }
+
+    public static Result<T> Failed<T>(int code, string message = "操作失败", T data = default(T))
+    {
+        return new Result<T>(code, message, data);
     }
     
     /// <summary>

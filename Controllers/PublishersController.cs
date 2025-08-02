@@ -1,38 +1,34 @@
 ﻿using DEMO_CRUD.Data;
+using DEMO_CRUD.Exceptions;
 using DEMO_CRUD.Models.DTO;
 using DEMO_CRUD.Models.Entity;
+using DEMO_CRUD.utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using static DEMO_CRUD.Constants.IServiceConstants;
+using static DEMO_CRUD.Exceptions.IErrorCode;
 
 
 namespace DEMO_CRUD.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PublishersController : ControllerBase
+    public class PublishersController(ApplicationDbContext context) : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-
-        public PublishersController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
         // GET: api/Publishers
         [HttpGet]
-        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client)]
-        public async Task<ActionResult<IEnumerable<Publisher>>> GetPublishers()
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
+        public async Task<ActionResult<List<Publisher>>> GetPublishers()
         {
-            return await _context.Publishers.ToListAsync();
+            return await context.Publishers.ToListAsync();
         }
 
         // GET: api/Publishers/5
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Publisher>> GetPublisher(int id)
         {
-            var publisher = await _context.Publishers.FindAsync(id);
+            var publisher = await context.Publishers.FindAsync(id);
 
             if (publisher == null)
             {
@@ -54,7 +50,7 @@ namespace DEMO_CRUD.Controllers
             }
 
             // 2.查找现有实体
-            var existingPublisher = await _context.Publishers.FindAsync(id);
+            var existingPublisher = await context.Publishers.FindAsync(id);
             if (existingPublisher == null)
             {
                 return BadRequest(RECORD_NOT_FOUND);
@@ -62,7 +58,7 @@ namespace DEMO_CRUD.Controllers
 
             // 3.更新现有实体的属性
             existingPublisher.Name = editPublisherDTO.Name;
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             return NoContent();
         }
 
@@ -72,7 +68,7 @@ namespace DEMO_CRUD.Controllers
         public async Task<IActionResult> PostPublisher(EditPublisherDTO editPublisherDTO)
         {
             // 判断该出版社是否已存在
-            var existingPublisher = await _context.Publishers.FirstOrDefaultAsync(p => p.Name == editPublisherDTO.Name);
+            var existingPublisher = await context.Publishers.FirstOrDefaultAsync(p => p.Name == editPublisherDTO.Name);
             if (existingPublisher != null)
             {
                 return BadRequest(PUBLISHER_ALREADY_EXISTS);
@@ -81,8 +77,8 @@ namespace DEMO_CRUD.Controllers
             {
                 Name = editPublisherDTO.Name
             };
-            _context.Publishers.Add(publisher);
-            await _context.SaveChangesAsync();
+            context.Publishers.Add(publisher);
+            await context.SaveChangesAsync();
 
             return CreatedAtAction("GetPublisher", new { id = publisher.Id }, publisher);
         }
@@ -92,14 +88,14 @@ namespace DEMO_CRUD.Controllers
         [Authorize(Roles = nameof(UserRole.Admin))]
         public async Task<IActionResult> DeletePublisher(int id)
         {
-            var publisher = await _context.Publishers.FindAsync(id);
+            var publisher = await context.Publishers.FindAsync(id);
             if (publisher == null)
             {
                 return BadRequest(PUBLISHER_NOT_FOUND);
             }
 
-            _context.Publishers.Remove(publisher);
-            await _context.SaveChangesAsync();
+            context.Publishers.Remove(publisher);
+            await context.SaveChangesAsync();
 
             return NoContent();
         }
@@ -109,14 +105,14 @@ namespace DEMO_CRUD.Controllers
         [Authorize(Roles = nameof(UserRole.Admin))]
         public async Task<IActionResult> DeletePublishers([FromBody] List<int> ids)
         {
-            var publishers = await _context.Publishers.Where(p => ids.Contains(p.Id)).ToListAsync();
+            var publishers = await context.Publishers.Where(p => ids.Contains(p.Id)).ToListAsync();
             if (publishers.Count == 0)
             {
                 return BadRequest(RECORD_NOT_FOUND);
             }
 
-            _context.Publishers.RemoveRange(publishers);
-            await _context.SaveChangesAsync();
+            context.Publishers.RemoveRange(publishers);
+            await context.SaveChangesAsync();
 
             return NoContent();
         }

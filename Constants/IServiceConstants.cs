@@ -7,7 +7,8 @@ public interface IServiceConstants
 
     const string RECORD_NOT_FOUND = "相关记录不存在";
     const string RESOURCE_NOT_FOUND = "相关资源不存在";
-
+    const string INVAILD_INPUT = "相关资源不存在";
+    
     const string BOOK_NOT_FOUND = "书籍不存在";
     const string ONE_CATEGORY_NEED = "至少需要一个分类";
     const string ISBN_ALREADY_EXISTS = "ISBN已存在";
