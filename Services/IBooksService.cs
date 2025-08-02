@@ -6,7 +6,7 @@ namespace DEMO_CRUD.Services
     {
         Task<IEnumerable<BookVO>> GetAllBooksAsync();
         Task<BookVO?> GetBookByIdAsync(int id);
-        Task<IEnumerable<BookVO>> SearchBooksAsync(string title, string isbn, string authorName, string publisherName, DateTime? publishedDateBegin, DateTime? publishedDateEnd);
+        Task<IEnumerable<BookVO>> SearchBooksAsync(string title, string isbn, string categoryName, string authorName, string publisherName, DateTime? publishedDateBegin, DateTime? publishedDateEnd);
         Task<string> LoanBookAsync(int id, string username);
         Task<string> ReturnBookAsync(int id, string username);
         Task<int> AddBookAsync(EditBookDTO bookDTO);

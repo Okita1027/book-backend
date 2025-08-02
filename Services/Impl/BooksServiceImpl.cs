@@ -39,13 +39,15 @@ namespace DEMO_CRUD.Services.Impl
                 .FirstOrDefaultAsync(b => b.Id == id);
         }
 
-        public async Task<IEnumerable<BookVO>> SearchBooksAsync(string title, string isbn, string authorName,
+        public async Task<IEnumerable<BookVO>> SearchBooksAsync(string title, string isbn, string categoryName, string authorName,
             string publisherName, DateTime? publishedDateBegin, DateTime? publishedDateEnd)
         {
-            // 获取所有书籍、加载关联的 Author 和 Publisher,然后转为LINQ查询
+            // 获取所有书籍、加载关联的 Author、Publisher和BookCategory,然后转为LINQ查询
             var query = _context.Books
                 .Include(b => b.Author)
                 .Include(b => b.Publisher)
+                .Include(b => b.BookCategories)
+                .ThenInclude(bc => bc.Category)
                 .AsQueryable();
 
             // 一系列筛选条件
@@ -57,6 +59,11 @@ namespace DEMO_CRUD.Services.Impl
             if (!string.IsNullOrEmpty(isbn))
             {
                 query = query.Where(b => b.Isbn.Contains(isbn));
+            }
+
+            if (!string.IsNullOrEmpty(categoryName))
+            {
+                query = query.Where(b => b.BookCategories.Any(bc => bc.Category.Name.Contains(categoryName)));
             }
 
             if (!string.IsNullOrEmpty(authorName))

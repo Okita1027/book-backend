@@ -6,6 +6,9 @@ namespace DEMO_CRUD.Data
 {
     public class ApplicationDbContext : DbContext
     {
+        protected ApplicationDbContext()
+        {
+        }
 
         // : base(options) 代表调用父类的构造器
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
@@ -26,7 +29,20 @@ namespace DEMO_CRUD.Data
         public DbSet<BookCategory> BookCategories { get; set; }
         
 
-        // Fluent API 设定
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            // 如果 DbContextOptions 还没有被配置 (即通过无参构造函数创建时)
+            if (!optionsBuilder.IsConfigured)
+            {
+                // 直接在这里提供连接字符串和数据库提供程序
+                string connectionString = "Server=localhost;Port=3306;Database=LibraryDb;Uid=root;Pwd=123456;";
+                optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+
+                // 可选：启用敏感数据日志（仅用于开发/调试）
+                // optionsBuilder.EnableSensitiveDataLogging();
+            }
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -67,7 +83,7 @@ namespace DEMO_CRUD.Data
                 .WithMany(c => c.BookCategories)
                 .HasForeignKey(bc => bc.CategoryId);
         }
-        
+
         //重写 SaveChanges 和 SaveChangesAsync 方法，用于自动更新 UpdatedTime
         public override int SaveChanges()
         {

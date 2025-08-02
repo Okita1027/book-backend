@@ -64,6 +64,7 @@ public class UsersServiceImpl : IUsersService
         return new AuthResponseDTO
         {
             Token = jwtToken.Token,
+            Id = user.Id,
             Name = email,
             Role = user.Role.ToString(),
             ExpiresAt = jwtToken.ExpiresAt

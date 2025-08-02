@@ -35,7 +35,12 @@ namespace DEMO_CRUD.Controllers
             {
                 return NotFound();
             }
-
+            // 普通用户看不到自己加密后的密码
+            var currentUserRole = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+            if (currentUserRole == nameof(UserRole.Member))
+            {
+                user.PasswordHash = null;
+            }
             return Ok(user);
         }
 
@@ -84,12 +89,16 @@ namespace DEMO_CRUD.Controllers
         /// <summary>
         /// 用户登录
         /// </summary>
-        /// <param name="email">邮箱</param>
-        /// <param name="password">密码</param>
         /// <returns>Token、用户名称、角色、过期时间</returns>
         [HttpPost("login")]
-        public async Task<ActionResult<AuthResponseDTO>> LoginUser(string email, string password)
+        public async Task<ActionResult<AuthResponseDTO>> LoginUser([FromBody] UserLoginDTO userLoginDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            string email = userLoginDto.Email;
+            string password = userLoginDto.Password;
             try
             {
                 AuthResponseDTO authResponseDto = await _usersService.LoginUserAsync(email, password);

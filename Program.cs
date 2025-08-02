@@ -28,10 +28,35 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 
-// Add services to the container.
+// 注册自定义服务.
 builder.Services.AddScoped<IBooksService, BooksServiceImpl>();
 builder.Services.AddScoped<IUsersService, UsersServiceImpl>();
 builder.Services.AddScoped<ILoansService, LoansServiceImpl>();
+
+// 配置跨域
+builder.Services.AddCors(options =>
+{
+    IConfigurationSection corsSettings = builder.Configuration.GetSection("Cors");
+    string[] allowedOrigins = corsSettings.GetSection("AllowOrigins").Get<string[]>() ?? Array.Empty<string>();
+    options.AddPolicy("AllowSpecificOrigin", policy =>
+    {
+        if (allowedOrigins.Length > 0)
+        {
+            policy.WithOrigins(allowedOrigins)
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials(); // 如果需要发送凭据（如 cookies）
+        }
+        else
+        {
+            policy.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        }
+    });
+});
+
+
 // JWT配置开始
 IConfigurationSection jwtSettings = builder.Configuration.GetSection("JwtSettings");
 string secretKey = jwtSettings["SecretKey"]; // JWT签名密钥
@@ -53,7 +78,7 @@ builder.Services.AddAuthentication(options =>
     // 是否启用强制HTTPS
     options.RequireHttpsMetadata = false;
     // 是否在HttpContext中存储JWT
-    options.SaveToken = true; 
+    options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters()
     {
         ValidateIssuerSigningKey = true, // 验证签名密钥，确保令牌没有被篡改
@@ -76,7 +101,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     // AutoDetect 可以让 Pomelo 自动侦测MySQL版本并套用最佳设定
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-});
+}, ServiceLifetime.Scoped);
 
 // 处理循环引用的一种简单方式，但不推荐这么做，这会让前端难以处理返回的数据
 //builder.Services.AddControllers()
@@ -90,10 +115,13 @@ builder.Services.AddMapster();
 // 执行自定义的Mapster映射配置
 MapsterConfig.Configure();
 builder.Services.AddResponseCaching();
-builder.Services.AddControllers(options =>
-{
-    options.Filters.Add(new ArgumentExceptionFilter());
-});
+builder.Services
+    .AddControllers(options => { options.Filters.Add(new ArgumentExceptionFilter()); })
+    .AddJsonOptions(options =>
+    {
+        // 配置JSON序列化时使用驼峰命名法（首字母小写）
+        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -113,7 +141,11 @@ else
 {
     app.UseExceptionHandler("/exceptions");
 }
+
 // app.UseRouting();    // .NET 6之后，若使用了MapXXX，则自动启用UseRouting()
+
+// 使用名为AllowAll的跨域策略
+app.UseCors("AllowAll");
 
 // 认证中间件必须在授权中间件之前
 app.UseAuthentication(); // 启用认证，解析并验证请求中的 JWT

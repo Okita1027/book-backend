@@ -63,12 +63,13 @@ namespace DEMO_CRUD.Controllers
         public async Task<ActionResult<IEnumerable<BookVO>>> SearchBooks(
             [FromQuery] string? title = null,
             [FromQuery] string? isbn = null,
+            [FromQuery] string? categoryName = null,
             [FromQuery] string? authorName = null,
             [FromQuery] string? publisherName = null,
             [FromQuery] DateTime? publishedDateBegin = null,
             [FromQuery] DateTime? publishedDateEnd = null)
         {
-            var books = await _booksService.SearchBooksAsync(title, isbn, authorName, publisherName, publishedDateBegin,
+            var books = await _booksService.SearchBooksAsync(title, isbn, categoryName, authorName, publisherName, publishedDateBegin,
                 publishedDateEnd);
             return Ok(books);
         }
@@ -124,7 +125,7 @@ namespace DEMO_CRUD.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
 
         /// <summary>
         /// 更新图书的信息
@@ -164,7 +165,7 @@ namespace DEMO_CRUD.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
         /// <summary>
         /// 批量删除书籍
         /// </summary>
