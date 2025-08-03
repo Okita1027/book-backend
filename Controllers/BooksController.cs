@@ -54,6 +54,7 @@ namespace DEMO_CRUD.Controllers
         /// </summary>
         /// <param name="title"></param>
         /// <param name="isbn"></param>
+        /// <param name="categoryName"></param>
         /// <param name="authorName"></param>
         /// <param name="publisherName"></param>
         /// <param name="publishedDateBegin"></param>

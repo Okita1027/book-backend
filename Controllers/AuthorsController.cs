@@ -1,11 +1,9 @@
-﻿using System.Diagnostics;
-using DEMO_CRUD.Data;
+﻿using DEMO_CRUD.Data;
 using DEMO_CRUD.Models.DTO;
 using DEMO_CRUD.Models.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
 using static DEMO_CRUD.Constants.IServiceConstants;
 
 namespace DEMO_CRUD.Controllers

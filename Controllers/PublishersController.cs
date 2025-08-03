@@ -18,7 +18,7 @@ namespace DEMO_CRUD.Controllers
     {
         // GET: api/Publishers
         [HttpGet]
-        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
+        // [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
         public async Task<ActionResult<List<Publisher>>> GetPublishers()
         {
             return await context.Publishers.ToListAsync();

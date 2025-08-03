@@ -20,7 +20,7 @@ namespace DEMO_CRUD.Data
             TypeAdapterConfig<EditUserDTO, User>.NewConfig()
                 .Map(dest => dest.Name, src => src.Name)
                 .Map(dest => dest.Email, src => src.Email)
-                .Map(dest => dest.PasswordHash, src => src.PasswordHash.MDString())
+                .Map(dest => dest.PasswordHash, src => src.Password.MDString())
                 .IgnoreNullValues(true);
             
             // Category 映射

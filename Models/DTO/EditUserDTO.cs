@@ -15,6 +15,6 @@ namespace DEMO_CRUD.Models.DTO
 
         [Required]
         [MaxLength(255)]
-        public string PasswordHash { get; set; } // 存储哈希后的密码
+        public string Password { get; set; } // 存储哈希后的密码
     }
 }
