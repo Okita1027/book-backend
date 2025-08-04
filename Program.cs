@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
 using DEMO_CRUD.Data;
 using DEMO_CRUD.Exceptions;
 using DEMO_CRUD.Services;
@@ -104,11 +105,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 }, ServiceLifetime.Scoped);
 
 // 处理循环引用的一种简单方式，但不推荐这么做，这会让前端难以处理返回的数据
-//builder.Services.AddControllers()
-//    .AddJsonOptions(options =>
-//    {
-//        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-//    });
+// builder.Services.AddControllers()
+//     .AddJsonOptions(options =>
+//     {
+//         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+//     });
 
 // 注册Mapster核心服务
 builder.Services.AddMapster();

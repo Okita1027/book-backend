@@ -1,4 +1,6 @@
 ﻿using DEMO_CRUD.Models.DTO;
+using DEMO_CRUD.Models.Entity;
+using DEMO_CRUD.Models.VO;
 
 namespace DEMO_CRUD.Services
 {
@@ -13,5 +15,6 @@ namespace DEMO_CRUD.Services
         Task UpdateBookAsync(int id, EditBookDTO bookDTO);
         Task DeleteBookAsync(int id);
         Task DeleteBooksAsync(List<int> ids);
+        Task<List<RawBookVO>> GetAllRawBooksAsync();
     }
 }

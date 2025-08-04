@@ -1,6 +1,6 @@
-﻿using DEMO_CRUD.Data;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using DEMO_CRUD.Data;
 
 namespace DEMO_CRUD.Models.Entity
 {

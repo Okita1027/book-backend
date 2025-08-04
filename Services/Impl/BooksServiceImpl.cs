@@ -2,24 +2,88 @@
 using DEMO_CRUD.Exceptions;
 using DEMO_CRUD.Models.DTO;
 using DEMO_CRUD.Models.Entity;
+using DEMO_CRUD.Models.VO;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using static DEMO_CRUD.Constants.IServiceConstants;
 
 namespace DEMO_CRUD.Services.Impl
 {
-    public class BooksServiceImpl : IBooksService
+    public class BooksServiceImpl(ApplicationDbContext context) : IBooksService
     {
-        private readonly ApplicationDbContext _context;
-
-        public BooksServiceImpl(ApplicationDbContext context)
+        public async Task<List<RawBookVO>> GetAllRawBooksAsync()
         {
-            _context = context;
+            // 第一步：执行一个扁平化查询，类似于你提供的 SQL 语句
+            // EF Core 会生成 JOIN 语句来获取所有关联数据
+            var flatQuery = from b in context.Books
+                join a in context.Authors on b.AuthorId equals a.Id
+                join p in context.Publishers on b.PublisherId equals p.Id
+                from bc in context.BookCategories.Where(bc => bc.BookId == b.Id).DefaultIfEmpty()
+                from c in context.Categories.Where(c => bc != null && c.Id == bc.CategoryId).DefaultIfEmpty()
+                select new
+                {
+                    Book = b,
+                    AuthorName = a.Name,
+                    PublisherName = p.Name,
+                    CategoryId = c != null ? c.Id : (int?)null,
+                    CategoryName = c != null ? c.Name : null
+                };
+
+            // 第二步：使用 GroupBy 将扁平化结果按书籍进行分组
+            // EF Core 可以在数据库中执行到这里
+            var groupedBooks = await flatQuery
+                .GroupBy(x => new
+                {
+                    x.Book.Id,
+                    x.Book.Title,
+                    x.Book.Isbn,
+                    x.Book.PublishedDate,
+                    x.Book.Stock,
+                    x.Book.Available,
+                    x.Book.CreatedTime,
+                    x.Book.UpdatedTime,
+                    x.Book.AuthorId,
+                    x.AuthorName,
+                    x.Book.PublisherId,
+                    x.PublisherName
+                })
+                // 关键步骤：在这里将数据加载到内存中
+                .ToListAsync();
+
+            // 关键步骤：在 C# 内存中处理 Dictionary
+            var finalResult = groupedBooks
+                .Select(g => new RawBookVO
+                {
+                    Id = g.Key.Id,
+                    Title = g.Key.Title,
+                    Isbn = g.Key.Isbn,
+                    PublishedDate = g.Key.PublishedDate,
+                    Stock = g.Key.Stock,
+                    Available = g.Key.Available,
+                    CreatedTime = g.Key.CreatedTime,
+                    UpdatedTime = g.Key.UpdatedTime,
+        
+                    AuthorId = g.Key.AuthorId,
+                    AuthorName = g.Key.AuthorName,
+
+                    PublisherId = g.Key.PublisherId,
+                    PublisherName = g.Key.PublisherName,
+
+                    // 可以在内存中安全地调用 ToDictionary
+                    CategoryDictionary = g.Where(x => x.CategoryId.HasValue)
+                        .ToDictionary(
+                            x => x.CategoryId.Value,
+                            x => x.CategoryName
+                        )
+                })
+                .ToList();
+
+            return finalResult;
         }
 
         public async Task<IEnumerable<BookVO>> GetAllBooksAsync()
         {
-            return await _context.Books
+            return await context.Books
                 // 加载关联的 Author 和 Publisher
                 .Include(b => b.Author)
                 .Include(b => b.Publisher)
@@ -30,7 +94,7 @@ namespace DEMO_CRUD.Services.Impl
 
         public async Task<BookVO?> GetBookByIdAsync(int id)
         {
-            return await _context.Books
+            return await context.Books
                 // 同时加载关联的 Author 、Publisher
                 .Include(b => b.Author)
                 .Include(b => b.Publisher)
@@ -39,11 +103,12 @@ namespace DEMO_CRUD.Services.Impl
                 .FirstOrDefaultAsync(b => b.Id == id);
         }
 
-        public async Task<IEnumerable<BookVO>> SearchBooksAsync(string title, string isbn, string categoryName, string authorName,
+        public async Task<IEnumerable<BookVO>> SearchBooksAsync(string title, string isbn, string categoryName,
+            string authorName,
             string publisherName, DateTime? publishedDateBegin, DateTime? publishedDateEnd)
         {
             // 获取所有书籍、加载关联的 Author、Publisher和BookCategory,然后转为LINQ查询
-            var query = _context.Books
+            var query = context.Books
                 .Include(b => b.Author)
                 .Include(b => b.Publisher)
                 .Include(b => b.BookCategories)
@@ -92,7 +157,7 @@ namespace DEMO_CRUD.Services.Impl
 
         public async Task<string> LoanBookAsync(int id, string username)
         {
-            var book = await _context.Books.FindAsync(id);
+            var book = await context.Books.FindAsync(id);
             if (book == null)
             {
                 throw new ArgumentException(BOOK_NOT_FOUND);
@@ -103,7 +168,7 @@ namespace DEMO_CRUD.Services.Impl
                 throw new BusinessException(NOT_ENOUGH_AVAILABLE);
             }
 
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == username);
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Name == username);
             if (user == null)
             {
                 throw new ArgumentException(USER_NOT_FOUND);
@@ -121,14 +186,14 @@ namespace DEMO_CRUD.Services.Impl
             };
             // 减少该书籍的可用数量
             book.Available -= 1;
-            _context.Loans.Add(loan);
-            await _context.SaveChangesAsync();
+            context.Loans.Add(loan);
+            await context.SaveChangesAsync();
             return $"书籍 {book.Title} 已借出给 {username}。";
         }
 
         public async Task<string> ReturnBookAsync(int id, string username)
         {
-            var loan = await _context.Loans
+            var loan = await context.Loans
                 .Include(l => l.Book)
                 .FirstOrDefaultAsync(l => l.BookId == id && l.User.Name == username && l.ReturnDate == null);
             if (loan == null)
@@ -150,30 +215,30 @@ namespace DEMO_CRUD.Services.Impl
                     LoanId = loan.Id,
                     UserId = loan.UserId
                 };
-                _context.Fines.Add(fine);
+                context.Fines.Add(fine);
             }
 
             // 更新书籍的可用数量
             loan.Book.Available += 1;
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             return OPERATION_SUCCESS;
         }
 
         public async Task<int> AddBookAsync(EditBookDTO bookDTO)
         {
-            var author = await _context.Authors.FindAsync(bookDTO.AuthorId);
+            var author = await context.Authors.FindAsync(bookDTO.AuthorId);
             if (author == null)
             {
                 throw new ArgumentException(AUTHOR_NOT_FOUND);
             }
 
-            var publisher = await _context.Publishers.FindAsync(bookDTO.PublisherId);
+            var publisher = await context.Publishers.FindAsync(bookDTO.PublisherId);
             if (publisher == null)
             {
                 throw new ArgumentException(PUBLISHER_NOT_FOUND);
             }
 
-            if (await _context.Books.FirstOrDefaultAsync(b => b.Isbn == bookDTO.Isbn) != null)
+            if (await context.Books.FirstOrDefaultAsync(b => b.Isbn == bookDTO.Isbn) != null)
             {
                 throw new ArgumentException(ISBN_ALREADY_EXISTS);
             }
@@ -184,7 +249,7 @@ namespace DEMO_CRUD.Services.Impl
             }
 
             // 验证传入的所有分类ID是否存在
-            List<Category> existingCategories = await _context.Categories
+            List<Category> existingCategories = await context.Categories
                 .Where(c => bookDTO.CategoryIds.Contains(c.Id))
                 .ToListAsync();
             if (existingCategories.Count != bookDTO.CategoryIds.Count)
@@ -197,7 +262,7 @@ namespace DEMO_CRUD.Services.Impl
             }
 
             Book book = bookDTO.Adapt<Book>();
-            _context.Books.Add(book);
+            context.Books.Add(book);
 
             // 添加书籍类别和书籍的关联(处理联结表BookCategory)
             // 保存book后会获得数据库生成的ID，在SaveChanges()之前,可以建立BookCategory的关系
@@ -209,31 +274,31 @@ namespace DEMO_CRUD.Services.Impl
                 });
             }
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             return book.Id;
         }
 
         public async Task UpdateBookAsync(int id, EditBookDTO bookDTO)
         {
-            var book = await _context.Books.FindAsync(id);
+            var book = await context.Books.FindAsync(id);
             if (book == null)
             {
                 throw new ArgumentException(BOOK_NOT_FOUND);
             }
-            
-            var existingBook = await _context.Books.FirstOrDefaultAsync(b => b.Isbn == bookDTO.Isbn && b.Id != id);
+
+            var existingBook = await context.Books.FirstOrDefaultAsync(b => b.Isbn == bookDTO.Isbn && b.Id != id);
             if (existingBook != null)
             {
                 throw new ArgumentException(ISBN_ALREADY_EXISTS);
             }
 
-            var author = await _context.Authors.FindAsync(bookDTO.AuthorId);
+            var author = await context.Authors.FindAsync(bookDTO.AuthorId);
             if (author == null)
             {
                 throw new ArgumentException(AUTHOR_NOT_FOUND);
             }
 
-            var publisher = await _context.Publishers.FindAsync(bookDTO.PublisherId);
+            var publisher = await context.Publishers.FindAsync(bookDTO.PublisherId);
             if (publisher == null)
             {
                 throw new ArgumentException(PUBLISHER_NOT_FOUND);
@@ -248,7 +313,7 @@ namespace DEMO_CRUD.Services.Impl
             bookDTO.Adapt(book);
 
             // 获取当前书籍的类别关联
-            List<BookCategory> currentBookCategories = await _context.BookCategories
+            List<BookCategory> currentBookCategories = await context.BookCategories
                 .Where(bc => bc.BookId == book.Id)
                 .ToListAsync();
             // 删除不再需要的图书的分类
@@ -256,9 +321,10 @@ namespace DEMO_CRUD.Services.Impl
             {
                 if (!bookDTO.CategoryIds.Contains(existing.CategoryId))
                 {
-                    _context.BookCategories.Remove(existing);
+                    context.BookCategories.Remove(existing);
                 }
             }
+
             // 添加新增的分类
             foreach (int categoryId in bookDTO.CategoryIds)
             {
@@ -269,34 +335,36 @@ namespace DEMO_CRUD.Services.Impl
                         BookId = book.Id,
                         CategoryId = categoryId
                     };
-                    _context.BookCategories.Add(bookCategory);
+                    context.BookCategories.Add(bookCategory);
                 }
             }
-            
-            await _context.SaveChangesAsync();
+
+            await context.SaveChangesAsync();
         }
 
         public async Task DeleteBookAsync(int id)
         {
-            var book = await _context.Books.FindAsync(id);
+            var book = await context.Books.FindAsync(id);
             if (book == null)
             {
                 throw new ArgumentException(BOOK_NOT_FOUND);
             }
 
-            _context.Books.Remove(book);
-            await _context.SaveChangesAsync();
+            context.Books.Remove(book);
+            await context.SaveChangesAsync();
         }
+
 
         public async Task DeleteBooksAsync(List<int> ids)
         {
-            List<Book> books = await _context.Books.Where(book => ids.Contains(book.Id)).ToListAsync();
+            List<Book> books = await context.Books.Where(book => ids.Contains(book.Id)).ToListAsync();
             if (books.Count == 0)
             {
                 throw new ArgumentException(BOOK_NOT_FOUND);
             }
-            _context.Books.RemoveRange(books);
-            await _context.SaveChangesAsync();
+
+            context.Books.RemoveRange(books);
+            await context.SaveChangesAsync();
         }
     }
 }

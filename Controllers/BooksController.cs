@@ -1,6 +1,7 @@
 ﻿// BooksController.cs
 
 using DEMO_CRUD.Models.DTO;
+using DEMO_CRUD.Models.Entity;
 using DEMO_CRUD.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,15 +11,17 @@ namespace DEMO_CRUD.Controllers
     [Route("api/[controller]")]
     [ApiController]
     // [Authorize]  // 为该类所有方法添加认证
-    public class BooksController : ControllerBase
+    public class BooksController(IBooksService booksService) : ControllerBase
     {
-        private readonly IBooksService _booksService;
-
-        public BooksController(IBooksService booksService)
+        /// <summary>
+        /// 获取所有书籍
+        /// </summary>
+        /// <returns>不加工</returns>
+        [HttpGet("/api/RawBooks")]
+        public async Task<ActionResult<List<Book>>> GetRawBooks()
         {
-            _booksService = booksService;
+            return Ok(await booksService.GetAllRawBooksAsync());
         }
-
         /// <summary>
         /// 获取所有的书籍
         /// </summary>
@@ -26,9 +29,9 @@ namespace DEMO_CRUD.Controllers
         [HttpGet]
         [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client)]
         // [AllowAnonymous] // 忽略类上写的的[Authorize]注解，允许匿名访问
-        public async Task<ActionResult<IEnumerable<BookVO>>> GetBooks()
+        public async Task<ActionResult<List<BookVO>>> GetBooks()
         {
-            var books = await _booksService.GetAllBooksAsync();
+            var books = await booksService.GetAllBooksAsync();
             return Ok(books);
         }
 
@@ -40,7 +43,7 @@ namespace DEMO_CRUD.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<BookVO>> GetBook(int id)
         {
-            var book = await _booksService.GetBookByIdAsync(id);
+            var book = await booksService.GetBookByIdAsync(id);
             if (book == null)
             {
                 return NotFound("未找到该书籍");
@@ -70,7 +73,7 @@ namespace DEMO_CRUD.Controllers
             [FromQuery] DateTime? publishedDateBegin = null,
             [FromQuery] DateTime? publishedDateEnd = null)
         {
-            var books = await _booksService.SearchBooksAsync(title, isbn, categoryName, authorName, publisherName, publishedDateBegin,
+            var books = await booksService.SearchBooksAsync(title, isbn, categoryName, authorName, publisherName, publishedDateBegin,
                 publishedDateEnd);
             return Ok(books);
         }
@@ -87,7 +90,7 @@ namespace DEMO_CRUD.Controllers
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<string>> LoanBook(int id, string username)
         {
-            var result = await _booksService.LoanBookAsync(id, username);
+            var result = await booksService.LoanBookAsync(id, username);
             return Ok(result);
         }
 
@@ -103,7 +106,7 @@ namespace DEMO_CRUD.Controllers
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<string>> ReturnBook(int id, string username)
         {
-            var result = await _booksService.ReturnBookAsync(id, username);
+            var result = await booksService.ReturnBookAsync(id, username);
             return Ok(result);
         }
 
@@ -118,7 +121,7 @@ namespace DEMO_CRUD.Controllers
         {
             try
             {
-                int generatedId = await _booksService.AddBookAsync(bookDTO);
+                int generatedId = await booksService.AddBookAsync(bookDTO);
                 return CreatedAtAction("GetBook", new { id = generatedId }, bookDTO);
             }
             catch (ArgumentException ex)
@@ -139,7 +142,7 @@ namespace DEMO_CRUD.Controllers
         {
             try
             {
-                await _booksService.UpdateBookAsync(id, bookDTO);
+                await booksService.UpdateBookAsync(id, bookDTO);
                 return NoContent();
             }
             catch (ArgumentException ex)
@@ -158,7 +161,7 @@ namespace DEMO_CRUD.Controllers
         {
             try
             {
-                await _booksService.DeleteBookAsync(id);
+                await booksService.DeleteBookAsync(id);
                 return NoContent();
             }
             catch (ArgumentException ex)
@@ -177,7 +180,7 @@ namespace DEMO_CRUD.Controllers
         {
             try
             {
-                await _booksService.DeleteBooksAsync(ids);
+                await booksService.DeleteBooksAsync(ids);
                 return NoContent();
             }
             catch (ArgumentException ex)
