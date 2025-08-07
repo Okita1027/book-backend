@@ -3,6 +3,7 @@
 using book_backend.Models.DTO;
 using book_backend.Models.Entity;
 using book_backend.Services;
+using book_backend.utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,12 +17,13 @@ namespace book_backend.Controllers
         /// <summary>
         /// 获取所有书籍
         /// </summary>
-        /// <returns>不加工</returns>
+        /// <returns>原生类不加工</returns>
         [HttpGet("/api/RawBooks")]
         public async Task<ActionResult<List<Book>>> GetRawBooks()
         {
             return Ok(await booksService.GetAllRawBooksAsync());
         }
+
         /// <summary>
         /// 获取所有的书籍
         /// </summary>
@@ -64,7 +66,8 @@ namespace book_backend.Controllers
         /// <param name="publishedDateEnd"></param>
         /// <returns>处理过后的用于展示的图书</returns>
         [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<BookVO>>> SearchBooks(
+        [Obsolete("请使用下面的分页查询")]
+        public async Task<ActionResult<List<BookVO>>> SearchBooks(
             [FromQuery] string? title = null,
             [FromQuery] string? isbn = null,
             [FromQuery] string? categoryName = null,
@@ -73,9 +76,27 @@ namespace book_backend.Controllers
             [FromQuery] DateTime? publishedDateBegin = null,
             [FromQuery] DateTime? publishedDateEnd = null)
         {
-            var books = await booksService.SearchBooksAsync(title, isbn, categoryName, authorName, publisherName, publishedDateBegin,
+            var books = await booksService.SearchBooksAsync(title, isbn, categoryName, authorName, publisherName,
+                publishedDateBegin,
                 publishedDateEnd);
             return Ok(books);
+        }
+
+        [HttpGet("searchPaginated")]
+        public async Task<Pagination<BookVO>> SearchBooksPaginated(
+            [FromQuery] PaginationRequest paginationRequest,
+            [FromQuery] string? title = null,
+            [FromQuery] string? isbn = null,
+            [FromQuery] string? categoryName = null,
+            [FromQuery] string? authorName = null,
+            [FromQuery] string? publisherName = null,
+            [FromQuery] DateTime? publishedDateBegin = null,
+            [FromQuery] DateTime? publishedDateEnd = null)
+        {
+            var books = await booksService.SearchBooksPaginatedAsync(
+                paginationRequest, title, isbn, categoryName, authorName, publisherName, 
+                publishedDateBegin, publishedDateEnd);
+            return books;
         }
 
         /// <summary>

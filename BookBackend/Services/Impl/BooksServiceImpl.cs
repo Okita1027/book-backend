@@ -3,6 +3,7 @@ using book_backend.Exceptions;
 using book_backend.Models.DTO;
 using book_backend.Models.Entity;
 using book_backend.Models.VO;
+using book_backend.utils;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using static book_backend.Constants.IServiceConstants;
@@ -153,6 +154,93 @@ namespace book_backend.Services.Impl
 
             List<BookVO> bookVos = await query.ProjectToType<BookVO>().ToListAsync();
             return bookVos;
+        }
+
+        public async Task<Pagination<BookVO>> SearchBooksPaginatedAsync(PaginationRequest paginationRequest, string? title, string? isbn, string? categoryName,
+            string? authorName, string? publisherName, DateTime? publishedDateBegin, DateTime? publishedDateEnd)
+        {
+            // 获取所有书籍、加载关联的 Author、Publisher和BookCategory,然后转为LINQ查询
+            var query = context.Books
+                .Include(b => b.Author)
+                .Include(b => b.Publisher)
+                .Include(b => b.BookCategories)
+                .ThenInclude(bc => bc.Category)
+                .AsQueryable();
+
+            // 一系列筛选条件
+            if (!string.IsNullOrEmpty(title))
+            {
+                query = query.Where(b => b.Title.Contains(title));
+            }
+
+            if (!string.IsNullOrEmpty(isbn))
+            {
+                query = query.Where(b => b.Isbn.Contains(isbn));
+            }
+
+            if (!string.IsNullOrEmpty(categoryName))
+            {
+                query = query.Where(b => b.BookCategories.Any(bc => bc.Category.Name.Contains(categoryName)));
+            }
+
+            if (!string.IsNullOrEmpty(authorName))
+            {
+                query = query.Where(b => b.Author.Name.Contains(authorName));
+            }
+
+            if (!string.IsNullOrEmpty(publisherName))
+            {
+                query = query.Where(b => b.Publisher.Name.Contains(publisherName));
+            }
+
+            if (publishedDateBegin.HasValue)
+            {
+                query = query.Where(b => b.PublishedDate >= publishedDateBegin.Value);
+            }
+
+            if (publishedDateEnd.HasValue)
+            {
+                query = query.Where(b => b.PublishedDate <= publishedDateEnd.Value);
+            }
+
+            // 排序逻辑
+            if (!string.IsNullOrEmpty(paginationRequest.SortField))
+            {
+                query = paginationRequest.SortField.ToLower() switch
+                {
+                    "title" => paginationRequest.SortOrder?.ToLower() == "descend" 
+                        ? query.OrderByDescending(b => b.Title) 
+                        : query.OrderBy(b => b.Title),
+                    "isbn" => paginationRequest.SortOrder?.ToLower() == "descend" 
+                        ? query.OrderByDescending(b => b.Isbn) 
+                        : query.OrderBy(b => b.Isbn),
+                    "publisheddate" => paginationRequest.SortOrder?.ToLower() == "descend" 
+                        ? query.OrderByDescending(b => b.PublishedDate) 
+                        : query.OrderBy(b => b.PublishedDate),
+                    "stock" => paginationRequest.SortOrder?.ToLower() == "descend" 
+                        ? query.OrderByDescending(b => b.Stock) 
+                        : query.OrderBy(b => b.Stock),
+                    "available" => paginationRequest.SortOrder?.ToLower() == "descend" 
+                        ? query.OrderByDescending(b => b.Available) 
+                        : query.OrderBy(b => b.Available),
+                    "authorname" => paginationRequest.SortOrder?.ToLower() == "descend" 
+                        ? query.OrderByDescending(b => b.Author.Name) 
+                        : query.OrderBy(b => b.Author.Name),
+                    "publishername" => paginationRequest.SortOrder?.ToLower() == "descend" 
+                        ? query.OrderByDescending(b => b.Publisher.Name) 
+                        : query.OrderBy(b => b.Publisher.Name),
+                    _ => query.OrderBy(b => b.Id)
+                };
+            }
+            else
+            {
+                // 默认按ID排序
+                query = query.OrderBy(b => b.Id);
+            }
+
+            var paginatedBookVOs = await query.ProjectToType<BookVO>()
+                .ToPaginatedListAsync(paginationRequest.PageIndex, paginationRequest.PageSize);
+            return paginatedBookVOs;
         }
 
         public async Task<string> LoanBookAsync(int id, string username)

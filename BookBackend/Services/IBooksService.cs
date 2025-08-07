@@ -1,5 +1,6 @@
 ﻿using book_backend.Models.DTO;
 using book_backend.Models.VO;
+using book_backend.utils;
 
 namespace book_backend.Services
 {
@@ -15,5 +16,6 @@ namespace book_backend.Services
         Task DeleteBookAsync(int id);
         Task DeleteBooksAsync(List<int> ids);
         Task<List<RawBookVO>> GetAllRawBooksAsync();
+        Task<Pagination<BookVO>> SearchBooksPaginatedAsync(PaginationRequest paginationRequest, string? title, string? isbn, string? categoryName, string? authorName, string? publisherName, DateTime? publishedDateBegin, DateTime? publishedDateEnd);
     }
 }

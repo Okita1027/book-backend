@@ -15,19 +15,19 @@ using Serilog.Formatting.Compact;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ÅäÖÃÈÕÖ¾
+// é…ç½®æ—¥å¿—
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .Destructure.ByTransforming<DateTime>(datetime => datetime.ToLocalTime())
     .CreateLogger();
 
 
-// ×¢²á×Ô¶¨Òå·şÎñ
+// æ³¨å†Œè‡ªå®šä¹‰æœåŠ¡
 builder.Services.AddScoped<IBooksService, BooksServiceImpl>();
 builder.Services.AddScoped<IUsersService, UsersServiceImpl>();
 builder.Services.AddScoped<ILoansService, LoansServiceImpl>();
 
-// ÅäÖÃ¿çÓò
+// é…ç½®è·¨åŸŸ
 builder.Services.AddCors(options =>
 {
     IConfigurationSection corsSettings = builder.Configuration.GetSection("Cors");
@@ -39,7 +39,7 @@ builder.Services.AddCors(options =>
             policy.WithOrigins(allowedOrigins)
                 .AllowAnyMethod()
                 .AllowAnyHeader()
-                .AllowCredentials(); // Èç¹ûĞèÒª·¢ËÍÆ¾¾İ£¨Èç cookies£©
+                .AllowCredentials(); // å¦‚æœéœ€è¦å‘é€å‡­æ®ï¼ˆå¦‚ cookiesï¼‰
         }
         else
         {
@@ -50,7 +50,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-// ÈÕÖ¾ÔöÇ¿ÅäÖÃ
+// æ—¥å¿—å¢å¼ºé…ç½®
 builder.Services.AddSerilog((services, loggerConfiguration) => loggerConfiguration
     .ReadFrom.Configuration(builder.Configuration)
     .Enrich.FromLogContext()
@@ -58,75 +58,76 @@ builder.Services.AddSerilog((services, loggerConfiguration) => loggerConfigurati
     .Destructure.ByTransforming<DateTime>(datetime => datetime.ToLocalTime()));
 
 
-// JWTÅäÖÃ¿ªÊ¼
+// JWTé…ç½®å¼€å§‹
 IConfigurationSection jwtSettings = builder.Configuration.GetSection("JwtSettings");
-string secretKey = jwtSettings["SecretKey"]; // JWTÇ©ÃûÃÜÔ¿
-string issuer = jwtSettings["Issuer"]; // JWTÁîÅÆ·¢²¼Õß
-string audience = jwtSettings["Audience"]; // JWTÁîÅÆ½ÓÊÕÕß
+string secretKey = jwtSettings["SecretKey"]; // JWTç­¾åå¯†é’¥
+string issuer = jwtSettings["Issuer"]; // JWTä»¤ç‰Œå‘å¸ƒè€…
+string audience = jwtSettings["Audience"]; // JWTä»¤ç‰Œæ¥æ”¶è€…
 if (string.IsNullOrEmpty(secretKey))
 {
-    throw new InvalidOperationException("JWT ÃÜÔ¿Ã»ÓĞÅäÖÃºÃ");
+    throw new InvalidOperationException("JWT å¯†é’¥æ²¡æœ‰é…ç½®å¥½");
 }
 
-byte[] key = Encoding.ASCII.GetBytes(secretKey); // ½«ÃÜÔ¿×Ö·û´®×ªÎª×Ö½ÚÊı×é
+// å°†å¯†é’¥å­—ç¬¦ä¸²è½¬ä¸ºå­—èŠ‚æ•°ç»„
+byte[] key = Encoding.ASCII.GetBytes(secretKey);
 builder.Services.AddAuthentication(options =>
 {
-    // ÉèÖÃÄ¬ÈÏµÄÈÏÖ¤·½°¸ºÍÌôÕ½·½°¸ÎªJWT Bearer
+    // è®¾ç½®é»˜è®¤çš„è®¤è¯æ–¹æ¡ˆå’ŒæŒ‘æˆ˜æ–¹æ¡ˆä¸ºJWT Bearer
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
-    // ÊÇ·ñÆôÓÃÇ¿ÖÆHTTPS
+    // æ˜¯å¦å¯ç”¨å¼ºåˆ¶HTTPS
     options.RequireHttpsMetadata = false;
-    // ÊÇ·ñÔÚHttpContextÖĞ´æ´¢JWT
+    // æ˜¯å¦åœ¨HttpContextä¸­å­˜å‚¨JWT
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters()
     {
-        ValidateIssuerSigningKey = true, // ÑéÖ¤Ç©ÃûÃÜÔ¿£¬È·±£ÁîÅÆÃ»ÓĞ±»´Û¸Ä
-        IssuerSigningKey = new SymmetricSecurityKey(key), // ÓÃÓÚÇ©ÃûµÄÃÜÔ¿
-        ValidateIssuer = true, // ÑéÖ¤ÁîÅÆµÄ·¢²¼Õß
-        ValidateAudience = true, // ÑéÖ¤ÁîÅÆµÄ½ÓÊÕÕß
-        ValidateLifetime = true, // ÑéÖ¤ÁîÅÆÓĞĞ§ÆÚ£¨¹ıÆÚÊ±¼ä£©
-        ValidIssuer = issuer, // ÓĞĞ§µÄ·¢²¼Õß
-        ValidAudience = audience, // ÓĞĞ§µÄ½ÓÊÕÕß
-        ClockSkew = TimeSpan.Zero // ÁîÅÆÓĞĞ§ÆÚÊ±ÖÓÆ«ÒÆÁ¿£¬Ä¬ÈÏÎª5·ÖÖÓ£¬ÕâÀïÉèÖÃÎª0£¬±íÊ¾ÁîÅÆÓĞĞ§ÆÚ±ØĞëÓëµ±Ç°Ê±¼äÒ»ÖÂ
+        ValidateIssuerSigningKey = true, // éªŒè¯ç­¾åå¯†é’¥ï¼Œç¡®ä¿ä»¤ç‰Œæ²¡æœ‰è¢«ç¯¡æ”¹
+        IssuerSigningKey = new SymmetricSecurityKey(key), // ç”¨äºç­¾åçš„å¯†é’¥
+        ValidateIssuer = true, // éªŒè¯ä»¤ç‰Œçš„å‘å¸ƒè€…
+        ValidateAudience = true, // éªŒè¯ä»¤ç‰Œçš„æ¥æ”¶è€…
+        ValidateLifetime = true, // éªŒè¯ä»¤ç‰Œæœ‰æ•ˆæœŸï¼ˆè¿‡æœŸæ—¶é—´ï¼‰
+        ValidIssuer = issuer, // æœ‰æ•ˆçš„å‘å¸ƒè€…
+        ValidAudience = audience, // æœ‰æ•ˆçš„æ¥æ”¶è€…
+        ClockSkew = TimeSpan.Zero // ä»¤ç‰Œæœ‰æ•ˆæœŸæ—¶é’Ÿåç§»é‡ï¼Œé»˜è®¤ä¸º5åˆ†é’Ÿï¼Œè¿™é‡Œè®¾ç½®ä¸º0ï¼Œè¡¨ç¤ºä»¤ç‰Œæœ‰æ•ˆæœŸå¿…é¡»ä¸å½“å‰æ—¶é—´ä¸€è‡´
     };
 });
-builder.Services.AddAuthentication(); // ÆôÓÃÊÚÈ¨·şÎñ
-// JWTÅäÖÃ½áÊø
+builder.Services.AddAuthentication(); // å¯ç”¨æˆæƒæœåŠ¡
+// JWTé…ç½®ç»“æŸ
 
-// ´ÓÅäÖÃÎÄ¼şÖĞ»ñÈ¡Á¬½Ó×Ö·û´®
+// ä»é…ç½®æ–‡ä»¶ä¸­è·å–è¿æ¥å­—ç¬¦ä¸²
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-// ×¢²áDbContext·şÎñ
+// æ³¨å†ŒDbContextæœåŠ¡
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    // AutoDetect ¿ÉÒÔÈÃ Pomelo ×Ô¶¯Õì²âMySQL°æ±¾²¢Ì×ÓÃ×î¼ÑÉè¶¨
+    // AutoDetect å¯ä»¥è®© Pomelo è‡ªåŠ¨ä¾¦æµ‹MySQLç‰ˆæœ¬å¹¶å¥—ç”¨æœ€ä½³è®¾å®š
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 }, ServiceLifetime.Scoped);
 
-// ´¦ÀíÑ­»·ÒıÓÃµÄÒ»ÖÖ¼òµ¥·½Ê½£¬µ«²»ÍÆ¼öÕâÃ´×ö£¬Õâ»áÈÃÇ°¶ËÄÑÒÔ´¦Àí·µ»ØµÄÊı¾İ¡¾´Ë·½°¸½öÓÃÓÚ¶µµ×¡¿
-builder.Services.AddControllers()
+// å¤„ç†å¾ªç¯å¼•ç”¨çš„ä¸€ç§ç®€å•æ–¹å¼ï¼Œä½†ä¸æ¨èè¿™ä¹ˆåšï¼Œè¿™ä¼šè®©å‰ç«¯éš¾ä»¥å¤„ç†è¿”å›çš„æ•°æ®ã€æ­¤æ–¹æ¡ˆä»…ç”¨äºå…œåº•ã€‘
+/*builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-    });
+    });*/
 
-// ×¢²áMapsterºËĞÄ·şÎñ
+// æ³¨å†ŒMapsteræ ¸å¿ƒæœåŠ¡ã€æ‰§è¡Œè‡ªå®šä¹‰çš„Mapsteræ˜ å°„é…ç½®
 builder.Services.AddMapster();
-// Ö´ĞĞ×Ô¶¨ÒåµÄMapsterÓ³ÉäÅäÖÃ
 MapsterConfig.Configure();
+
 builder.Services.AddResponseCaching();
 builder.Services
     .AddControllers(options => { options.Filters.Add(new ArgumentExceptionFilter()); })
     .AddJsonOptions(options =>
     {
-        // ÅäÖÃJSONĞòÁĞ»¯Ê±Ê¹ÓÃÍÕ·åÃüÃû·¨£¨Ê××ÖÄ¸Ğ¡Ğ´£©
+        // é…ç½®JSONåºåˆ—åŒ–æ—¶ä½¿ç”¨é©¼å³°å‘½åæ³•ï¼ˆé¦–å­—æ¯å°å†™ï¼‰
         options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
     });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// µÚÈı·½ÈÕÖ¾ÖĞ¼ä¼ş-Serilog
+// ç¬¬ä¸‰æ–¹æ—¥å¿—ä¸­é—´ä»¶-Serilog
 builder.Host.UseSerilog();
 
 
@@ -143,18 +144,18 @@ else
     app.UseExceptionHandler("/exceptions");
 }
 
-// app.UseRouting();    // .NET 6Ö®ºó£¬ÈôÊ¹ÓÃÁËMapXXX£¬Ôò×Ô¶¯ÆôÓÃUseRouting()
+// app.UseRouting();    // .NET 6ä¹‹åï¼Œè‹¥ä½¿ç”¨äº†MapXXXï¼Œåˆ™è‡ªåŠ¨å¯ç”¨UseRouting()
 
-// Ê¹ÓÃÃûÎªAllowAllµÄ¿çÓò²ßÂÔ
+// ä½¿ç”¨åä¸ºAllowAllçš„è·¨åŸŸç­–ç•¥
 app.UseCors("AllowAll");
 
-// ÈÏÖ¤ÖĞ¼ä¼ş±ØĞëÔÚÊÚÈ¨ÖĞ¼ä¼şÖ®Ç°
-app.UseAuthentication(); // ÆôÓÃÈÏÖ¤£¬½âÎö²¢ÑéÖ¤ÇëÇóÖĞµÄ JWT
-app.UseAuthorization(); // ÆôÓÃÊÚÈ¨£¬¸ù¾İÓÃ»§Éí·İºÍ²ßÂÔ¾ö¶¨ÊÇ·ñÔÊĞí·ÃÎÊ
+// è®¤è¯ä¸­é—´ä»¶å¿…é¡»åœ¨æˆæƒä¸­é—´ä»¶ä¹‹å‰
+app.UseAuthentication(); // å¯ç”¨è®¤è¯ï¼Œè§£æå¹¶éªŒè¯è¯·æ±‚ä¸­çš„ JWT
+app.UseAuthorization(); // å¯ç”¨æˆæƒï¼Œæ ¹æ®ç”¨æˆ·èº«ä»½å’Œç­–ç•¥å†³å®šæ˜¯å¦å…è®¸è®¿é—®
 
 app.UseResponseCaching();
 
-// ¼ÇÂ¼Ã¿´ÎÇëÇóµÄÏêÏ¸ĞÅÏ¢£¬°üÀ¨Â·¾¶¡¢×´Ì¬Âë¡¢ºÄÊ±µÈ¡£
+// è®°å½•æ¯æ¬¡è¯·æ±‚çš„è¯¦ç»†ä¿¡æ¯ï¼ŒåŒ…æ‹¬è·¯å¾„ã€çŠ¶æ€ç ã€è€—æ—¶ç­‰ã€‚
 app.UseSerilogRequestLogging(options =>
 {
     options.MessageTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms";
