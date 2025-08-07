@@ -1,16 +1,16 @@
-﻿using DEMO_CRUD.Data;
-using DEMO_CRUD.Exceptions;
-using DEMO_CRUD.Models.DTO;
-using DEMO_CRUD.Models.Entity;
-using DEMO_CRUD.utils;
+﻿using book_backend.Data;
+using book_backend.Exceptions;
+using book_backend.Models.DTO;
+using book_backend.Models.Entity;
+using book_backend.utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using static DEMO_CRUD.Constants.IServiceConstants;
-using static DEMO_CRUD.Exceptions.IErrorCode;
+using static book_backend.Constants.IServiceConstants;
+using static book_backend.Exceptions.IErrorCode;
 
 
-namespace DEMO_CRUD.Controllers
+namespace book_backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

@@ -1,35 +1,28 @@
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
-using DEMO_CRUD.Data;
-using DEMO_CRUD.Exceptions;
-using DEMO_CRUD.Services;
-using DEMO_CRUD.Services.Impl;
+using book_backend.Data;
+using book_backend.Exceptions;
+using book_backend.Services;
+using book_backend.Services.Impl;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Serilog.Events;
 using Serilog.Formatting.Compact;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // 配置日志
-// var logPath = builder.Configuration["Logging:LogPath"] ?? "Logs/";
-// var logFilePath = Path.Combine(logPath, "log-.txt");
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .Destructure.ByTransforming<DateTime>(datetime => datetime.ToLocalTime())
-    // .MinimumLevel.Information()
-    // .WriteTo.File(
-    //     new RenderedCompactJsonFormatter(), // 日志格式化为JSON
-    //     logFilePath,
-    //     rollingInterval: RollingInterval.Day,
-    //     retainedFileCountLimit: 7)  // 保留最近7天的日志
     .CreateLogger();
 
 
-// 注册自定义服务.
+// 注册自定义服务
 builder.Services.AddScoped<IBooksService, BooksServiceImpl>();
 builder.Services.AddScoped<IUsersService, UsersServiceImpl>();
 builder.Services.AddScoped<ILoansService, LoansServiceImpl>();
@@ -56,6 +49,13 @@ builder.Services.AddCors(options =>
         }
     });
 });
+
+// 日志增强配置
+builder.Services.AddSerilog((services, loggerConfiguration) => loggerConfiguration
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .Enrich.WithProperty("Environment", builder.Environment.EnvironmentName)
+    .Destructure.ByTransforming<DateTime>(datetime => datetime.ToLocalTime()));
 
 
 // JWT配置开始
@@ -104,12 +104,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 }, ServiceLifetime.Scoped);
 
-// 处理循环引用的一种简单方式，但不推荐这么做，这会让前端难以处理返回的数据
-// builder.Services.AddControllers()
-//     .AddJsonOptions(options =>
-//     {
-//         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-//     });
+// 处理循环引用的一种简单方式，但不推荐这么做，这会让前端难以处理返回的数据【此方案仅用于兜底】
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+    });
 
 // 注册Mapster核心服务
 builder.Services.AddMapster();
@@ -155,7 +155,30 @@ app.UseAuthorization(); // 启用授权，根据用户身份和策略决定是否允许访问
 app.UseResponseCaching();
 
 // 记录每次请求的详细信息，包括路径、状态码、耗时等。
-app.UseSerilogRequestLogging();
+app.UseSerilogRequestLogging(options =>
+{
+    options.MessageTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms";
+    options.GetLevel = (httpContext, elapsed, ex) =>
+    {
+        if (ex != null)
+            return LogEventLevel.Error;
+            
+        if (httpContext.Response.StatusCode > 499)
+            return LogEventLevel.Error;
+            
+        if (httpContext.Response.StatusCode > 399)
+            return LogEventLevel.Warning;
+            
+        return LogEventLevel.Information;
+    };
+    
+    options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
+    {
+        diagnosticContext.Set("RequestHost", httpContext.Request.Host.Value);
+        diagnosticContext.Set("RequestScheme", httpContext.Request.Scheme);
+        diagnosticContext.Set("UserAgent", httpContext.Request.Headers["User-Agent"].FirstOrDefault());
+    };
+});
 
 app.MapControllers();
 

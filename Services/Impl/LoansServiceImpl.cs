@@ -1,11 +1,11 @@
-﻿using DEMO_CRUD.Data;
-using DEMO_CRUD.Exceptions;
-using DEMO_CRUD.Models.DTO;
-using DEMO_CRUD.Models.Entity;
+﻿using book_backend.Data;
+using book_backend.Exceptions;
+using book_backend.Models.DTO;
+using book_backend.Models.Entity;
 using Microsoft.EntityFrameworkCore;
-using static DEMO_CRUD.Constants.IServiceConstants;
+using static book_backend.Constants.IServiceConstants;
 
-namespace DEMO_CRUD.Services.Impl;
+namespace book_backend.Services.Impl;
 
 public class LoansServiceImpl(ApplicationDbContext context) : ILoansService
 {

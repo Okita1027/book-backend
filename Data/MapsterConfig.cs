@@ -1,10 +1,10 @@
 ﻿using Mapster;
-using DEMO_CRUD.Models.DTO;
-using DEMO_CRUD.Models.Entity;
+using book_backend.Models.DTO;
+using book_backend.Models.Entity;
 using Masuit.Tools.Security;
-using DEMO_CRUD.Models.VO;
+using book_backend.Models.VO;
 
-namespace DEMO_CRUD.Data
+namespace book_backend.Data
 {
     public static class MapsterConfig
     {

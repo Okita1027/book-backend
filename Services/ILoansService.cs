@@ -1,6 +1,6 @@
-﻿using DEMO_CRUD.Models.DTO;
+﻿using book_backend.Models.DTO;
 
-namespace DEMO_CRUD.Services;
+namespace book_backend.Services;
 
 public interface ILoansService
 {

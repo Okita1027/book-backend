@@ -1,15 +1,15 @@
-﻿using DEMO_CRUD.Data;
+﻿using book_backend.Data;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DEMO_CRUD.Models.Entity
+namespace book_backend.Models.Entity
 {
     /**
      *  同时代表 管理员和普通用户
      */
-    public class User : AuditableEntity // 实现通用属性接口
+    public class User : AuditableEntity
     {
-        public int Id { get; set; }
+        public int Id { get; init; }
 
         [Required]
         [MaxLength(100)]

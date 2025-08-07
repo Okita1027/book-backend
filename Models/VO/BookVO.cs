@@ -1,4 +1,4 @@
-﻿namespace DEMO_CRUD.Models.DTO
+﻿namespace book_backend.Models.DTO
 {
     public class BookVO
     {

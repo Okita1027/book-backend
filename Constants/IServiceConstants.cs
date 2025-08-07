@@ -1,4 +1,4 @@
-﻿namespace DEMO_CRUD.Constants;
+﻿namespace book_backend.Constants;
 
 public interface IServiceConstants
 {

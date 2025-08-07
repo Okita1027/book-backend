@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DEMO_CRUD.Exceptions;
+namespace book_backend.Exceptions;
 
 [ApiController]
 [Route("[controller]")]

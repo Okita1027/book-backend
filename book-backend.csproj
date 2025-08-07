@@ -4,7 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>DEMO_CRUD</RootNamespace>
+    <RootNamespace>book-backend</RootNamespace>
+    <AssemblyName>book_backend</AssemblyName>
     <UserSecretsId>1340a55c-d821-44f2-827e-1d76d1e294c8</UserSecretsId>
   </PropertyGroup>
 

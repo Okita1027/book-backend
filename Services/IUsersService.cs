@@ -1,7 +1,7 @@
-﻿using DEMO_CRUD.Models.DTO;
-using DEMO_CRUD.Models.Entity;
+﻿using book_backend.Models.DTO;
+using book_backend.Models.Entity;
 
-namespace DEMO_CRUD.Services;
+namespace book_backend.Services;
 
 public interface IUsersService
 {

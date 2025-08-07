@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace DEMO_CRUD.Exceptions;
+namespace book_backend.Exceptions;
 
 public class ArgumentExceptionFilter : IExceptionFilter
 {

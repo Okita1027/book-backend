@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using DEMO_CRUD.Data;
+using book_backend.Data;
+using Newtonsoft.Json;
 
-namespace DEMO_CRUD.Models.Entity
+namespace book_backend.Models.Entity
 {
     public class Book : AuditableEntity
     {
-        public int Id { get; set; } // 主键
+        public int Id { get; init; } // 主键
 
         [Required]
         [MaxLength(200)]

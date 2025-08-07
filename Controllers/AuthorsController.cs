@@ -1,12 +1,12 @@
-﻿using DEMO_CRUD.Data;
-using DEMO_CRUD.Models.DTO;
-using DEMO_CRUD.Models.Entity;
+﻿using book_backend.Data;
+using book_backend.Models.DTO;
+using book_backend.Models.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using static DEMO_CRUD.Constants.IServiceConstants;
+using static book_backend.Constants.IServiceConstants;
 
-namespace DEMO_CRUD.Controllers
+namespace book_backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController] // 不加的结果===============【模型绑定】=====================
@@ -23,10 +23,16 @@ namespace DEMO_CRUD.Controllers
         // GET: api/Authors
         [HttpGet]
         [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client)]
-        public async Task<ActionResult<IEnumerable<Author>>> GetAuthors()
+        public async Task<ActionResult<List<Author>>> GetAuthors()
         {
-            var authors = await context.Authors.ToListAsync();
-            return authors;
+            return await context.Authors.ToListAsync();;
+        }
+        // 显示加载：如果需要作者对应的书籍信息，提供单独的端点
+        [HttpGet("{id:int}/books")]
+        public async Task<ActionResult<List<Book>>> GetAuthorBooks(int id)
+        {
+            var books = await context.Books.Where(b => b.AuthorId == id).ToListAsync();
+            return books;
         }
 
         // GET: api/Authors/5

@@ -1,17 +1,17 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using DEMO_CRUD.Data;
-using DEMO_CRUD.Models.DTO;
-using DEMO_CRUD.Models.Entity;
+using book_backend.Data;
+using book_backend.Models.DTO;
+using book_backend.Models.Entity;
 using Mapster;
 using Masuit.Tools.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using static DEMO_CRUD.Constants.IServiceConstants;
+using static book_backend.Constants.IServiceConstants;
 
 
-namespace DEMO_CRUD.Services.Impl;
+namespace book_backend.Services.Impl;
 
 public class UsersServiceImpl : IUsersService
 {

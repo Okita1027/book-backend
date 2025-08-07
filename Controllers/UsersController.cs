@@ -1,10 +1,10 @@
-﻿using DEMO_CRUD.Models.DTO;
-using DEMO_CRUD.Models.Entity;
-using DEMO_CRUD.Services;
+﻿using book_backend.Models.DTO;
+using book_backend.Models.Entity;
+using book_backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DEMO_CRUD.Controllers
+namespace book_backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

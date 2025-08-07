@@ -1,8 +1,8 @@
-﻿using DEMO_CRUD.Models.Entity;
+﻿using book_backend.Models.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace DEMO_CRUD.Data
+namespace book_backend.Data
 {
     public class ApplicationDbContext : DbContext
     {
@@ -82,6 +82,14 @@ namespace DEMO_CRUD.Data
                 .HasOne(bc => bc.Category)
                 .WithMany(c => c.BookCategories)
                 .HasForeignKey(bc => bc.CategoryId);
+            
+            // 配置Author 和 Book 之间的一对多关系
+            modelBuilder.Entity<Author>()
+                .HasMany(a => a.Books)
+                .WithOne(b => b.Author)
+                .HasForeignKey(b => b.AuthorId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
         }
 
         //重写 SaveChanges 和 SaveChangesAsync 方法，用于自动更新 UpdatedTime

@@ -1,4 +1,4 @@
-﻿namespace DEMO_CRUD.Models.VO;
+﻿namespace book_backend.Models.VO;
 
 public class LoanVO
 {

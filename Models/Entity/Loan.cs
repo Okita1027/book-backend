@@ -1,11 +1,11 @@
-﻿using DEMO_CRUD.Data;
+﻿using book_backend.Data;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DEMO_CRUD.Models.Entity
+namespace book_backend.Models.Entity
 {
     public class Loan : AuditableEntity
     {
-        public int Id { get; set; }
+        public int Id { get; init; }
 
         /// <summary>
         /// 借出日期

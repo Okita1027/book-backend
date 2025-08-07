@@ -1,8 +1,7 @@
-﻿using DEMO_CRUD.Models.DTO;
-using DEMO_CRUD.Models.Entity;
-using DEMO_CRUD.Models.VO;
+﻿using book_backend.Models.DTO;
+using book_backend.Models.VO;
 
-namespace DEMO_CRUD.Services
+namespace book_backend.Services
 {
     public interface IBooksService
     {

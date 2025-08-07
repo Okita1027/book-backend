@@ -1,4 +1,4 @@
-﻿namespace DEMO_CRUD.Exceptions;
+﻿namespace book_backend.Exceptions;
 
 public class BusinessException : Exception
 {

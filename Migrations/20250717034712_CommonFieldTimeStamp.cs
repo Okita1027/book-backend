@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace DEMO_CRUD.Migrations
+namespace book_backend.Migrations
 {
     /// <inheritdoc />
     public partial class CommonFieldTimeStamp : Migration

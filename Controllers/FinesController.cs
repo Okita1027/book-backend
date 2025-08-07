@@ -1,13 +1,13 @@
-using DEMO_CRUD.Data;
-using DEMO_CRUD.Models.Entity;
-using DEMO_CRUD.Models.VO;
+using book_backend.Data;
+using book_backend.Models.Entity;
+using book_backend.Models.VO;
 using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using static DEMO_CRUD.Constants.IServiceConstants;
+using static book_backend.Constants.IServiceConstants;
 
-namespace DEMO_CRUD.Controllers
+namespace book_backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

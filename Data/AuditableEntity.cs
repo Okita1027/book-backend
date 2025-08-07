@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DEMO_CRUD.Data
+namespace book_backend.Data
 {
     public class AuditableEntity
     {

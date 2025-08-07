@@ -1,6 +1,6 @@
-﻿using DEMO_CRUD.Models.Entity;
+﻿using book_backend.Models.Entity;
 
-namespace DEMO_CRUD.Models.DTO;
+namespace book_backend.Models.DTO;
 
 public class AuthResponseDTO
 {

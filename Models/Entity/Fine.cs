@@ -1,11 +1,11 @@
-﻿using DEMO_CRUD.Data;
+﻿using book_backend.Data;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DEMO_CRUD.Models.Entity
+namespace book_backend.Models.Entity
 {
     public class Fine : AuditableEntity
     {
-        public int Id { get; set; }
+        public int Id { get; init; }
 
         [Column(TypeName = "decimal(18,2)")] // 指定数据库中的数据类型
         public decimal Amount { get; set; } // 罚款金额

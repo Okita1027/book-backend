@@ -1,4 +1,4 @@
-﻿namespace book-backend.Models.VO;
+﻿namespace book_backend.Models.VO;
 
 public class AuthorVO
 {
