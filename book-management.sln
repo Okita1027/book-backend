@@ -5,6 +5,8 @@ VisualStudioVersion = 17.14.36221.1 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "book-backend", "BookBackend\book-backend.csproj", "{5CEBB23A-BFE1-465D-AF8B-3A21764B88F7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "book-frontend", "book-frontend\book-frontend.csproj", "{75516BBE-B00F-4F56-A689-620CE5A68934}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{5CEBB23A-BFE1-465D-AF8B-3A21764B88F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5CEBB23A-BFE1-465D-AF8B-3A21764B88F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5CEBB23A-BFE1-465D-AF8B-3A21764B88F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75516BBE-B00F-4F56-A689-620CE5A68934}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75516BBE-B00F-4F56-A689-620CE5A68934}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75516BBE-B00F-4F56-A689-620CE5A68934}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75516BBE-B00F-4F56-A689-620CE5A68934}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
