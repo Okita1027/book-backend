@@ -28,7 +28,7 @@ public static class PaginationUtil
             pageSize = 10;
         }
 
-        var totalCount = await query.CountAsync();
+        var total = await query.CountAsync();
         var items = await query
             .Skip((pageIndex - 1) * pageSize)
             .Take(pageSize)
@@ -36,7 +36,7 @@ public static class PaginationUtil
 
         return new Pagination<T>()
         {
-            TotalCount = totalCount,
+            Total = total,
             PageIndex = pageIndex,
             PageSize = pageSize,
             Items = items
