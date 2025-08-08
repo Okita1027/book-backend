@@ -9,4 +9,20 @@
         <UseWPF>true</UseWPF>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Folder Include="Controls\" />
+      <Folder Include="Converters\" />
+      <Folder Include="Models\" />
+      <Folder Include="Services\" />
+      <Folder Include="Views\UserControls\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+      <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.8" />
+      <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.8" />
+      <PackageReference Include="System.Text.Json" Version="9.0.8" />
+    </ItemGroup>
+
 </Project>
