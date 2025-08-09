@@ -13,14 +13,14 @@ using Microsoft.IdentityModel.Tokens;
 using Serilog.Events;
 using Serilog.Formatting.Compact;
 
-var builder = WebApplication.CreateBuilder(args);
+// 创建主机
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // 配置日志
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .Destructure.ByTransforming<DateTime>(datetime => datetime.ToLocalTime())
     .CreateLogger();
-
 
 // 注册自定义服务
 builder.Services.AddScoped<IBooksService, BooksServiceImpl>();
@@ -130,7 +130,7 @@ builder.Services.AddSwaggerGen();
 builder.Host.UseSerilog();
 
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
