@@ -105,12 +105,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 }, ServiceLifetime.Scoped);
 
-// 处理循环引用的一种简单方式，但不推荐这么做，这会让前端难以处理返回的数据【此方案仅用于兜底】
-/*builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-    });*/
 
 // 注册Mapster核心服务、执行自定义的Mapster映射配置
 builder.Services.AddMapster();
@@ -123,6 +117,11 @@ builder.Services
     {
         // 配置JSON序列化时使用驼峰命名法（首字母小写）
         options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+        // 处理日期时间格式化
+        options.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
+        options.JsonSerializerOptions.Converters.Add(new NullableDateTimeConverter());
+        // 处理循环引用的一种简单方式，但不推荐这么做，这会让前端难以处理返回的数据【此方案仅用于兜底】
+        // options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
     });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
