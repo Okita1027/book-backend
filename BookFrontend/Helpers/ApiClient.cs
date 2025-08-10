@@ -20,7 +20,6 @@ public class ApiClient
             PropertyNameCaseInsensitive = true,
         };
 
-        // 设置基础URL
         _httpClient.BaseAddress = new Uri("http://localhost:8888/api/");
         _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
     }

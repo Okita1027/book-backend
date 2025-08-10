@@ -19,8 +19,8 @@ public class PagedResponse<T>
     public int Total { get; set; }
     public int PageIndex { get; set; }
     public int PageSize { get; set; }
-    private int TotalPages => (int)Math.Ceiling((double)Total / PageSize);
-    public bool HasNextPage => PageIndex < TotalPages;
+    private int MaxPage => (int)Math.Ceiling((double)Total / PageSize);
+    public bool HasNextPage => PageIndex < MaxPage;
     public bool HasPreviousPage => PageIndex > 1;
     public List<T> Items { get; set; } = [];
 }
