@@ -1,6 +1,11 @@
 ﻿using System.Configuration;
 using System.Data;
+using System.Net.Http;
 using System.Windows;
+using book_frontend.Helpers;
+using book_frontend.Services;
+using book_frontend.Services.Interfaces;
+using book_frontend.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace book_frontend;
@@ -10,15 +15,63 @@ namespace book_frontend;
 /// </summary>
 public partial class App : Application
 {
+    private ServiceProvider? _serviceProvider;
     protected override void OnStartup(StartupEventArgs e)
     {
-        // 创建主机构建器
+        // 创建依赖注入容器
+        var serviceCollection = new ServiceCollection();
+        ConfigureServices(serviceCollection);
+        _serviceProvider = serviceCollection.BuildServiceProvider();
 
+        // 获取主窗口和登录ViewModel
+        var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
+        var loginViewModel = _serviceProvider.GetRequiredService<LoginViewModel>();
+
+        // 设置登录页面的DataContext
+        mainWindow.SetLoginViewModel(loginViewModel);
+
+        // 指定应用的主窗口并显示
+        MainWindow = mainWindow;
+        mainWindow.Show();
+
+        base.OnStartup(e);
     }
 
-    
+    /// <summary>
+    /// 配置依赖注入服务
+    /// </summary>
+    /// <param name="services">服务集合</param>
+    private void ConfigureServices(IServiceCollection services)
+    {
+        // 注册配置
+        var config = ConfigurationHelper.GetConfig();
+
+        // 注册HttpClient(单例)
+        services.AddSingleton<HttpClient>(provider =>
+        {
+            var httpClient = new HttpClient();
+            httpClient.BaseAddress = new Uri(config.ApiBaseUrl);
+            httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+            httpClient.Timeout = TimeSpan.FromSeconds(config.RequestTimeoutSeconds);
+            return httpClient;
+        });
+        // 注册ApiClient(单例)
+        services.AddSingleton<ApiClient>();
+        // 注册服务层(单例)
+        services.AddSingleton<IAuthService, AuthService>();
+        services.AddSingleton<IBookService, BookService>();
+        services.AddSingleton<IUserService, UserService>();
+        // 注册ViewModels(瞬时，每次请求创建新的实例)
+        services.AddTransient<LoginViewModel>();
+        // 注册主窗口(瞬时)
+        services.AddTransient<MainWindow>();
+    }
+
+
     protected override void OnExit(ExitEventArgs e)
     {
+        // 释放依赖注入容器资源
+        _serviceProvider?.Dispose();
         base.OnExit(e);
     }
 }

@@ -8,6 +8,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using book_frontend.ViewModels;
+using book_frontend.Views.UserControls;
 
 namespace book_frontend;
 
@@ -19,15 +21,18 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+    }
 
-        // 创建一个TextBlock来显示Hello World消息
-        TextBlock textBlock = new TextBlock();
-        textBlock.Text = "Hello, World!";
-        textBlock.FontSize = 24;
-        textBlock.HorizontalAlignment = HorizontalAlignment.Center;
-        textBlock.VerticalAlignment = VerticalAlignment.Center;
-
-        // 将TextBlock添加到窗口的内容中
-        this.Content = textBlock;
+    /// <summary>
+    /// 设置登录页面的DataContext
+    /// </summary>
+    /// <param name="loginViewModel">登录视图模型</param>
+    public void SetLoginViewModel(LoginViewModel loginViewModel)
+    {
+        // 找到LoginView控件并设置其DataContext
+        if (Content is Grid grid && grid.Children[0] is Views.UserControls.LoginView loginView)
+        {
+            loginView.DataContext = loginViewModel;
+        }
     }
 }

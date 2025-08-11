@@ -71,7 +71,7 @@
             <Button Grid.Row="8"
                     Content="登录"
                     Command="{Binding LoginCommand}"
-                    Style="{StaticResource MaterialDesignContainedButton}"
+                    Style="{StaticResource MaterialDesignRaisedSecondaryButton}"
                     HorizontalAlignment="Stretch"
                     Height="36"/>
         </Grid>
