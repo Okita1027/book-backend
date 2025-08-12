@@ -1,4 +1,4 @@
-﻿using System.Windows.Input;
+using System.Windows.Input;
 using book_frontend.Commands;
 using book_frontend.Services.Interfaces;
 

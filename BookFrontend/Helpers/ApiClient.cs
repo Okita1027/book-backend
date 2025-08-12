@@ -24,7 +24,6 @@ public class ApiClient
         // 处理后端返回的自定义日期格式，例如 "yyyy-MM-dd HH:mm:ss"
         _jsonOptions.Converters.Add(new JsonDateTimeConverter());
         _jsonOptions.Converters.Add(new NullableJsonDateTimeConverter());
-
     }
 
     /// <summary>
@@ -253,21 +252,26 @@ public class NullableJsonDateTimeConverter : JsonConverter<DateTime?>
 
     public override DateTime? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        if (reader.TokenType == JsonTokenType.Null)
-            return null;
-
-        if (reader.TokenType == JsonTokenType.String)
+        switch (reader.TokenType)
         {
-            var str = reader.GetString();
-            if (string.IsNullOrEmpty(str))
+            case JsonTokenType.Null:
                 return null;
+            case JsonTokenType.String:
+            {
+                var str = reader.GetString();
+                if (string.IsNullOrEmpty(str))
+                    return null;
 
-            if (DateTime.TryParseExact(str, DateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None,
-                    out var dt))
-                return dt;
+                if (DateTime.TryParseExact(str, DateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None,
+                        out var dt))
+                    return dt;
 
-            if (DateTime.TryParse(str, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var dt2))
-                return dt2;
+                if (DateTime.TryParse(str, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var dt2))
+                    return dt2;
+                break;
+            }
+            default:
+                throw new ArgumentOutOfRangeException();
         }
 
         throw new JsonException($"无法将值转换为 DateTime?。值: {reader.GetString()}");

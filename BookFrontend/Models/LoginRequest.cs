@@ -1,7 +1,11 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace book_frontend.Models;
 
 public class LoginRequest
 {
-    public string Email { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
+    [Required(ErrorMessage = "邮箱不能为空")]
+    public string Email { get; init; } = string.Empty;
+    [Required(ErrorMessage = "密码不能为空")]
+    public string Password { get; init; } = string.Empty;
 }

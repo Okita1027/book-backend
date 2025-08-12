@@ -26,6 +26,17 @@ public class BookListViewModel : BaseViewModel
         // 然后设置属性值，避免在命令初始化前调用RefreshCommands
         PageSize = 12;
         PageIndex = 1;
+        
+        // 初始化时加载数据
+        _ = InitializeAsync();
+    }
+    
+    /// <summary>
+    /// 初始化加载数据
+    /// </summary>
+    public async Task InitializeAsync()
+    {
+        await LoadPageAsync(1);
     }
 
     // 搜索条件
@@ -91,6 +102,9 @@ public class BookListViewModel : BaseViewModel
         Books.Clear();
         Total = 0;
         ErrorMessage = null;
+        
+        // 重置后重新加载数据
+        _ = LoadPageAsync(1);
     }
 
     private async Task GoToPageAsync(int pageIndex)

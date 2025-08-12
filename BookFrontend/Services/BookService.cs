@@ -35,11 +35,12 @@ public class BookService : IBookService
         int pageSize = 12
     )
     {
-        var queryParams = new List<string>();
-
-        // 添加分页参数
-        queryParams.Add($"pageIndex={pageIndex}");
-        queryParams.Add($"pageSize={pageSize}");
+        var queryParams = new List<string>
+        {
+            // 添加分页参数
+            $"pageIndex={pageIndex}",
+            $"pageSize={pageSize}"
+        };
 
         // 添加搜索条件
         if (!string.IsNullOrEmpty(title))
