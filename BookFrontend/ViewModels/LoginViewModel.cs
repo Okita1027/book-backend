@@ -8,18 +8,18 @@ public class LoginViewModel : BaseViewModel
 {
     private readonly IAuthService _authService;
     private readonly RelayCommand _loginCommand;
-    private string _username = string.Empty;
+    private string _email = string.Empty;
     private string _password = string.Empty;
     private bool _isLoading = false;
     private string _errorMessage = string.Empty;
 
-    public string Username
+    public string Email
     {
-        get => _username;
+        get => _email;
         set
         {
             // 当用户名变化后，尝试更新绑定属性，并刷新命令可用状态
-            if (SetProperty(ref _username, value))
+            if (SetProperty(ref _email, value))
             {
                 _loginCommand.RaiseCanExecuteChanged();
             }
@@ -59,15 +59,17 @@ public class LoginViewModel : BaseViewModel
     }
 
     // 将公开的命令暴露为 ICommand，供 XAML 绑定
+    // => 是表达式体定义操作符，表示这个属性的getter直接返回 _loginCommand 字段的值
     public RelayCommand LoginCommand => _loginCommand;
 
     public LoginViewModel(IAuthService authService)
     {
         _authService = authService;
         // 初始化命令：
-        // - execute：调用异步登录方法
-        // - canExecute：根据输入与加载状态决定按钮是否可用
+        // execute：调用异步登录方法
+        // canExecute：根据输入与加载状态决定按钮是否可用
         _loginCommand = new RelayCommand(
+            // _ 表示命令参数（这里未使用，所以用下划线表示忽略）
             execute: async _ => await ExecuteLoginAsync(),
             canExecute: _ => CanLogin()
         );
@@ -77,7 +79,7 @@ public class LoginViewModel : BaseViewModel
     private bool CanLogin()
     {
         return !_isLoading
-               && !string.IsNullOrWhiteSpace(_username)
+               && !string.IsNullOrWhiteSpace(_email)
                && !string.IsNullOrWhiteSpace(_password);
     }
 
@@ -91,7 +93,7 @@ public class LoginViewModel : BaseViewModel
         try
         {
             // 调用认证服务进行登录
-            var result = await _authService.LoginAsync(Username, Password);
+            var result = await _authService.LoginAsync(Email, Password);
 
             if (result.IsSuccess)
             {
@@ -113,7 +115,7 @@ public class LoginViewModel : BaseViewModel
         }
         finally
         {
-            // 一定要恢复加载状态
+            // 恢复加载状态
             IsLoading = false;
         }
     }

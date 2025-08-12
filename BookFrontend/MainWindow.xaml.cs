@@ -30,7 +30,12 @@ public partial class MainWindow : Window
     public void SetLoginViewModel(LoginViewModel loginViewModel)
     {
         // 找到LoginView控件并设置其DataContext
-        if (Content is Grid grid && grid.Children[0] is Views.UserControls.LoginView loginView)
+        /*
+         * Content 是当前窗口的内容对象
+         * is Grid grid 使用C#的模式匹配语法，检查Content是否为Grid类型
+         * 如果是Grid类型，则将Content转换为Grid类型并赋值给新变量grid
+         */
+        if (Content is Grid grid && grid.Children[0] is LoginView loginView)
         {
             loginView.DataContext = loginViewModel;
         }

@@ -22,7 +22,7 @@ public class AuthService : IAuthService
         {
             var loginRequest = new LoginRequest
             {
-                Username = username,
+                Email = username,
                 Password = password
             };
 
