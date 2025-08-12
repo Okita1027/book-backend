@@ -20,8 +20,8 @@ public class RelayCommand : ICommand
     /// </summary>
     public event EventHandler? CanExecuteChanged
     {
-        add { CommandManager.RequerySuggested += value; }
-        remove { CommandManager.RequerySuggested -= value; }
+        add => CommandManager.RequerySuggested += value;
+        remove => CommandManager.RequerySuggested -= value;
     }
     /// <summary>
     /// 构造函数
@@ -77,13 +77,13 @@ public class RelayCommand<T> : ICommand
 
     public event EventHandler? CanExecuteChanged
     {
-        add { CommandManager.RequerySuggested += value; }
-        remove { CommandManager.RequerySuggested -= value; }
+        add => CommandManager.RequerySuggested += value;
+        remove => CommandManager.RequerySuggested -= value;
     }
 
     public RelayCommand(Action<T?> execute, Func<T?, bool>? canExecute = null)
     {
-        _execute = execute ?? throw new ArgumentException(nameof(execute));
+        _execute = execute ?? throw new ArgumentException(null, nameof(execute));
         _canExecute = canExecute;
     }
 

@@ -16,7 +16,8 @@ public static class ConfigurationHelper
     /// </summary>
     public class AppConfig
     {
-        public string ApiBaseUrl { get; init; } = "http://localhost:8888/api/";
+        // 优先从配置文件中读取
+        public string ApiBaseUrl { get; init; } = "";
         public int RequestTimeoutSeconds { get; init; } = 30;
     }
 
@@ -33,12 +34,16 @@ public static class ConfigurationHelper
         }
         try
         {
-            // 查找配置文件路径
+            // 查找配置文件路径（前端项目根目录下的 appsettings.json 已配置复制到输出目录）
             string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
             if (File.Exists(configPath))
             {
                 string json = File.ReadAllText(configPath);
-                _config = JsonSerializer.Deserialize<AppConfig>(json, JsonOptions);
+                var parsed = JsonSerializer.Deserialize<AppConfig>(json, JsonOptions);
+                if (parsed != null)
+                {
+                    _config = parsed;
+                }
             }
         }
         catch (Exception ex)
@@ -46,18 +51,13 @@ public static class ConfigurationHelper
             // 配置文件读取失败时，使用默认设置
             System.Diagnostics.Debug.WriteLine($"配置文件读取失败，使用默认配置:{ex.Message}");
         }
-        // 如果配置为空或读取失败，创建默认配置
-        _config ??= new AppConfig();
+        // 如果配置为空或读取失败，创建默认配置（提供一个合理的默认值，避免空地址）
+        _config ??= new AppConfig
+        {
+            ApiBaseUrl = "http://localhost:8888/api/",
+            RequestTimeoutSeconds = 30
+        };
         return _config;
     }
     
-    /// <summary>
-    /// 获取API基础地址
-    /// </summary>
-    /// <returns>API基础地址</returns>
-    public static string GetApiBaseUrl()
-    {
-        return GetConfig().ApiBaseUrl;
-    }
-
 }

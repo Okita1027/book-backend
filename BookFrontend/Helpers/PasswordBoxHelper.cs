@@ -7,31 +7,34 @@ namespace book_frontend.Helpers;
 public class PasswordBoxHelper
 {
     // 防止循环更新的标记
-    public static bool _isUpdating;
+    private static bool _isUpdating;
+
     // 是否启用绑定的开关（附加属性）
     public static readonly DependencyProperty BindPasswordProperty =
-    DependencyProperty.RegisterAttached("BindPassword", typeof(bool),
-    typeof(PasswordBoxHelper), new PropertyMetadata(false, OnBindPasswordChanged));
+        DependencyProperty.RegisterAttached("BindPassword", typeof(bool),
+            typeof(PasswordBoxHelper), new PropertyMetadata(false, OnBindPasswordChanged));
 
     public static void SetBindPassword(DependencyObject dp, bool value) =>
-    dp.SetValue(BindPasswordProperty, value);
+        dp.SetValue(BindPasswordProperty, value);
+
     public static bool GetBindPassword(DependencyObject dp) =>
-    (bool)dp.GetValue(BindPasswordProperty);
+        (bool)dp.GetValue(BindPasswordProperty);
 
     // 绑定的密码字符串（附加属性）
     public static readonly DependencyProperty BoundPasswordProperty =
-    DependencyProperty.RegisterAttached(
-        "BoundPassword",
-        typeof(string),
-        typeof(PasswordBoxHelper),
-        new PropertyMetadata(string.Empty,
-        OnBoundPasswordChanged)
-    );
+        DependencyProperty.RegisterAttached(
+            "BoundPassword",
+            typeof(string),
+            typeof(PasswordBoxHelper),
+            new PropertyMetadata(string.Empty,
+                OnBoundPasswordChanged)
+        );
 
     public static void SetBoundPassword(DependencyObject dp, string value) =>
-    dp.SetValue(BoundPasswordProperty, value);
+        dp.SetValue(BoundPasswordProperty, value);
+
     public static string GetBoundPassword(DependencyObject dp) =>
-    (string)dp.GetValue(BoundPasswordProperty);
+        (string)dp.GetValue(BoundPasswordProperty);
 
     // 当BindPassword切换时，订阅/取消订阅Password Changed事件
     private static void OnBindPasswordChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -40,15 +43,17 @@ public class PasswordBoxHelper
         {
             return;
         }
+
         bool wasBound = (bool)e.OldValue;
         bool needBind = (bool)e.NewValue;
-        if (wasBound && !needBind)
+        switch (wasBound)
         {
-            passwordBox.PasswordChanged -= HandlePasswordChanged;
-        }
-        if (!wasBound && needBind)
-        {
-            passwordBox.PasswordChanged += HandlePasswordChanged;
+            case true when !needBind:
+                passwordBox.PasswordChanged -= HandlePasswordChanged;
+                break;
+            case false when needBind:
+                passwordBox.PasswordChanged += HandlePasswordChanged;
+                break;
         }
     }
 
@@ -59,10 +64,10 @@ public class PasswordBoxHelper
         {
             return;
         }
+
         if (!_isUpdating)
         {
-            passwordBox.Password = e.NewValue as string ??
-            string.Empty;
+            passwordBox.Password = e.NewValue as string ?? string.Empty;
         }
     }
 
@@ -73,9 +78,9 @@ public class PasswordBoxHelper
         {
             return;
         }
+
         _isUpdating = true;
         SetBoundPassword(passwordBox, passwordBox.Password);
         _isUpdating = false;
     }
-
 }

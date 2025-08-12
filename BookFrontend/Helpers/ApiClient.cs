@@ -25,9 +25,6 @@ public class ApiClient
         _jsonOptions.Converters.Add(new JsonDateTimeConverter());
         _jsonOptions.Converters.Add(new NullableJsonDateTimeConverter());
 
-        // 这些设置已在 DI 的 HttpClient 中配置，这里不再重复设置，避免重复添加头
-        // _httpClient.BaseAddress = new Uri("http://localhost:8888/api/");
-        // _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
     }
 
     /// <summary>
