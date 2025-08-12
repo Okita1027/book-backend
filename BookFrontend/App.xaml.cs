@@ -47,7 +47,7 @@ public partial class App : Application
         var config = ConfigurationHelper.GetConfig();
 
         // 注册HttpClient(单例)
-        services.AddSingleton<HttpClient>(provider =>
+        services.AddSingleton<HttpClient>(_ =>
         {
             var httpClient = new HttpClient();
             httpClient.BaseAddress = new Uri(config.ApiBaseUrl);
@@ -61,14 +61,15 @@ public partial class App : Application
         services.AddSingleton<IAuthService, AuthService>();
         services.AddSingleton<IBookService, BookService>();
         services.AddSingleton<IUserService, UserService>();
-        // 注册ViewModels
+        // 注册ViewModels(瞬时)
         services.AddTransient<LoginViewModel>();
+        services.AddTransient<RegisterViewModel>();
         services.AddTransient<MainViewModel>();
         // 注册主窗口(瞬时)
         services.AddTransient<MainWindow>();
     }
 
-
+    
     protected override void OnExit(ExitEventArgs e)
     {
         // 释放依赖注入容器资源

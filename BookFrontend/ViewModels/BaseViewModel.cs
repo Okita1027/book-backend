@@ -1,6 +1,5 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows.Media.TextFormatting;
 
 namespace book_frontend.ViewModels;
 
@@ -9,7 +8,6 @@ namespace book_frontend.ViewModels;
 /// 这是WPF数据绑定的核心机制，类似于React的useState
 /// </summary>
 public class BaseViewModel : INotifyPropertyChanged
-
 {
     /// <summary>
     /// 当属性值改变时触发的事件

@@ -34,11 +34,11 @@ public static class ConfigurationHelper
         }
         try
         {
-            // 查找配置文件路径（前端项目根目录下的 appsettings.json 已配置复制到输出目录）
-            string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
+            // 优先读取配置文件
+            var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
             if (File.Exists(configPath))
             {
-                string json = File.ReadAllText(configPath);
+                var json = File.ReadAllText(configPath);
                 var parsed = JsonSerializer.Deserialize<AppConfig>(json, JsonOptions);
                 if (parsed != null)
                 {

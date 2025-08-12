@@ -18,38 +18,39 @@ public class BooleanToVisibilityConverter : IValueConverter
     /// <param name="parameter">转换参数，"invert"表示反转逻辑</param>
     /// <param name="culture">文化信息</param>
     /// <returns>Visibility.Visible 或 Visibility.Collapsed</returns>
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        bool isVisible = value switch
+        var isVisible = value switch
         {
             bool b => b,
-            string s => !string.IsNullOrEmpty(s),  // 字符串非空则显示
-            int i => i > 0,                        // 数值大于0则显示
+            string s => !string.IsNullOrEmpty(s), // 字符串非空则显示
+            int i => i > 0, // 数值大于0则显示
             null => false,
-            _ => System.Convert.ToBoolean(value)   // 其他类型尝试转换为bool
+            _ => System.Convert.ToBoolean(value) // 其他类型尝试转换为bool
         };
-        
+
         // 检查是否需要反转逻辑
-        bool shouldInvert = parameter?.ToString()?.ToLower() == "invert";
+        var shouldInvert = parameter?.ToString()?.ToLower() == "invert";
         if (shouldInvert)
         {
             isVisible = !isVisible;
         }
-        
+
         return isVisible ? Visibility.Visible : Visibility.Collapsed;
     }
 
     /// <summary>
     /// 从Visibility转回布尔值（通常不需要）
     /// </summary>
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is Visibility visibility)
+        if (value is not Visibility visibility)
         {
-            bool result = visibility == Visibility.Visible;
-            bool shouldInvert = parameter?.ToString()?.ToLower() == "invert";
-            return shouldInvert ? !result : result;
+            return false;
         }
-        return false;
+
+        var result = visibility == Visibility.Visible;
+        var shouldInvert = parameter?.ToString()?.ToLower() == "invert";
+        return shouldInvert ? !result : result;
     }
 }

@@ -17,36 +17,34 @@ public class StringArrayToStringConverter : IValueConverter
     /// <param name="parameter">分隔符参数，默认为逗号</param>
     /// <param name="culture">文化信息</param>
     /// <returns>逗号分隔的字符串</returns>
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is string[] stringArray && stringArray.Length > 0)
+        switch (value)
         {
-            string separator = parameter?.ToString() ?? ", ";
-            return string.Join(separator, stringArray);
+            case string[] { Length: > 0 } stringArray:
+            {
+                var separator = parameter?.ToString() ?? ", ";
+                return string.Join(separator, stringArray);
+            }
+            case List<string> { Count: > 0 } stringList:
+            {
+                var separator = parameter?.ToString() ?? ", ";
+                return string.Join(separator, stringList);
+            }
+            default:
+                return string.Empty;
         }
-        
-        if (value is List<string> stringList && stringList.Count > 0)
-        {
-            string separator = parameter?.ToString() ?? ", ";
-            return string.Join(separator, stringList);
-        }
-        
-        return string.Empty;
     }
 
     /// <summary>
     /// 从字符串转回字符串数组（用于双向绑定）
     /// </summary>
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is string str && !string.IsNullOrEmpty(str))
-        {
-            string separator = parameter?.ToString() ?? ", ";
-            return str.Split(new[] { separator }, StringSplitOptions.RemoveEmptyEntries)
-                     .Select(s => s.Trim())
-                     .ToArray();
-        }
-        
-        return new string[0];
+        if (value is not string str || string.IsNullOrEmpty(str)) return Array.Empty<string>();
+        var separator = parameter?.ToString() ?? ", ";
+        return str.Split([separator], StringSplitOptions.RemoveEmptyEntries)
+            .Select(s => s.Trim())
+            .ToArray();
     }
 }

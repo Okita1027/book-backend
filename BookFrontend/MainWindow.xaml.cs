@@ -30,23 +30,19 @@ public partial class MainWindow : Window
     /// <param name="mainViewModel">主视图模型</param>
     public void SetMainViewModel(MainViewModel mainViewModel)
     {
-        this.DataContext = mainViewModel;
+        DataContext = mainViewModel;
         
         // 找到HomeView控件并设置其DataContext为MainViewModel.Home
-        if (Content is DockPanel dockPanel)
+        if (Content is not DockPanel dockPanel) return;
+        foreach (var child in dockPanel.Children)
         {
-            foreach (var child in dockPanel.Children)
+            if (child is not Grid grid) continue;
+            foreach (var gridChild in grid.Children)
             {
-                if (child is Grid grid)
+                if (gridChild is HomeView homeView)
                 {
-                    foreach (var gridChild in grid.Children)
-                    {
-                        if (gridChild is HomeView homeView)
-                        {
-                            homeView.DataContext = mainViewModel.Home;
-                            break;
-                        }
-                    }
+                    homeView.DataContext = mainViewModel.Home;
+                    break;
                 }
             }
         }

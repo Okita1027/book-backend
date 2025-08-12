@@ -18,10 +18,10 @@ public class BookListViewModel : BaseViewModel
         Books = new ObservableCollection<Book>();
         
         // 先初始化所有命令
-        SearchCommand = new RelayCommand(async _ => await SearchAsync(), _ => !IsLoading);
+        SearchCommand = new RelayCommand(async void (_) => await SearchAsync(), _ => !IsLoading);
         ResetCommand = new RelayCommand(_ => Reset(), _ => !IsLoading);
-        NextPageCommand = new RelayCommand(async _ => await GoToPageAsync(PageIndex + 1), _ => !IsLoading && HasNextPage);
-        PrevPageCommand = new RelayCommand(async _ => await GoToPageAsync(PageIndex - 1), _ => !IsLoading && HasPreviousPage);
+        NextPageCommand = new RelayCommand(async void (_) => await GoToPageAsync(PageIndex + 1), _ => !IsLoading && HasNextPage);
+        PrevPageCommand = new RelayCommand(async void (_) => await GoToPageAsync(PageIndex - 1), _ => !IsLoading && HasPreviousPage);
         
         // 然后设置属性值，避免在命令初始化前调用RefreshCommands
         PageSize = 12;
@@ -131,7 +131,7 @@ public class BookListViewModel : BaseViewModel
                 pageSize: PageSize);
 
             Books.Clear();
-            if (resp.Success && resp.Data != null)
+            if (resp is { Success: true, Data: not null })
             {
                 foreach (var b in resp.Data.Items)
                     Books.Add(b);
@@ -158,9 +158,9 @@ public class BookListViewModel : BaseViewModel
     private void RefreshCommands()
     {
         SearchCommand.RaiseCanExecuteChanged();
-        ResetCommand?.RaiseCanExecuteChanged();
-        NextPageCommand?.RaiseCanExecuteChanged();
-        PrevPageCommand?.RaiseCanExecuteChanged();
+        ResetCommand.RaiseCanExecuteChanged();
+        NextPageCommand.RaiseCanExecuteChanged();
+        PrevPageCommand.RaiseCanExecuteChanged();
         OnPropertyChanged(nameof(HasNextPage));
         OnPropertyChanged(nameof(HasPreviousPage));
     }

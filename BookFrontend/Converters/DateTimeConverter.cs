@@ -17,7 +17,7 @@ public class DateTimeConverter : IValueConverter
     /// <param name="parameter">格式化参数，如"yyyy-MM-dd"、"short"、"long"等</param>
     /// <param name="culture">文化信息</param>
     /// <returns>格式化的日期字符串</returns>
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (value is not DateTime dateTime)
             return string.Empty;
@@ -26,7 +26,7 @@ public class DateTimeConverter : IValueConverter
         if (dateTime == DateTime.MinValue || dateTime == default(DateTime))
             return "未设置";
 
-        string format = parameter?.ToString() ?? "yyyy-MM-dd HH:mm:ss";
+        var format = parameter?.ToString() ?? "yyyy-MM-dd HH:mm:ss";
         
         // 支持预定义格式
         return format.ToLower() switch
@@ -44,32 +44,26 @@ public class DateTimeConverter : IValueConverter
     /// <summary>
     /// 从字符串转回DateTime（用于双向绑定）
     /// </summary>
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is string str && !string.IsNullOrEmpty(str))
+        if (value is not string str || string.IsNullOrEmpty(str)) return DateTime.MinValue;
+        // 尝试多种日期格式解析
+        string[] formats = {
+            "yyyy-MM-dd HH:mm:ss",
+            "yyyy-MM-dd HH:mm",
+            "yyyy-MM-dd",
+            "MM/dd/yyyy",
+            "MM/dd/yyyy HH:mm:ss",
+            "yyyy/MM/dd",
+            "yyyy/MM/dd HH:mm:ss"
+        };
+            
+        if (DateTime.TryParseExact(str, formats, culture, DateTimeStyles.None, out var result))
         {
-            // 尝试多种日期格式解析
-            string[] formats = {
-                "yyyy-MM-dd HH:mm:ss",
-                "yyyy-MM-dd HH:mm",
-                "yyyy-MM-dd",
-                "MM/dd/yyyy",
-                "MM/dd/yyyy HH:mm:ss",
-                "yyyy/MM/dd",
-                "yyyy/MM/dd HH:mm:ss"
-            };
-            
-            if (DateTime.TryParseExact(str, formats, culture, DateTimeStyles.None, out DateTime result))
-            {
-                return result;
-            }
-            
-            // 如果特定格式解析失败，使用通用解析
-            if (DateTime.TryParse(str, culture, DateTimeStyles.None, out result))
-            {
-                return result;
-            }
+            return result;
         }
-        return DateTime.MinValue;
+
+        // 如果特定格式解析失败，使用通用解析
+        return DateTime.TryParse(str, culture, DateTimeStyles.None, out result) ? result : DateTime.MinValue;
     }
 }
