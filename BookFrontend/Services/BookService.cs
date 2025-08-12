@@ -23,12 +23,22 @@ public class BookService : IBookService
         return await _apiClient.GetAsync<Book>($"Books/{id}");
     }
 
-    public async Task<ApiResponse<PagedResponse<Book>>> SearchBooksAsync(string? searchTerm = null, int pageIndex = 1, int pageSize = 10)
+    public async Task<ApiResponse<PagedResponse<Book>>> SearchBooksAsync(
+        string? title = null,
+        string? author = null, 
+        string? category = null,
+        string? publisher = null,
+        string? isbn = null,
+        DateTime? publishDateStart = null,
+        DateTime? publishDateEnd = null,
+        int pageIndex = 1, 
+        int pageSize = 12
+    )
     {
         var queryParams = new List<string>();
 
-        if (!string.IsNullOrEmpty(searchTerm))
-            queryParams.Add($"searchTerm={Uri.EscapeDataString(searchTerm)}");
+        if (!string.IsNullOrEmpty(title))
+            queryParams.Add($"title={Uri.EscapeDataString(title)}");
 
         queryParams.Add($"pageIndex={pageIndex}");
         queryParams.Add($"pageSize={pageSize}");

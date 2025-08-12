@@ -17,14 +17,31 @@ public interface IBookService
     /// <returns>图书信息</returns>
     Task<ApiResponse<Book>> GetBookByIdAsync(int id);
     
+
     /// <summary>
     /// 分页搜索图书
     /// </summary>
-    /// <param name="searchTerm">搜索关键词</param>
-    /// <param name="pageNumber">页码</param>
-    /// <param name="pageSize">每页大小</param>
+    /// <param name="title"></param>
+    /// <param name="author"></param>
+    /// <param name="category"></param>
+    /// <param name="publisher"></param>
+    /// <param name="isbn"></param>
+    /// <param name="publishDateStart"></param>
+    /// <param name="publishDateEnd"></param>
+    /// <param name="pageIndex"></param>
+    /// <param name="pageSize"></param>
     /// <returns>分页图书列表</returns>
-    Task<ApiResponse<PagedResponse<Book>>> SearchBooksAsync(string? searchTerm = null, int pageNumber = 1, int pageSize = 10);
+    Task<ApiResponse<PagedResponse<Book>>> SearchBooksAsync(
+        string? title = null,
+        string? author = null, 
+        string? category = null,
+        string? publisher = null,
+        string? isbn = null,
+        DateTime? publishDateStart = null,
+        DateTime? publishDateEnd = null,
+        int pageIndex = 1, 
+        int pageSize = 12
+    );
     
     /// <summary>
     /// 添加图书
