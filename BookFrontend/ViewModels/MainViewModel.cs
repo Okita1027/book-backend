@@ -1,6 +1,13 @@
-﻿namespace book_frontend.ViewModels;
+using book_frontend.Services.Interfaces;
 
-public class MainViewModel
+namespace book_frontend.ViewModels;
+
+public class MainViewModel : BaseViewModel
 {
-    
+    public BookListViewModel Home { get; }
+
+    public MainViewModel(IBookService bookService)
+    {
+        Home = new BookListViewModel(bookService);
+    }
 }

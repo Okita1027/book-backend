@@ -48,7 +48,24 @@ public class DateTimeConverter : IValueConverter
     {
         if (value is string str && !string.IsNullOrEmpty(str))
         {
-            if (DateTime.TryParse(str, culture, DateTimeStyles.None, out DateTime result))
+            // 尝试多种日期格式解析
+            string[] formats = {
+                "yyyy-MM-dd HH:mm:ss",
+                "yyyy-MM-dd HH:mm",
+                "yyyy-MM-dd",
+                "MM/dd/yyyy",
+                "MM/dd/yyyy HH:mm:ss",
+                "yyyy/MM/dd",
+                "yyyy/MM/dd HH:mm:ss"
+            };
+            
+            if (DateTime.TryParseExact(str, formats, culture, DateTimeStyles.None, out DateTime result))
+            {
+                return result;
+            }
+            
+            // 如果特定格式解析失败，使用通用解析
+            if (DateTime.TryParse(str, culture, DateTimeStyles.None, out result))
             {
                 return result;
             }

@@ -1,4 +1,4 @@
-﻿using System.Configuration;
+using System.Configuration;
 using System.Data;
 using System.Net.Http;
 using System.Windows;
@@ -23,12 +23,12 @@ public partial class App : Application
         ConfigureServices(serviceCollection);
         _serviceProvider = serviceCollection.BuildServiceProvider();
 
-        // 获取主窗口和登录ViewModel
+        // 获取主窗口和主ViewModel
         var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
-        var loginViewModel = _serviceProvider.GetRequiredService<LoginViewModel>();
+        var mainViewModel = _serviceProvider.GetRequiredService<MainViewModel>();
 
-        // 设置登录页面的DataContext
-        mainWindow.SetLoginViewModel(loginViewModel);
+        // 设置主视图模型（其中包含首页 BookListViewModel）
+        mainWindow.SetMainViewModel(mainViewModel);
 
         // 指定应用的主窗口并显示
         MainWindow = mainWindow;
@@ -41,7 +41,7 @@ public partial class App : Application
     /// 配置依赖注入服务
     /// </summary>
     /// <param name="services">服务集合</param>
-    private void ConfigureServices(IServiceCollection services)
+    private static void ConfigureServices(IServiceCollection services)
     {
         // 注册配置
         var config = ConfigurationHelper.GetConfig();
@@ -61,8 +61,9 @@ public partial class App : Application
         services.AddSingleton<IAuthService, AuthService>();
         services.AddSingleton<IBookService, BookService>();
         services.AddSingleton<IUserService, UserService>();
-        // 注册ViewModels(瞬时，每次请求创建新的实例)
+        // 注册ViewModels
         services.AddTransient<LoginViewModel>();
+        services.AddTransient<MainViewModel>();
         // 注册主窗口(瞬时)
         services.AddTransient<MainWindow>();
     }

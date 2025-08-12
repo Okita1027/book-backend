@@ -6,17 +6,18 @@ namespace book_frontend.Helpers;
 public static class ConfigurationHelper
 {
     private static AppConfig? _config;
-    private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
+    private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNameCaseInsensitive = true
     };
+    
     /// <summary>
     /// 应用配置模型
     /// </summary>
     public class AppConfig
     {
-        public string ApiBaseUrl { get; set; } = "http://localhost:8888/api/";
-        public int RequestTimeoutSeconds { get; set; } = 30;
+        public string ApiBaseUrl { get; init; } = "http://localhost:8888/api/";
+        public int RequestTimeoutSeconds { get; init; } = 30;
     }
 
     /// <summary>
@@ -49,6 +50,7 @@ public static class ConfigurationHelper
         _config ??= new AppConfig();
         return _config;
     }
+    
     /// <summary>
     /// 获取API基础地址
     /// </summary>

@@ -1,6 +1,8 @@
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Globalization;
 using book_frontend.Models;
 
 namespace book_frontend.Helpers;
@@ -19,29 +21,24 @@ public class ApiClient
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             PropertyNameCaseInsensitive = true,
         };
+        // 处理后端返回的自定义日期格式，例如 "yyyy-MM-dd HH:mm:ss"
+        _jsonOptions.Converters.Add(new JsonDateTimeConverter());
+        _jsonOptions.Converters.Add(new NullableJsonDateTimeConverter());
 
-        _httpClient.BaseAddress = new Uri("http://localhost:8888/api/");
-        _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+        // 这些设置已在 DI 的 HttpClient 中配置，这里不再重复设置，避免重复添加头
+        // _httpClient.BaseAddress = new Uri("http://localhost:8888/api/");
+        // _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
     }
 
     /// <summary>
     /// 设置认证Token
     /// </summary>
-    /// <param name="token">JWT Token字符串</param>
-    public void SetAuthToken(string? token)
+    /// <param name="token">JWT Token</param>
+    public void SetAuthToken(string token)
     {
         _authToken = token;
-        if (!string.IsNullOrEmpty(token))
-        {
-            // 如果Token不为空，将其添加到请求头的Authorization字段中
-            _httpClient.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-        }
-        else
-        {
-            // 否则清除认证头信息
-            _httpClient.DefaultRequestHeaders.Authorization = null;
-        }
+        _httpClient.DefaultRequestHeaders.Remove("Authorization");
+        _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
     }
 
     /// <summary>
@@ -213,6 +210,81 @@ public class ApiClient
                 Message = $"网络错误: {ex.Message}",
                 Data = false,
             };
+        }
+    }
+}
+
+/// <summary>
+/// System.Text.Json 的 DateTime 反序列化转换器，支持后端返回格式 "yyyy-MM-dd HH:mm:ss"
+/// </summary>
+public class JsonDateTimeConverter : JsonConverter<DateTime>
+{
+    private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+
+    public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        if (reader.TokenType == JsonTokenType.String)
+        {
+            var str = reader.GetString();
+            if (string.IsNullOrEmpty(str))
+                return default;
+
+            if (DateTime.TryParseExact(str, DateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None,
+                    out var dt))
+                return dt;
+
+            // 兜底，尝试常规解析
+            if (DateTime.TryParse(str, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var dt2))
+                return dt2;
+        }
+
+        throw new JsonException($"无法将值转换为 DateTime。值: {reader.GetString()}");
+    }
+
+    public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
+    {
+        writer.WriteStringValue(value.ToString(DateTimeFormat));
+    }
+}
+
+/// <summary>
+/// 可空 DateTime 的转换器
+/// </summary>
+public class NullableJsonDateTimeConverter : JsonConverter<DateTime?>
+{
+    private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+
+    public override DateTime? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        if (reader.TokenType == JsonTokenType.Null)
+            return null;
+
+        if (reader.TokenType == JsonTokenType.String)
+        {
+            var str = reader.GetString();
+            if (string.IsNullOrEmpty(str))
+                return null;
+
+            if (DateTime.TryParseExact(str, DateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None,
+                    out var dt))
+                return dt;
+
+            if (DateTime.TryParse(str, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var dt2))
+                return dt2;
+        }
+
+        throw new JsonException($"无法将值转换为 DateTime?。值: {reader.GetString()}");
+    }
+
+    public override void Write(Utf8JsonWriter writer, DateTime? value, JsonSerializerOptions options)
+    {
+        if (value.HasValue)
+        {
+            writer.WriteStringValue(value.Value.ToString(DateTimeFormat));
+        }
+        else
+        {
+            writer.WriteNullValue();
         }
     }
 }
