@@ -31,89 +31,89 @@ public class RegisterViewModel : BaseViewModel
 
     public RelayCommand RegisterCommand => _registerCommand;
 
-    public string Name 
-    { 
-        get => _name; 
-        set 
-        { 
+    public string Name
+    {
+        get => _name;
+        set
+        {
             _name = value;
             OnPropertyChanged();
-            _registerCommand.RaiseCanExecuteChanged();
-        } 
+            RelayCommand.RaiseCanExecuteChanged();
+        }
     }
-    
-    public string Email 
-    { 
-        get => _email; 
-        set 
-        { 
+
+    public string Email
+    {
+        get => _email;
+        set
+        {
             _email = value;
             OnPropertyChanged();
-            _registerCommand.RaiseCanExecuteChanged();
-        } 
+            RelayCommand.RaiseCanExecuteChanged();
+        }
     }
-    
-    public string Password 
-    { 
-        get => _password; 
-        set 
-        { 
+
+    public string Password
+    {
+        get => _password;
+        set
+        {
             _password = value;
             OnPropertyChanged();
             ValidatePassword();
-            _registerCommand.RaiseCanExecuteChanged();
-        } 
+            RelayCommand.RaiseCanExecuteChanged();
+        }
     }
-    
-    public string ConfirmPassword 
-    { 
-        get => _confirmPassword; 
-        set 
-        { 
+
+    public string ConfirmPassword
+    {
+        get => _confirmPassword;
+        set
+        {
             _confirmPassword = value;
             OnPropertyChanged();
             ValidatePassword();
-            _registerCommand.RaiseCanExecuteChanged();
-        } 
+            RelayCommand.RaiseCanExecuteChanged();
+        }
     }
-    
-    public bool IsLoading 
-    { 
-        get => _isLoading; 
-        set 
-        { 
+
+    public bool IsLoading
+    {
+        get => _isLoading;
+        set
+        {
             _isLoading = value;
             OnPropertyChanged();
-            _registerCommand.RaiseCanExecuteChanged();
-        } 
+            RelayCommand.RaiseCanExecuteChanged();
+        }
     }
-    
-    public string ErrorMessage 
-    { 
-        get => _errorMessage; 
-        set 
-        { 
+
+    public string ErrorMessage
+    {
+        get => _errorMessage;
+        set
+        {
             _errorMessage = value;
             OnPropertyChanged();
-        } 
+        }
     }
-    
-    public string SuccessMessage 
-    { 
-        get => _successMessage; 
-        set 
-        { 
+
+    public string SuccessMessage
+    {
+        get => _successMessage;
+        set
+        {
             _successMessage = value;
             OnPropertyChanged();
-        } 
+        }
     }
 
     private bool CanRegister()
     {
-        return !IsLoading && 
-               !string.IsNullOrWhiteSpace(Name) && 
-               !string.IsNullOrWhiteSpace(Email) && 
-               !string.IsNullOrWhiteSpace(Password) && 
+        return !IsLoading &&
+               !string.IsNullOrWhiteSpace(Name) &&
+               !string.IsNullOrWhiteSpace(Email) &&
+               !string.IsNullOrWhiteSpace(Password) &&
                !string.IsNullOrWhiteSpace(ConfirmPassword) &&
                Password.Length >= 6 &&
                Password == ConfirmPassword &&
@@ -149,10 +149,10 @@ public class RegisterViewModel : BaseViewModel
             if (response.Success)
             {
                 SuccessMessage = "注册成功！正在跳转到登录页面...";
-                
+
                 // 延迟3秒后跳转到登录页面
                 await Task.Delay(3000);
-                
+
                 // 清空表单
                 ClearForm();
                 NavigateToLogin?.Invoke();
@@ -182,10 +182,12 @@ public class RegisterViewModel : BaseViewModel
         ErrorMessage = string.Empty;
     }
 
-    private bool IsValidEmail(string email)
+    private static bool IsValidEmail(string email)
     {
         if (string.IsNullOrWhiteSpace(email))
+        {
             return false;
+        }
 
         try
         {
@@ -221,10 +223,10 @@ public class RegisterViewModel : BaseViewModel
         }
 
         // 如果验证通过，清除错误信息
-        if (!string.IsNullOrEmpty(Password) && !string.IsNullOrEmpty(ConfirmPassword) && 
+        if (!string.IsNullOrEmpty(Password) && !string.IsNullOrEmpty(ConfirmPassword) &&
             Password.Length >= 6 && Password == ConfirmPassword)
         {
-            if (ErrorMessage == "密码长度不能少于6位" || ErrorMessage == "两次输入的密码不一致")
+            if (ErrorMessage is "密码长度不能少于6位" or "两次输入的密码不一致")
             {
                 ErrorMessage = string.Empty;
             }

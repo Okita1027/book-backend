@@ -21,7 +21,7 @@ public class LoginViewModel : BaseViewModel
             // 当用户名变化后，尝试更新绑定属性，并刷新命令可用状态
             if (SetProperty(ref _email, value))
             {
-                _loginCommand.RaiseCanExecuteChanged();
+                RelayCommand.RaiseCanExecuteChanged();
             }
         }
     }
@@ -34,7 +34,7 @@ public class LoginViewModel : BaseViewModel
             // 当密码变化后，尝试更新绑定属性，并刷新命令可用状态
             if (SetProperty(ref _password, value))
             {
-                _loginCommand.RaiseCanExecuteChanged();
+                RelayCommand.RaiseCanExecuteChanged();
             }
         }
     }
@@ -47,7 +47,7 @@ public class LoginViewModel : BaseViewModel
             // 登录过程中禁用按钮，结束后恢复
             if (SetProperty(ref _isLoading, value))
             {
-                _loginCommand.RaiseCanExecuteChanged();
+                RelayCommand.RaiseCanExecuteChanged();
             }
         }
     }

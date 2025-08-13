@@ -128,7 +128,10 @@ public class BookListViewModel : BaseViewModel
     public bool HasNextPage => PageIndex * PageSize < Total;
     public bool HasPreviousPage => PageIndex > 1;
 
-    // 列表和状态
+    /**
+     * 列表和状态
+     * ObservableCollection：当集合中的元素被添加、删除或更新时，它会自动通知用户界面（UI）进行相应的更新
+     */
     public ObservableCollection<Book> Books { get; }
 
     private bool _isLoading;
@@ -260,10 +263,13 @@ public class BookListViewModel : BaseViewModel
 
     private void RefreshCommands()
     {
-        SearchCommand.RaiseCanExecuteChanged();
-        ResetCommand.RaiseCanExecuteChanged();
-        NextPageCommand.RaiseCanExecuteChanged();
-        PrevPageCommand.RaiseCanExecuteChanged();
+        RelayCommand.RaiseCanExecuteChanged();
+        /*
+         * HasNextPage 和 HasPreviousPage是计算属性
+         * 它们的值依赖于其他属性（PageIndex、PageSize、Total）的变化
+         * 当执行分页操作时，这些依赖属性会改变，但 HasNextPage 和 HasPreviousPage 本身不会自动通知UI更新
+         * 所以需要手动调用 OnPropertyChanged 来通知UI这些计算属性的值已经改变
+         */
         OnPropertyChanged(nameof(HasNextPage));
         OnPropertyChanged(nameof(HasPreviousPage));
     }

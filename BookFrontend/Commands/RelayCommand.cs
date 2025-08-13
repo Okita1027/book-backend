@@ -12,6 +12,7 @@ public class RelayCommand : ICommand
     private readonly Action<object?> _execute;
     // 判断命令是否可以执行（按钮是否可用）
     private readonly Func<object?, bool>? _canExecute;
+    
     /// <summary>
     /// 当命令可执行状态发生改变时触发。
     ///  WPF会订阅这个事件，在需要时刷新按钮的IsEnabled状态
@@ -23,6 +24,7 @@ public class RelayCommand : ICommand
         add => CommandManager.RequerySuggested += value;
         remove => CommandManager.RequerySuggested -= value;
     }
+    
     /// <summary>
     /// 构造函数
     /// </summary>
@@ -34,6 +36,7 @@ public class RelayCommand : ICommand
         _execute = execute ?? throw new ArgumentNullException(nameof(execute));
         _canExecute = canExecute;
     }
+    
     /// <summary>
     /// 命令是否可以执行
     /// 例如：登录按钮在用户名或密码为空时不允许点击
@@ -45,6 +48,7 @@ public class RelayCommand : ICommand
         return _canExecute == null || _canExecute(parameter);
         // return _canExecute?.Invoke(parameter) ?? true;
     }
+    
     /// <summary>
     /// 执行命令
     /// 例如：调用AuthService进行登录请求
@@ -54,12 +58,13 @@ public class RelayCommand : ICommand
     {
         _execute(parameter);
     }
+    
     /// <summary>
     /// 主动触发命令的可执行状态变化通知
     /// 当ViewModel的相关属性改变之后（影响CanExecute的逻辑）
     /// 可以调用此方法来更新按钮的可用状态
     /// </summary>
-    public void RaiseCanExecuteChanged()
+    public static void RaiseCanExecuteChanged()
     {
         // 通知WPF重新评估CanExecute
         CommandManager.InvalidateRequerySuggested();
