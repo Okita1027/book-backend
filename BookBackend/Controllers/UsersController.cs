@@ -74,6 +74,10 @@ namespace book_backend.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<User>> RegisterUser([FromBody] EditUserDTO editUserDTO)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             try
             {
                 var user = await _usersService.RegisterUserAsync(editUserDTO);

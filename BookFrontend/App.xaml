@@ -1,4 +1,4 @@
-﻿<Application x:Class="book_frontend.App"
+<Application x:Class="book_frontend.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:book_frontend"
@@ -18,6 +18,9 @@
             <!-- 全局数据转换器（用于在数据绑定过程中转换数据格式） -->
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <converters:StringArrayToStringConverter x:Key="StringArrayToStringConverter" />
+            <converters:BooleanToVisibilityConverter x:Key="CustomBooleanToVisibilityConverter" />
+            <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+            <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
