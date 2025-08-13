@@ -4,15 +4,18 @@
              xmlns:local="clr-namespace:book_frontend"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:converters="clr-namespace:book_frontend.Converters">
+    <!-- 定义应用程序级别的资源（可以在整个应用程序中共享使用，包括样式、模板、画笔、转换器等） -->
     <Application.Resources>
         <ResourceDictionary>
+            <!-- 允许合并多个资源字典 -->
             <ResourceDictionary.MergedDictionaries>
-                <!-- 使用 MaterialDesignThemes 包资源路径 -->
+                <!-- 定义MaterialDesignThemes主题颜色方案；引用MaterialDesignThemes默认样式资源 -->
                 <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="DeepPurple" SecondaryColor="Lime" />
+                <!-- 引用程序集中的资源文件，PACK URI格式：pack://application:,,,/[AssemblyName];component/[ResourceFilePath] -->
                 <ResourceDictionary
                     Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <!-- 全局转换器 -->
+            <!-- 全局数据转换器（用于在数据绑定过程中转换数据格式） -->
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <converters:StringArrayToStringConverter x:Key="StringArrayToStringConverter" />
         </ResourceDictionary>

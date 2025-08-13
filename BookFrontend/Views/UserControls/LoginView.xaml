@@ -15,15 +15,15 @@
         <!-- 内容区：登录表单 -->
         <Grid Margin="24" HorizontalAlignment="Center" VerticalAlignment="Center" Width="420">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="16"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="12"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="12"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="12"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="16" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="12" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="12" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="12" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <!-- 标题 -->
@@ -31,20 +31,20 @@
                        FontSize="20"
                        FontWeight="SemiBold"
                        HorizontalAlignment="Center"
-                       Margin="0,0,0,8"/>
+                       Margin="0,0,0,8" />
 
             <!-- 间隔 -->
-            <Border Grid.Row="1"/>
+            <Border Grid.Row="1" />
 
             <!-- 邮箱地址 -->
             <TextBox Grid.Row="2"
                      materialDesign:HintAssist.Hint="邮箱地址"
                      Style="{StaticResource MaterialDesignOutlinedTextBox}"
                      Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"
-                     Margin="0,0,0,8"/>
+                     Margin="0,0,0,8" />
 
             <!-- 间隔 -->
-            <Border Grid.Row="3"/>
+            <Border Grid.Row="3" />
 
             <!-- 密码（使用附加属性绑定） -->
             <PasswordBox Grid.Row="4"
@@ -52,20 +52,19 @@
                          Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
                          h:PasswordBoxHelper.BindPassword="True"
                          h:PasswordBoxHelper.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         Margin="0,0,0,8"/>
+                         Margin="0,0,0,8" />
 
             <!-- 间隔 -->
-            <Border Grid.Row="5"/>
+            <Border Grid.Row="5" />
 
             <!-- 错误信息（非空时显示为红色文本） -->
             <TextBlock Grid.Row="6"
                        Text="{Binding ErrorMessage}"
-                       Foreground="{DynamicResource MaterialDesignValidationErrorBrush}"
                        Visibility="{Binding ErrorMessage, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Invert}"
-                       TextWrapping="Wrap"/>
+                       TextWrapping="Wrap" />
 
             <!-- 间隔 -->
-            <Border Grid.Row="7"/>
+            <Border Grid.Row="7" />
 
             <!-- 登录按钮 -->
             <Button Grid.Row="8"
@@ -73,21 +72,21 @@
                     Command="{Binding LoginCommand}"
                     Style="{StaticResource MaterialDesignRaisedSecondaryButton}"
                     HorizontalAlignment="Stretch"
-                    Height="36"/>
+                    Height="36" />
         </Grid>
 
         <!-- 遮罩层：加载时显示 -->
         <Grid Background="#80000000"
               Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
 
-            <Border Width="220" Padding="16" CornerRadius="8" Background="{DynamicResource MaterialDesignPaper}">
+            <Border Width="220" Padding="16" CornerRadius="8">
                 <StackPanel>
                     <TextBlock Text="正在登录..."
                                HorizontalAlignment="Center"
-                               Margin="0,0,0,8"/>
+                               Margin="0,0,0,8" />
                     <ProgressBar IsIndeterminate="True"
                                  Foreground="{DynamicResource PrimaryHueMidBrush}"
-                                 Height="6"/>
+                                 Height="6" />
                 </StackPanel>
             </Border>
         </Grid>
