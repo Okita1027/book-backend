@@ -14,8 +14,8 @@ public class RelayCommand : ICommand
     private readonly Func<object?, bool>? _canExecute;
     /// <summary>
     /// 当命令可执行状态发生改变时触发。
-    ///  WPF会订阅这个事件，你在需要时刷新按钮的IsEnabled状态
-    ///  这里将事件转发给CommandManger.RequerySuggested,
+    ///  WPF会订阅这个事件，在需要时刷新按钮的IsEnabled状态
+    ///  这里将事件转发给CommandManager.RequerySuggested,
     ///  当输入焦点变化、键盘/鼠标事件发生时，WPF会自动触发CanExecute重新评估
     /// </summary>
     public event EventHandler? CanExecuteChanged
@@ -42,7 +42,8 @@ public class RelayCommand : ICommand
     /// <returns></returns>
     public bool CanExecute(object? parameter)
     {
-        return _canExecute?.Invoke(parameter) ?? true;
+        return _canExecute == null || _canExecute(parameter);
+        // return _canExecute?.Invoke(parameter) ?? true;
     }
     /// <summary>
     /// 执行命令
