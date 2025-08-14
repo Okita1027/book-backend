@@ -5,6 +5,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       xmlns:h="clr-namespace:book_frontend.Helpers"
+      xmlns:views="clr-namespace:book_frontend.Views.UserControls"
       xmlns:viewModels="clr-namespace:book_frontend.ViewModels"
       mc:Ignorable="d"
       d:DesignHeight="480" d:DesignWidth="800"
@@ -75,20 +76,7 @@
                     Height="36" />
         </Grid>
 
-        <!-- 遮罩层：加载时显示 -->
-        <Grid Background="#80000000"
-              Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
-
-            <Border Width="220" Padding="16" CornerRadius="8">
-                <StackPanel>
-                    <TextBlock Text="正在登录..."
-                               HorizontalAlignment="Center"
-                               Margin="0,0,0,8" />
-                    <ProgressBar IsIndeterminate="True"
-                                 Foreground="{DynamicResource PrimaryHueMidBrush}"
-                                 Height="6" />
-                </StackPanel>
-            </Border>
-        </Grid>
+        <!-- 遮罩层：加载时显示（改为可复用控件） -->
+        <views:LoadingMask IsBusy="{Binding IsLoading}" LoadingText="正在登录..." />
     </Grid>
 </Page>

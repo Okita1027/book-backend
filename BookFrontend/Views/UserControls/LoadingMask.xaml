@@ -1,0 +1,45 @@
+<UserControl x:Class="book_frontend.Views.UserControls.LoadingMask"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             x:Name="LoadingMaskControl"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    
+    <!-- 
+        遮罩层，覆盖整个父控件
+        Visibility属性是一个枚举类型，包含三个值：
+            Visible (0) - 元素可见
+            Hidden (1) - 元素不可见，但仍占用空间
+            Collapsed (2) - 元素不可见，且不占用空间
+     -->
+    <Grid Background="{Binding MaskBackground, ElementName=LoadingMaskControl, FallbackValue=#80000000}"
+          Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=LoadingMaskControl}">
+        
+        <!-- 内容容器，可根据样式切换 -->
+        <Border x:Name="LoadingContainer"
+                Background="{Binding ContainerBackground, ElementName=LoadingMaskControl, FallbackValue=White}"
+                CornerRadius="{Binding ContainerCornerRadius, ElementName=LoadingMaskControl, FallbackValue=8}"
+                Padding="{Binding ContainerPadding, ElementName=LoadingMaskControl, FallbackValue=16}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                MinWidth="200">
+            
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <!-- 进度条 -->
+                <ProgressBar IsIndeterminate="True"
+                            Width="{Binding ProgressBarWidth, ElementName=LoadingMaskControl, FallbackValue=150}"
+                            Height="{Binding ProgressBarHeight, ElementName=LoadingMaskControl, FallbackValue=6}"
+                            Foreground="{Binding ProgressBarForeground, ElementName=LoadingMaskControl, FallbackValue=#2196F3}" />
+                
+                <!-- 加载文本 -->
+                <TextBlock Text="{Binding LoadingText, ElementName=LoadingMaskControl, FallbackValue=正在加载...}"
+                          HorizontalAlignment="Center"
+                          Margin="0,8,0,0"
+                          FontSize="{Binding TextFontSize, ElementName=LoadingMaskControl, FallbackValue=14}"
+                          Foreground="{Binding TextForeground, ElementName=LoadingMaskControl, FallbackValue=Black}" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>
