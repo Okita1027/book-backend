@@ -29,7 +29,8 @@ public partial class LoadingMask : UserControl
     }
 
     public static readonly DependencyProperty MaskBackgroundProperty =
-        DependencyProperty.Register(nameof(MaskBackground), typeof(Brush), typeof(LoadingMask), new PropertyMetadata(new SolidColorBrush(Color.FromArgb(128, 0, 0, 0))));
+        DependencyProperty.Register(nameof(MaskBackground), typeof(Brush), typeof(LoadingMask),
+            new PropertyMetadata(new SolidColorBrush(Color.FromArgb(128, 0, 0, 0))));
 
     // 容器背景
     public Brush ContainerBackground
@@ -39,7 +40,8 @@ public partial class LoadingMask : UserControl
     }
 
     public static readonly DependencyProperty ContainerBackgroundProperty =
-        DependencyProperty.Register(nameof(ContainerBackground), typeof(Brush), typeof(LoadingMask), new PropertyMetadata(Brushes.White));
+        DependencyProperty.Register(nameof(ContainerBackground), typeof(Brush), typeof(LoadingMask),
+            new PropertyMetadata(Brushes.White));
 
     // 圆角
     public CornerRadius ContainerCornerRadius
@@ -49,7 +51,8 @@ public partial class LoadingMask : UserControl
     }
 
     public static readonly DependencyProperty ContainerCornerRadiusProperty =
-        DependencyProperty.Register(nameof(ContainerCornerRadius), typeof(CornerRadius), typeof(LoadingMask), new PropertyMetadata(new CornerRadius(8)));
+        DependencyProperty.Register(nameof(ContainerCornerRadius), typeof(CornerRadius), typeof(LoadingMask),
+            new PropertyMetadata(new CornerRadius(8)));
 
     // 内边距
     public Thickness ContainerPadding
@@ -59,7 +62,8 @@ public partial class LoadingMask : UserControl
     }
 
     public static readonly DependencyProperty ContainerPaddingProperty =
-        DependencyProperty.Register(nameof(ContainerPadding), typeof(Thickness), typeof(LoadingMask), new PropertyMetadata(new Thickness(16)));
+        DependencyProperty.Register(nameof(ContainerPadding), typeof(Thickness), typeof(LoadingMask),
+            new PropertyMetadata(new Thickness(16)));
 
     // 进度条宽高与颜色
     public double ProgressBarWidth
@@ -69,7 +73,8 @@ public partial class LoadingMask : UserControl
     }
 
     public static readonly DependencyProperty ProgressBarWidthProperty =
-        DependencyProperty.Register(nameof(ProgressBarWidth), typeof(double), typeof(LoadingMask), new PropertyMetadata(150.0));
+        DependencyProperty.Register(nameof(ProgressBarWidth), typeof(double), typeof(LoadingMask),
+            new PropertyMetadata(150.0));
 
     public double ProgressBarHeight
     {
@@ -78,7 +83,8 @@ public partial class LoadingMask : UserControl
     }
 
     public static readonly DependencyProperty ProgressBarHeightProperty =
-        DependencyProperty.Register(nameof(ProgressBarHeight), typeof(double), typeof(LoadingMask), new PropertyMetadata(6.0));
+        DependencyProperty.Register(nameof(ProgressBarHeight), typeof(double), typeof(LoadingMask),
+            new PropertyMetadata(6.0));
 
     public Brush ProgressBarForeground
     {
@@ -87,7 +93,8 @@ public partial class LoadingMask : UserControl
     }
 
     public static readonly DependencyProperty ProgressBarForegroundProperty =
-        DependencyProperty.Register(nameof(ProgressBarForeground), typeof(Brush), typeof(LoadingMask), new PropertyMetadata(new SolidColorBrush(Color.FromRgb(33, 150, 243))));
+        DependencyProperty.Register(nameof(ProgressBarForeground), typeof(Brush), typeof(LoadingMask),
+            new PropertyMetadata(new SolidColorBrush(Color.FromRgb(33, 150, 243))));
 
     // 文本与样式
     public string LoadingText
@@ -97,7 +104,8 @@ public partial class LoadingMask : UserControl
     }
 
     public static readonly DependencyProperty LoadingTextProperty =
-        DependencyProperty.Register(nameof(LoadingText), typeof(string), typeof(LoadingMask), new PropertyMetadata("正在加载..."));
+        DependencyProperty.Register(nameof(LoadingText), typeof(string), typeof(LoadingMask),
+            new PropertyMetadata("正在加载..."));
 
     public double TextFontSize
     {
@@ -106,7 +114,8 @@ public partial class LoadingMask : UserControl
     }
 
     public static readonly DependencyProperty TextFontSizeProperty =
-        DependencyProperty.Register(nameof(TextFontSize), typeof(double), typeof(LoadingMask), new PropertyMetadata(14.0));
+        DependencyProperty.Register(nameof(TextFontSize), typeof(double), typeof(LoadingMask),
+            new PropertyMetadata(14.0));
 
     public Brush TextForeground
     {
@@ -115,5 +124,6 @@ public partial class LoadingMask : UserControl
     }
 
     public static readonly DependencyProperty TextForegroundProperty =
-        DependencyProperty.Register(nameof(TextForeground), typeof(Brush), typeof(LoadingMask), new PropertyMetadata(Brushes.Black));
+        DependencyProperty.Register(nameof(TextForeground), typeof(Brush), typeof(LoadingMask),
+            new PropertyMetadata(Brushes.Black));
 }

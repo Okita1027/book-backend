@@ -143,7 +143,7 @@
             </Grid>
         </Border>
 
-        <!-- 加载遮罩（改为可复用控件） -->
+        <!-- 遮罩层（加载时显示） -->
         <views:LoadingMask IsBusy="{Binding IsLoading}" LoadingText="注册中..." />
     </Grid>
 </Page>

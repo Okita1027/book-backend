@@ -76,7 +76,7 @@
                     Height="36" />
         </Grid>
 
-        <!-- 遮罩层：加载时显示（改为可复用控件） -->
+        <!-- 遮罩层：加载时显示 -->
         <views:LoadingMask IsBusy="{Binding IsLoading}" LoadingText="正在登录..." />
     </Grid>
 </Page>
