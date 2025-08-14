@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         xmlns:local="clr-namespace:book_frontend"
-        xmlns:views="clr-namespace:book_frontend.Views.UserControls"
+        xmlns:pages="clr-namespace:book_frontend.Views.Pages"
         Title="图书管理" Height="720" Width="1200" Background="#F5F5F5"
         WindowState="Maximized">
     <DockPanel>
@@ -24,10 +24,12 @@
 
         <!-- 主内容区域：动态切换视图 -->
         <Grid Margin="0,10,0,0">
-            <!-- 使用ContentControl来动态切换视图 -->
-            <ContentControl x:Name="MainContent">
-                <views:HomeView/>
-            </ContentControl>
+            <!-- 使用Frame来导航Page -->
+            <Frame x:Name="MainContentFrame" NavigationUIVisibility="Hidden">
+                <Frame.Content>
+                    <pages:HomePage />
+                </Frame.Content>
+            </Frame>
         </Grid>
     </DockPanel>
 </Window>

@@ -1,12 +1,12 @@
 using System.Windows.Controls;
 
-namespace book_frontend.Views.UserControls
+namespace book_frontend.Views.Pages
 {
     // 该视图只负责界面展示与绑定，不在代码后置中设置 DataContext。
     // DataContext 将在下一步（功能点 4：依赖注入与启动配置）统一注入。
-    public partial class LoginView : UserControl
+    public partial class LoginPage : Page
     {
-        public LoginView()
+        public LoginPage()
         {
             InitializeComponent();
         }

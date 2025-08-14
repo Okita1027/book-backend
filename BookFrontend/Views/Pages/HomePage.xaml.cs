@@ -4,14 +4,14 @@ using System.Windows;
 using book_frontend.ViewModels;
 using System.Windows.Threading;
 
-namespace book_frontend.Views.UserControls
+namespace book_frontend.Views.Pages
 {
     /// <summary>
-    /// Interaction logic for HomeView.xaml
+    /// Interaction logic for HomePage.xaml
     /// </summary>
-    public partial class HomeView : UserControl
+    public partial class HomePage : Page
     {
-        public HomeView()
+        public HomePage()
         {
             InitializeComponent();
         }

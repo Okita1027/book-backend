@@ -1,11 +1,12 @@
-<UserControl x:Class="book_frontend.Views.UserControls.HomeView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:local="clr-namespace:book_frontend.Views"
-             xmlns:viewModels="clr-namespace:book_frontend.ViewModels"
-             mc:Ignorable="d" d:DataContext="{d:DesignInstance viewModels:BookListViewModel}">
+<Page x:Class="book_frontend.Views.Pages.HomePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:local="clr-namespace:book_frontend.Views"
+      xmlns:viewModels="clr-namespace:book_frontend.ViewModels"
+      mc:Ignorable="d" d:DataContext="{d:DesignInstance viewModels:BookListViewModel}">
+    
     <Grid>
         <Grid.RowDefinitions>
             <!--
@@ -231,4 +232,4 @@
         </StackPanel>
         -->
     </Grid>
-</UserControl>
+</Page>

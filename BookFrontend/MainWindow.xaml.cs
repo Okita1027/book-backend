@@ -9,8 +9,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using book_frontend.ViewModels;
-using book_frontend.Views.UserControls;
-using book_frontend.Views;
+using book_frontend.Views.Pages;
 using book_frontend.Services.Interfaces;
 
 namespace book_frontend;
@@ -38,10 +37,10 @@ public partial class MainWindow : Window
     {
         DataContext = mainViewModel;
         
-        // 设置HomeView的DataContext
-        if (MainContent.Content is HomeView homeView)
+        // 设置HomePage的DataContext
+        if (MainContentFrame?.Content is HomePage homePage)
         {
-            homeView.DataContext = mainViewModel.Home;
+            homePage.DataContext = mainViewModel.Home;
         }
     }
 
@@ -50,7 +49,7 @@ public partial class MainWindow : Window
     /// </summary>
     private void HomeButton_Click(object sender, RoutedEventArgs e)
     {
-        ShowHomeView();
+        ShowHomePage();
     }
 
     /// <summary>
@@ -58,7 +57,7 @@ public partial class MainWindow : Window
     /// </summary>
     private void LoginButton_Click(object sender, RoutedEventArgs e)
     {
-        ShowLoginView();
+        ShowLoginPage();
     }
 
     /// <summary>
@@ -66,55 +65,55 @@ public partial class MainWindow : Window
     /// </summary>
     private void RegisterButton_Click(object sender, RoutedEventArgs e)
     {
-        ShowRegisterView();
+        ShowRegisterPage();
     }
 
     /// <summary>
-    /// 显示首页视图
+    /// 显示首页Page
     /// </summary>
-    private void ShowHomeView()
+    private void ShowHomePage()
     {
-        var homeView = new HomeView();
+        var homePage = new HomePage();
         if (DataContext is MainViewModel mainViewModel)
         {
-            homeView.DataContext = mainViewModel.Home;
+            homePage.DataContext = mainViewModel.Home;
         }
-        MainContent.Content = homeView;
+        MainContentFrame.Navigate(homePage);
     }
 
     /// <summary>
-    /// 显示登录视图
+    /// 显示登录Page
     /// </summary>
-    private void ShowLoginView()
+    private void ShowLoginPage()
     {
-        var loginView = new LoginView();
+        var loginPage = new LoginPage();
         
         // 创建或重用LoginViewModel
         _loginViewModel ??= new LoginViewModel(_authService);
         
-        loginView.DataContext = _loginViewModel;
-        MainContent.Content = loginView;
+        loginPage.DataContext = _loginViewModel;
+        MainContentFrame.Navigate(loginPage);
     }
 
     /// <summary>
-    /// 显示注册视图
+    /// 显示注册Page
     /// </summary>
-    private void ShowRegisterView()
+    private void ShowRegisterPage()
     {
-        var registerView = new RegisterView();
+        var registerPage = new RegisterPage();
         
         // 创建或重用RegisterViewModel
         if (_registerViewModel == null)
         {
             _registerViewModel = new RegisterViewModel(_authService);
             // 订阅导航到登录页面的事件
-            _registerViewModel.NavigateToLogin += () => ShowLoginView();
+            _registerViewModel.NavigateToLogin += () => ShowLoginPage();
         }
         
         // 重置表单状态
         _registerViewModel.ResetForm();
         
-        registerView.DataContext = _registerViewModel;
-        MainContent.Content = registerView;
+        registerPage.DataContext = _registerViewModel;
+        MainContentFrame.Navigate(registerPage);
     }
 }

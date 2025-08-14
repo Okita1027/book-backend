@@ -2,11 +2,11 @@ using System.Windows;
 using System.Windows.Controls;
 using book_frontend.ViewModels;
 
-namespace book_frontend.Views.UserControls;
+namespace book_frontend.Views.Pages;
 
-public partial class RegisterView : UserControl
+public partial class RegisterPage : Page
 {
-    public RegisterView()
+    public RegisterPage()
     {
         InitializeComponent();
     }
