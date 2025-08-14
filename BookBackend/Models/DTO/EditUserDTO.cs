@@ -9,7 +9,7 @@ namespace book_backend.Models.DTO
         public string Name { get; set; } // 用户名
 
         [Required]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "邮箱格式不符合要求")]
         [MaxLength(100)]
         public string Email { get; set; } // 邮箱，用于登录
 
