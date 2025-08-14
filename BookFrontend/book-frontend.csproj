@@ -23,6 +23,7 @@
 		<Folder Include="Services\Interfaces\" />
 		<Folder Include="Views\Pages\" />
 		<Folder Include="Views\ResourceDictionaries\" />
+		<Folder Include="Views\UserControls\" />
 		<Folder Include="Views\Windows\" />
 	</ItemGroup>
 	<ItemGroup>

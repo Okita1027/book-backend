@@ -25,11 +25,7 @@
         <!-- 主内容区域：动态切换视图 -->
         <Grid Margin="0,10,0,0">
             <!-- 使用Frame来导航Page -->
-            <Frame x:Name="MainContentFrame" NavigationUIVisibility="Hidden">
-                <Frame.Content>
-                    <pages:HomePage />
-                </Frame.Content>
-            </Frame>
+            <Frame x:Name="MainContentFrame" NavigationUIVisibility="Hidden" />
         </Grid>
     </DockPanel>
 </Window>

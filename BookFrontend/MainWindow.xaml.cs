@@ -27,6 +27,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         _authService = authService;
+        // 注意：不要在这里调用 ShowHomePage()，因为此时 DataContext 还未通过依赖注入设置
     }
 
     /// <summary>
@@ -37,10 +38,14 @@ public partial class MainWindow : Window
     {
         DataContext = mainViewModel;
         
-        // 设置HomePage的DataContext
+        // 如果当前内容是 HomePage，设置其 DataContext；否则主动导航到首页
         if (MainContentFrame?.Content is HomePage homePage)
         {
             homePage.DataContext = mainViewModel.Home;
+        }
+        else
+        {
+            ShowHomePage();
         }
     }
 
