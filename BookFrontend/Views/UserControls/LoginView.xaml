@@ -27,7 +27,7 @@
             </Grid.RowDefinitions>
 
             <!-- 标题 -->
-            <TextBlock Text="登录到图书管理系统"
+            <TextBlock Text="登录到图书阅览系统"
                        FontSize="20"
                        FontWeight="SemiBold"
                        HorizontalAlignment="Center"

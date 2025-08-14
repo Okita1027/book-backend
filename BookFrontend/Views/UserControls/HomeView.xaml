@@ -8,27 +8,31 @@
              mc:Ignorable="d" d:DataContext="{d:DesignInstance viewModels:BookListViewModel}">
     <Grid>
         <Grid.RowDefinitions>
+            <!--
+                Auto：根据内容自动调整高度
+                *：平均分配空间
+            -->
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <!-- 搜索表单 -->
-        <Border Padding="16" Background="White" CornerRadius="6" Margin="10" Grid.Row="0">
+        <Border Padding="16" Background="White" BorderBrush="Beige" 
+                CornerRadius="6" Margin="10" Grid.Row="0">
             <Grid>
-                <!-- *：平均分配空间 -->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <!-- Auto：根据内容自动调整高度 -->
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
 
                 <!-- Orientation：排列方向 -->
                 <StackPanel Margin="6" Orientation="Vertical">
@@ -47,7 +51,6 @@
                     <TextBlock Text="出版社名称" />
                     <TextBox Text="{Binding Publisher, UpdateSourceTrigger=PropertyChanged}" KeyDown="TextBox_KeyDown" />
                 </StackPanel>
-
                 <StackPanel Grid.Row="1" Grid.Column="0" Margin="6" Orientation="Vertical">
                     <TextBlock Text="ISBN" />
                     <TextBox Text="{Binding Isbn, UpdateSourceTrigger=PropertyChanged}" KeyDown="TextBox_KeyDown" />
@@ -79,7 +82,7 @@
 
                 <!-- 标题栏 -->
                 <Border Grid.Row="0" BorderBrush="#DDD" BorderThickness="1" Background="#F8F9FA">
-                    <Grid Margin="0,0,17,0">
+                    <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="2*" />
                             <ColumnDefinition Width="1.5*" />
@@ -88,6 +91,8 @@
                             <ColumnDefinition Width="1*" />
                             <ColumnDefinition Width="1*" />
                             <ColumnDefinition Width="1.5*" />
+                            <!-- 预留滚动条宽度 -->
+                            <ColumnDefinition Width="17" />
                         </Grid.ColumnDefinitions>
                         <Border Grid.Column="0" BorderBrush="#DDD" BorderThickness="0 0 1 0" Padding="8">
                             <TextBlock Text="图书名称" FontWeight="Bold" />
@@ -113,9 +118,14 @@
                     </Grid>
                 </Border>
 
-                <ScrollViewer x:Name="BookListScrollViewer" Grid.Row="1" VerticalScrollBarVisibility="Auto" ScrollChanged="BookListScrollViewer_ScrollChanged">
+                <!-- 滚动条 -->
+                <ScrollViewer x:Name="BookListScrollViewer" Grid.Row="1" VerticalScrollBarVisibility="Visible"
+                              ScrollChanged="BookListScrollViewer_ScrollChanged">
+                    <!-- 条目控件：根据一个数据集合来重复创建 UI 元素 -->
                     <ItemsControl ItemsSource="{Binding Books}">
+                        <!-- 声明数据模板 -->
                         <ItemsControl.ItemTemplate>
+                            <!-- 详细设定模板中每条数据是如何渲染的 -->
                             <DataTemplate>
                                 <Border BorderBrush="#EEE" BorderThickness="1 0 1 1">
                                     <Grid>
@@ -128,22 +138,28 @@
                                             <ColumnDefinition Width="1*" />
                                             <ColumnDefinition Width="1.5*" />
                                         </Grid.ColumnDefinitions>
-                                        <Border Grid.Column="0" BorderBrush="#EEE" BorderThickness="0 0 1 0" Padding="8">
+                                        <Border Grid.Column="0" BorderBrush="#EEE" BorderThickness="0 0 1 0"
+                                                Padding="8">
                                             <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextWrapping="Wrap" />
                                         </Border>
-                                        <Border Grid.Column="1" BorderBrush="#EEE" BorderThickness="0 0 1 0" Padding="8">
+                                        <Border Grid.Column="1" BorderBrush="#EEE" BorderThickness="0 0 1 0"
+                                                Padding="8">
                                             <TextBlock Text="{Binding AuthorName}" TextWrapping="Wrap" />
                                         </Border>
-                                        <Border Grid.Column="2" BorderBrush="#EEE" BorderThickness="0 0 1 0" Padding="8">
+                                        <Border Grid.Column="2" BorderBrush="#EEE" BorderThickness="0 0 1 0"
+                                                Padding="8">
                                             <TextBlock Text="{Binding PublisherName}" TextWrapping="Wrap" />
                                         </Border>
-                                        <Border Grid.Column="3" BorderBrush="#EEE" BorderThickness="0 0 1 0" Padding="8">
+                                        <Border Grid.Column="3" BorderBrush="#EEE" BorderThickness="0 0 1 0"
+                                                Padding="8">
                                             <TextBlock Text="{Binding Isbn}" TextWrapping="Wrap" />
                                         </Border>
-                                        <Border Grid.Column="4" BorderBrush="#EEE" BorderThickness="0 0 1 0" Padding="8">
+                                        <Border Grid.Column="4" BorderBrush="#EEE" BorderThickness="0 0 1 0"
+                                                Padding="8">
                                             <TextBlock Text="{Binding PublishedDate, StringFormat=yyyy-MM-dd}" />
                                         </Border>
-                                        <Border Grid.Column="5" BorderBrush="#EEE" BorderThickness="0 0 1 0" Padding="8">
+                                        <Border Grid.Column="5" BorderBrush="#EEE" BorderThickness="0 0 1 0"
+                                                Padding="8">
                                             <TextBlock HorizontalAlignment="Center">
                                                 <TextBlock.Text>
                                                     <MultiBinding StringFormat="{}{0}/{1}">
@@ -153,7 +169,8 @@
                                                 </TextBlock.Text>
                                             </TextBlock>
                                         </Border>
-                                        <Border Grid.Column="6" BorderBrush="#EEE" BorderThickness="0 0 0 0" Padding="8">
+                                        <Border Grid.Column="6" BorderBrush="#EEE" BorderThickness="0 0 0 0"
+                                                Padding="8">
                                             <TextBlock TextWrapping="Wrap">
                                                 <TextBlock.Text>
                                                     <Binding Path="CategoryNames"
@@ -167,10 +184,18 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </ScrollViewer>
+                
+                <!-- 
+                    Visibility属性是一个枚举类型，包含三个值：
+                        Visible (0) - 元素可见
+                        Hidden (1) - 元素不可见，但仍占用空间
+                        Collapsed (2) - 元素不可见，且不占用空间
+                 -->
                 <Grid Grid.Row="0"
                       Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
                       Background="#80FFFFFF">
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <!-- 不确定进度的进度条（循环动画） -->
                         <ProgressBar IsIndeterminate="True" Width="200" />
                         <TextBlock Text="正在查询..." HorizontalAlignment="Center" Margin="0,8,0,0" />
                     </StackPanel>
