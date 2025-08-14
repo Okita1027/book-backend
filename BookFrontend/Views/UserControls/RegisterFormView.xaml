@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:viewModels="clr-namespace:book_frontend.ViewModels"
+             xmlns:views="clr-namespace:book_frontend.Views.UserControls"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModels:RegisterViewModel}">
     <Grid>
@@ -46,23 +47,17 @@
                          Margin="0,0,0,20"
                          FontSize="16" />
 
-                <materialDesign:PackIcon Kind="Lock" Foreground="#2196F3" Width="24" Height="24" HorizontalAlignment="Left" Margin="0,0,0,5" />
-                <PasswordBox x:Name="PasswordBox"
-                             materialDesign:HintAssist.Hint="请输入密码"
-                             materialDesign:HintAssist.IsFloating="True"
-                             Style="{StaticResource MaterialDesignFloatingHintPasswordBox}"
-                             materialDesign:PasswordBoxAssist.Password="{Binding Password, UpdateSourceTrigger=PropertyChanged}"
-                             Margin="0,0,0,20"
-                             FontSize="16" />
+                <!-- 使用可复用的密码输入控件（密码） -->
+                <views:MaterialPasswordBox HintText="请输入密码"
+                                           IconKind="Lock"
+                                           Password="{Binding Password, UpdateSourceTrigger=PropertyChanged}"
+                                           Margin="0,0,0,20" />
 
-                <materialDesign:PackIcon Kind="LockCheck" Foreground="#2196F3" Width="24" Height="24" HorizontalAlignment="Left" Margin="0,0,0,5" />
-                <PasswordBox x:Name="ConfirmPasswordBox"
-                             materialDesign:HintAssist.Hint="请确认密码"
-                             materialDesign:HintAssist.IsFloating="True"
-                             Style="{StaticResource MaterialDesignFloatingHintPasswordBox}"
-                             materialDesign:PasswordBoxAssist.Password="{Binding ConfirmPassword, UpdateSourceTrigger=PropertyChanged}"
-                             Margin="0,0,0,30"
-                             FontSize="16" />
+                <!-- 使用可复用的密码输入控件（确认密码） -->
+                <views:MaterialPasswordBox HintText="请确认密码"
+                                           IconKind="LockCheck"
+                                           Password="{Binding ConfirmPassword, UpdateSourceTrigger=PropertyChanged}"
+                                           Margin="0,0,0,30" />
 
                 <TextBlock Text="{Binding ErrorMessage}"
                            Foreground="Red"

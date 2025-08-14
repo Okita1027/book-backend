@@ -4,7 +4,6 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-      xmlns:h="clr-namespace:book_frontend.Helpers"
       xmlns:views="clr-namespace:book_frontend.Views.UserControls"
       xmlns:viewModels="clr-namespace:book_frontend.ViewModels"
       mc:Ignorable="d"
@@ -47,13 +46,12 @@
             <!-- 间隔 -->
             <Border Grid.Row="3" />
 
-            <!-- 密码（使用附加属性绑定） -->
-            <PasswordBox Grid.Row="4"
-                         materialDesign:HintAssist.Hint="密码"
-                         Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
-                         h:PasswordBoxHelper.BindPassword="True"
-                         h:PasswordBoxHelper.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         Margin="0,0,0,8" />
+            <!-- 密码（使用可复用控件） -->
+            <views:MaterialPasswordBox Grid.Row="4"
+                                       HintText="密码"
+                                       IconKind="Lock"
+                                       Password="{Binding Password, UpdateSourceTrigger=PropertyChanged}"
+                                       Margin="0,0,0,8" />
 
             <!-- 间隔 -->
             <Border Grid.Row="5" />
