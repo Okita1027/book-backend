@@ -1,12 +1,15 @@
-using System.Configuration;
-using System.Data;
+using System.IO;
 using System.Net.Http;
+using System.Text;
 using System.Windows;
+using System.Windows.Threading;
 using book_frontend.Helpers;
 using book_frontend.Services;
 using book_frontend.Services.Interfaces;
 using book_frontend.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
+using Serilog.Events;
 
 namespace book_frontend;
 
@@ -16,8 +19,27 @@ namespace book_frontend;
 public partial class App : Application
 {
     private ServiceProvider? _serviceProvider;
+
     protected override void OnStartup(StartupEventArgs e)
     {
+        // 配置Serilog
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+            .MinimumLevel.Override("System", LogEventLevel.Warning)
+            .WriteTo.Console()
+            .WriteTo.File(
+                Path.Combine("Logs", "log-.txt"),
+                rollingInterval: RollingInterval.Day,
+                retainedFileCountLimit: 7,
+                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+            .CreateLogger();
+
+        // 全局异常处理
+        this.DispatcherUnhandledException += App_DispatcherUnhandledException;
+        AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+        TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
+
         // 创建依赖注入容器
         var serviceCollection = new ServiceCollection();
         ConfigureServices(serviceCollection);
@@ -34,6 +56,7 @@ public partial class App : Application
         MainWindow = mainWindow;
         mainWindow.Show();
 
+        Log.Information("主窗口启动了……");
         base.OnStartup(e);
     }
 
@@ -69,7 +92,27 @@ public partial class App : Application
         services.AddTransient<MainWindow>();
     }
 
-    
+    private static void App_DispatcherUnhandledException(object sender,
+        DispatcherUnhandledExceptionEventArgs e)
+    {
+        Log.Error(e.Exception, "UI线程未处理异常");
+        MessageBox.Show("发生未预期的错误，请查看日志了解详情。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+        e.Handled = true;
+    }
+
+    private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+    {
+        Log.Fatal(e.ExceptionObject as Exception, "非UI线程未处理异常");
+        MessageBox.Show("发生严重错误，应用程序将关闭。", "严重错误", MessageBoxButton.OK, MessageBoxImage.Error);
+    }
+
+    private static void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+    {
+        Log.Error(e.Exception, "未观察到的任务异常");
+        e.SetObserved();
+    }
+
+
     protected override void OnExit(ExitEventArgs e)
     {
         // 释放依赖注入容器资源

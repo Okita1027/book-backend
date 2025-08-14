@@ -5,13 +5,14 @@ using System.Windows.Input;
 using book_frontend.Commands;
 using book_frontend.Models;
 using book_frontend.Services.Interfaces;
+using Serilog;
 
 namespace book_frontend.ViewModels;
 
 public class BookListViewModel : BaseViewModel
 {
-    // 图书服务接口
     private readonly IBookService _bookService;
+    private readonly ILogger _logger;
 
     // 搜索条件
     private string? _title;
@@ -179,6 +180,7 @@ public class BookListViewModel : BaseViewModel
     public BookListViewModel(IBookService bookService)
     {
         _bookService = bookService;
+        _logger = Log.ForContext<BookListViewModel>();
         Books = [];
 
         // 先初始化所有命令
@@ -236,6 +238,9 @@ public class BookListViewModel : BaseViewModel
 
     private async Task LoadPageAsync(int pageIndex, bool append = false)
     {
+        _logger.Information("开始搜索图书，搜索条件: title={Title}, author={Author}, category={Category}, publisher={Publisher}, isbn={Isbn}, publishDateStart={PublishDateStart}, publishDateEnd={PublishDateEnd}, pageIndex={PageIndex}, pageSize={PageSize}",
+            Title, Author, Category, Publisher, Isbn, PublishDateStart, PublishDateEnd, pageIndex, PageSize);
+
         try
         {
             IsLoading = true;
@@ -265,6 +270,7 @@ public class BookListViewModel : BaseViewModel
                 PageIndex = response.Data.PageIndex;
                 PageSize = response.Data.PageSize;
                 Total = response.Data.Total;
+                _logger.Information("搜索完成，找到 {Count} 本书籍", response.Data.Items.Count);
                 // 同步跳转输入框显示为当前页
                 JumpToPageInput = PageIndex.ToString();
             }
@@ -274,12 +280,14 @@ public class BookListViewModel : BaseViewModel
                 if (!append)
                 {
                     Total = 0;
+                    _logger.Warning("搜索失败：{Message}", response.Message);
                 }
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
+            _logger.Error(ex, "搜索图书时发生异常");
         }
         finally
         {
