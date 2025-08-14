@@ -1,10 +1,11 @@
-<UserControl x:Class="book_frontend.Views.HomeView"
+<UserControl x:Class="book_frontend.Views.UserControls.HomeView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:book_frontend.Views"
-             mc:Ignorable="d">
+             xmlns:viewModels="clr-namespace:book_frontend.ViewModels"
+             mc:Ignorable="d" d:DataContext="{d:DesignInstance viewModels:BookListViewModel}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -15,6 +16,7 @@
         <!-- 搜索表单 -->
         <Border Padding="16" Background="White" CornerRadius="6" Margin="10" Grid.Row="0">
             <Grid>
+                <!-- *：平均分配空间 -->
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
@@ -22,11 +24,13 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
+                    <!-- Auto：根据内容自动调整高度 -->
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
+                <!-- Orientation：排列方向 -->
                 <StackPanel Margin="6" Orientation="Vertical">
                     <TextBlock Text="图书名称" />
                     <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" KeyDown="TextBox_KeyDown" />
@@ -74,8 +78,8 @@
                 </Grid.RowDefinitions>
 
                 <!-- 标题栏 -->
-                <Border Grid.Row="0" BorderBrush="#DDD" BorderThickness="0 0 0 1" Padding="8" Background="#F8F9FA">
-                    <Grid>
+                <Border Grid.Row="0" BorderBrush="#DDD" BorderThickness="1" Background="#F8F9FA">
+                    <Grid Margin="0,0,17,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="2*" />
                             <ColumnDefinition Width="1.5*" />
@@ -85,21 +89,35 @@
                             <ColumnDefinition Width="1*" />
                             <ColumnDefinition Width="1.5*" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="图书名称" FontWeight="Bold" Grid.Column="0" />
-                        <TextBlock Text="作者" FontWeight="Bold" Grid.Column="1" />
-                        <TextBlock Text="出版社" FontWeight="Bold" Grid.Column="2" />
-                        <TextBlock Text="ISBN" FontWeight="Bold" Grid.Column="3" />
-                        <TextBlock Text="出版日期" FontWeight="Bold" Grid.Column="4" />
-                        <TextBlock Text="库存/可借" FontWeight="Bold" Grid.Column="5" />
-                        <TextBlock Text="类别" FontWeight="Bold" Grid.Column="6" />
+                        <Border Grid.Column="0" BorderBrush="#DDD" BorderThickness="0 0 1 0" Padding="8">
+                            <TextBlock Text="图书名称" FontWeight="Bold" />
+                        </Border>
+                        <Border Grid.Column="1" BorderBrush="#DDD" BorderThickness="0 0 1 0" Padding="8">
+                            <TextBlock Text="作者" FontWeight="Bold" />
+                        </Border>
+                        <Border Grid.Column="2" BorderBrush="#DDD" BorderThickness="0 0 1 0" Padding="8">
+                            <TextBlock Text="出版社" FontWeight="Bold" />
+                        </Border>
+                        <Border Grid.Column="3" BorderBrush="#DDD" BorderThickness="0 0 1 0" Padding="8">
+                            <TextBlock Text="ISBN" FontWeight="Bold" />
+                        </Border>
+                        <Border Grid.Column="4" BorderBrush="#DDD" BorderThickness="0 0 1 0" Padding="8">
+                            <TextBlock Text="出版日期" FontWeight="Bold" />
+                        </Border>
+                        <Border Grid.Column="5" BorderBrush="#DDD" BorderThickness="0 0 1 0" Padding="8">
+                            <TextBlock Text="库存/可借" FontWeight="Bold" HorizontalAlignment="Center" />
+                        </Border>
+                        <Border Grid.Column="6" BorderBrush="#DDD" BorderThickness="0 0 0 0" Padding="8">
+                            <TextBlock Text="类别" FontWeight="Bold" />
+                        </Border>
                     </Grid>
                 </Border>
 
-                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <ScrollViewer x:Name="BookListScrollViewer" Grid.Row="1" VerticalScrollBarVisibility="Auto" ScrollChanged="BookListScrollViewer_ScrollChanged">
                     <ItemsControl ItemsSource="{Binding Books}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border BorderBrush="#EEE" BorderThickness="0 0 0 1" Padding="8">
+                                <Border BorderBrush="#EEE" BorderThickness="1 0 1 1">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="2*" />
@@ -110,27 +128,39 @@
                                             <ColumnDefinition Width="1*" />
                                             <ColumnDefinition Width="1.5*" />
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Text="{Binding Title}" FontWeight="SemiBold" Grid.Column="0"
-                                                   TextWrapping="Wrap" />
-                                        <TextBlock Text="{Binding AuthorName}" Grid.Column="1" TextWrapping="Wrap" />
-                                        <TextBlock Text="{Binding PublisherName}" Grid.Column="2" TextWrapping="Wrap" />
-                                        <TextBlock Text="{Binding Isbn}" Grid.Column="3" TextWrapping="Wrap" />
-                                        <TextBlock Text="{Binding PublishedDate, StringFormat=yyyy-MM-dd}"
-                                                   Grid.Column="4" />
-                                        <TextBlock Grid.Column="5">
-                                            <TextBlock.Text>
-                                                <MultiBinding StringFormat="{}{0}/{1}">
-                                                    <Binding Path="Stock" />
-                                                    <Binding Path="Available" />
-                                                </MultiBinding>
-                                            </TextBlock.Text>
-                                        </TextBlock>
-                                        <TextBlock Grid.Column="6" TextWrapping="Wrap">
-                                            <TextBlock.Text>
-                                                <Binding Path="CategoryNames"
-                                                         Converter="{StaticResource StringArrayToStringConverter}" />
-                                            </TextBlock.Text>
-                                        </TextBlock>
+                                        <Border Grid.Column="0" BorderBrush="#EEE" BorderThickness="0 0 1 0" Padding="8">
+                                            <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                                        </Border>
+                                        <Border Grid.Column="1" BorderBrush="#EEE" BorderThickness="0 0 1 0" Padding="8">
+                                            <TextBlock Text="{Binding AuthorName}" TextWrapping="Wrap" />
+                                        </Border>
+                                        <Border Grid.Column="2" BorderBrush="#EEE" BorderThickness="0 0 1 0" Padding="8">
+                                            <TextBlock Text="{Binding PublisherName}" TextWrapping="Wrap" />
+                                        </Border>
+                                        <Border Grid.Column="3" BorderBrush="#EEE" BorderThickness="0 0 1 0" Padding="8">
+                                            <TextBlock Text="{Binding Isbn}" TextWrapping="Wrap" />
+                                        </Border>
+                                        <Border Grid.Column="4" BorderBrush="#EEE" BorderThickness="0 0 1 0" Padding="8">
+                                            <TextBlock Text="{Binding PublishedDate, StringFormat=yyyy-MM-dd}" />
+                                        </Border>
+                                        <Border Grid.Column="5" BorderBrush="#EEE" BorderThickness="0 0 1 0" Padding="8">
+                                            <TextBlock HorizontalAlignment="Center">
+                                                <TextBlock.Text>
+                                                    <MultiBinding StringFormat="{}{0}/{1}">
+                                                        <Binding Path="Stock" />
+                                                        <Binding Path="Available" />
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </Border>
+                                        <Border Grid.Column="6" BorderBrush="#EEE" BorderThickness="0 0 0 0" Padding="8">
+                                            <TextBlock TextWrapping="Wrap">
+                                                <TextBlock.Text>
+                                                    <Binding Path="CategoryNames"
+                                                             Converter="{StaticResource StringArrayToStringConverter}" />
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </Border>
                                     </Grid>
                                 </Border>
                             </DataTemplate>
@@ -150,7 +180,7 @@
             </Grid>
         </Border>
 
-        <!-- 分页 -->
+        <!-- 分页（已注释，改为滚动分页）
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
             <Button Content="上一页" Margin="4" Command="{Binding PrevPageCommand}" />
             <Grid Margin="0,0">
@@ -162,9 +192,18 @@
                 <TextBlock Text="当前页码" Grid.Row="1" HorizontalAlignment="Center" FontSize="12" Foreground="Gray" />
             </Grid>
             <Button Content="下一页" Margin="4" Command="{Binding NextPageCommand}" />
+
+            输入页码跳转（已停用）
+            <TextBlock Text=" 跳转到" Margin="10,0,0,0" VerticalAlignment="Center" />
+            <TextBox Width="60" Text="{Binding JumpToPageInput, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Text="/" VerticalAlignment="Center" Margin="4,0" />
+            <TextBlock Text="{Binding TotalPages}" VerticalAlignment="Center" />
+            <Button Content="跳转" Margin="8,0,0,0" Command="{Binding JumpToPageCommand}" />
+
             <TextBlock Text="/ 共" Margin="6,0,0,0" />
             <TextBlock Text="{Binding Total}" />
             <TextBlock Text="条" />
         </StackPanel>
+        -->
     </Grid>
 </UserControl>

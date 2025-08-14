@@ -153,11 +153,28 @@ public class BookListViewModel : BaseViewModel
         set => SetProperty(ref _errorMessage, value);
     }
 
+    // 页码跳转
+    private string _jumpToPageInput = "1";
+    public string JumpToPageInput
+    {
+        get => _jumpToPageInput;
+        set
+        {
+            if (SetProperty(ref _jumpToPageInput, value))
+            {
+                RefreshCommands();
+            }
+        }
+    }
+
+    public int TotalPages => Total > 0 ? (int)Math.Ceiling((double)Total / PageSize) : 1;
+
     // 命令
     public RelayCommand SearchCommand { get; }
     public RelayCommand ResetCommand { get; }
     public RelayCommand NextPageCommand { get; }
     public RelayCommand PrevPageCommand { get; }
+    public RelayCommand JumpToPageCommand { get; }
 
     public BookListViewModel(IBookService bookService)
     {
@@ -171,6 +188,7 @@ public class BookListViewModel : BaseViewModel
             _ => !IsLoading && HasNextPage);
         PrevPageCommand = new RelayCommand(async void (_) => await GoToPageAsync(PageIndex - 1),
             _ => !IsLoading && HasPreviousPage);
+        JumpToPageCommand = new RelayCommand(async void (_) => await JumpToPageAsync(), _ => !IsLoading && CanJumpToPage());
 
         // 然后设置属性值，避免在命令初始化前调用RefreshCommands
         PageSize = 12;
@@ -216,7 +234,7 @@ public class BookListViewModel : BaseViewModel
         await LoadPageAsync(pageIndex);
     }
 
-    private async Task LoadPageAsync(int pageIndex)
+    private async Task LoadPageAsync(int pageIndex, bool append = false)
     {
         try
         {
@@ -233,7 +251,10 @@ public class BookListViewModel : BaseViewModel
                 pageIndex: pageIndex,
                 pageSize: PageSize);
             // 更新 UI 数据
-            Books.Clear();
+            if (!append)
+            {
+                Books.Clear();
+            }
             if (response is { Success: true, Data: not null })
             {
                 foreach (var b in response.Data.Items)
@@ -244,11 +265,16 @@ public class BookListViewModel : BaseViewModel
                 PageIndex = response.Data.PageIndex;
                 PageSize = response.Data.PageSize;
                 Total = response.Data.Total;
+                // 同步跳转输入框显示为当前页
+                JumpToPageInput = PageIndex.ToString();
             }
             else
             {
                 ErrorMessage = response.Message ?? "查询失败";
-                Total = 0;
+                if (!append)
+                {
+                    Total = 0;
+                }
             }
         }
         catch (Exception ex)
@@ -259,6 +285,14 @@ public class BookListViewModel : BaseViewModel
         {
             IsLoading = false;
         }
+    }
+
+    public async Task LoadNextPageAsync()
+    {
+        if (IsLoading) return;
+        if (!HasNextPage) return;
+        var next = PageIndex + 1;
+        await LoadPageAsync(next, append: true);
     }
 
     private void RefreshCommands()
@@ -272,5 +306,26 @@ public class BookListViewModel : BaseViewModel
          */
         OnPropertyChanged(nameof(HasNextPage));
         OnPropertyChanged(nameof(HasPreviousPage));
+        OnPropertyChanged(nameof(TotalPages));
+    }
+// removed erroneous class closing brace here to keep following methods inside the class
+
+    private bool CanJumpToPage()
+    {
+        if (string.IsNullOrWhiteSpace(JumpToPageInput)) return false;
+        if (!int.TryParse(JumpToPageInput, out var page)) return false;
+        if (page < 1) return false;
+        // 如果总条数为0，允许跳到第1页以触发查询
+        var totalPages = TotalPages;
+        return page <= totalPages;
+    }
+
+    private async Task JumpToPageAsync()
+    {
+        if (!int.TryParse(JumpToPageInput, out var page)) return;
+        if (page < 1) page = 1;
+        var totalPages = TotalPages;
+        if (page > totalPages) page = totalPages;
+        await GoToPageAsync(page);
     }
 }

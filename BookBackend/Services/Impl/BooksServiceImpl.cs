@@ -6,11 +6,13 @@ using book_backend.Models.VO;
 using book_backend.utils;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using Serilog.Core;
 using static book_backend.Constants.IServiceConstants;
+using ILogger = Serilog.ILogger;
 
 namespace book_backend.Services.Impl
 {
-    public class BooksServiceImpl(ApplicationDbContext context) : IBooksService
+    public class BooksServiceImpl(ApplicationDbContext context, ILogger logger) : IBooksService
     {
         public async Task<List<RawBookVO>> GetAllRawBooksAsync()
         {
@@ -152,13 +154,18 @@ namespace book_backend.Services.Impl
                 query = query.Where(b => b.PublishedDate <= publishedDateEnd.Value);
             }
 
-            List<BookVO> bookVos = await query.ProjectToType<BookVO>().ToListAsync();
+            var bookVos = await query.ProjectToType<BookVO>().ToListAsync();
             return bookVos;
         }
 
         public async Task<Pagination<BookVO>> SearchBooksPaginatedAsync(PaginationRequest paginationRequest, string? title, string? isbn, string? categoryName,
             string? authorName, string? publisherName, DateTime? publishedDateBegin, DateTime? publishedDateEnd)
         {
+            // 添加日志记录传入的参数
+            logger.Information("Search parameters - Title: {Title}, ISBN: {Isbn}, Category: {CategoryName}, Author: {AuthorName}, Publisher: {PublisherName}, DateBegin: {DateBegin}, DateEnd: {DateEnd}",
+                title, isbn, categoryName, authorName, publisherName, publishedDateBegin, publishedDateEnd);
+
+            
             // 获取所有书籍、加载关联的 Author、Publisher和BookCategory,然后转为LINQ查询
             var query = context.Books
                 .Include(b => b.Author)
