@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using book_frontend.Constants;
 
 namespace book_frontend.Views.UserControls;
 
@@ -119,7 +120,7 @@ public partial class LoadingMask : UserControl
 
     public static readonly DependencyProperty LoadingTextProperty =
         DependencyProperty.Register(nameof(LoadingText), typeof(string), typeof(LoadingMask),
-            new PropertyMetadata("正在加载..."));
+            new PropertyMetadata(UiConstant.Loading));
 
     public double TextFontSize
     {

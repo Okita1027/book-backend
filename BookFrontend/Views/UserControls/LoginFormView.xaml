@@ -6,6 +6,7 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:viewModels="clr-namespace:book_frontend.ViewModels"
              xmlns:controls="clr-namespace:book_frontend.Views.UserControls"
+             xmlns:constants="clr-namespace:book_frontend.Constants"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModels:LoginViewModel}">
     <Grid>
@@ -16,19 +17,19 @@
         </Grid.RowDefinitions>
 
         <!-- 标题 -->
-        <TextBlock Grid.Row="0" Text="用户登录" Style="{StaticResource PageTitleStyle}" />
+        <TextBlock Grid.Row="0" Text="{x:Static constants:UiConstant.UserLogin}" Style="{StaticResource PageTitleStyle}" />
 
         <!-- 登录表单主体 -->
         <ScrollViewer Grid.Row="1" Style="{StaticResource ContentAreaStyle}">
             <StackPanel VerticalAlignment="Top">
                 <!-- 邮箱输入 -->
                 <controls:TextInputField IconKind="Email"
-                                         HintText="请输入邮箱地址"
+                                         HintText="{x:Static constants:UiConstant.EmailPlaceholder}"
                                          Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" />
 
                 <!-- 密码输入 -->
                 <controls:PasswordInputField IconKind="Lock"
-                                             HintText="请输入密码"
+                                             HintText="{x:Static constants:UiConstant.PasswordPlaceholder}"
                                              Password="{Binding Password, UpdateSourceTrigger=PropertyChanged}"
                                              Margin="0,0,0,10" />
 
@@ -36,7 +37,7 @@
                 <controls:MessageDisplay ErrorMessage="{Binding ErrorMessage}"
                                          SuccessMessage="{Binding SuccessMessage}" />
 
-                <Button Content="登录"
+                <Button Content="{x:Static constants:UiConstant.LoginButton}"
                         Command="{Binding LoginCommand}"
                         Style="{StaticResource MaterialDesignRaisedButton}"
                         Background="#2196F3"

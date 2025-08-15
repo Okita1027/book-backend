@@ -62,7 +62,6 @@ namespace book_frontend.Views.UserControls
         public PasswordInputField()
         {
             InitializeComponent();
-            Password = "123456";
         }
     }
 }

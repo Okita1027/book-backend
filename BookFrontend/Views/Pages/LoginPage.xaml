@@ -7,6 +7,7 @@
       xmlns:h="clr-namespace:book_frontend.Helpers"
       xmlns:views="clr-namespace:book_frontend.Views.UserControls"
       xmlns:viewModels="clr-namespace:book_frontend.ViewModels"
+      xmlns:constants="clr-namespace:book_frontend.Constants"
       mc:Ignorable="d"
       d:DesignHeight="480" d:DesignWidth="800"
       d:DataContext="{d:DesignInstance Type=viewModels:LoginViewModel, IsDesignTimeCreatable=False}">
@@ -26,7 +27,7 @@
                 <views:LoginFormView.FooterContent>
                     <StackPanel Style="{StaticResource FooterActionAreaStyle}">
                         <TextBlock Text="还没有账户？" Style="{StaticResource LinkTextStyle}" />
-                        <Button Content="立即注册"
+                        <Button Content="{x:Static constants:UiConstant.GoToRegisterButton}"
                                 Style="{StaticResource LinkButtonStyle}"
                                 Click="RegisterButton_Click" />
                     </StackPanel>
@@ -35,6 +36,6 @@
         </Border>
 
         <!-- 遮罩层：加载时显示 -->
-        <views:LoadingMask Grid.Column="1" IsBusy="{Binding IsLoading}" LoadingText="正在登录..." />
+        <views:LoadingMask Grid.Column="1" IsBusy="{Binding IsLoading}" LoadingText="{x:Static constants:UiConstant.LoginLoading}" />
     </Grid>
 </Page>

@@ -21,7 +21,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assests\Images\" />
-    <Folder Include="Commands\" />
+    <Folder Include="Assests\Icons\" />
     <Folder Include="Converters\" />
     <Folder Include="Helpers\" />
     <Folder Include="Models\" />

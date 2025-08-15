@@ -1,5 +1,6 @@
 using book_frontend.Services.Interfaces;
 using book_frontend.Models;
+using book_frontend.Constants;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
@@ -148,7 +149,7 @@ public class RegisterViewModel : BaseViewModel
 
             if (response.Success)
             {
-                SuccessMessage = "注册成功！正在跳转到登录页面...";
+                SuccessMessage = UiConstant.RegisterSuccessMessage;
 
                 // 延迟1秒后跳转到登录页面
                 await Task.Delay(1000);

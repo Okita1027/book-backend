@@ -6,6 +6,7 @@
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       xmlns:views="clr-namespace:book_frontend.Views.UserControls"
       xmlns:viewModels="clr-namespace:book_frontend.ViewModels"
+      xmlns:constants="clr-namespace:book_frontend.Constants"
       mc:Ignorable="d"
       d:DataContext="{d:DesignInstance viewModels:RegisterViewModel}">
     <Grid>
@@ -22,7 +23,7 @@
                 <views:RegisterFormView.FooterContent>
                     <StackPanel Style="{StaticResource FooterActionAreaStyle}">
                         <TextBlock Text="已有账户？" Style="{StaticResource LinkTextStyle}" />
-                        <Button Content="立即登录"
+                        <Button Content="{x:Static constants:UiConstant.GoToLoginButton}"
                                 Style="{StaticResource LinkButtonStyle}"
                                 Click="LoginButton_Click" />
                     </StackPanel>
@@ -31,6 +32,6 @@
         </Border>
 
         <!-- 遮罩层（加载时显示） -->
-        <views:LoadingMask Grid.Column="1" IsBusy="{Binding IsLoading}" LoadingText="注册中..." />
+        <views:LoadingMask Grid.Column="1" IsBusy="{Binding IsLoading}" LoadingText="{x:Static constants:UiConstant.RegisterLoading}" />
     </Grid>
 </Page>
