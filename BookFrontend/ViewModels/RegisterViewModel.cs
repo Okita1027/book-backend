@@ -1,9 +1,9 @@
-﻿using book_frontend.Commands;
 using book_frontend.Services.Interfaces;
 using book_frontend.Models;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.Input;
 
 namespace book_frontend.ViewModels;
 
@@ -24,7 +24,7 @@ public class RegisterViewModel : BaseViewModel
     public RegisterViewModel(IAuthService authService)
     {
         _authService = authService;
-        _registerCommand = new RelayCommand(async _ => await RegisterAsync(), _ => CanRegister());
+        _registerCommand = new RelayCommand(async () => await RegisterAsync(), () => CanRegister());
     }
 
     public IAuthService AuthService => _authService;
@@ -38,7 +38,7 @@ public class RegisterViewModel : BaseViewModel
         {
             _name = value;
             OnPropertyChanged();
-            RelayCommand.RaiseCanExecuteChanged();
+            _registerCommand.NotifyCanExecuteChanged();
         }
     }
 
@@ -49,7 +49,7 @@ public class RegisterViewModel : BaseViewModel
         {
             _email = value;
             OnPropertyChanged();
-            RelayCommand.RaiseCanExecuteChanged();
+            _registerCommand.NotifyCanExecuteChanged();
         }
     }
 
@@ -61,7 +61,7 @@ public class RegisterViewModel : BaseViewModel
             _password = value;
             OnPropertyChanged();
             ValidatePassword();
-            RelayCommand.RaiseCanExecuteChanged();
+            _registerCommand.NotifyCanExecuteChanged();
         }
     }
 
@@ -73,7 +73,7 @@ public class RegisterViewModel : BaseViewModel
             _confirmPassword = value;
             OnPropertyChanged();
             ValidatePassword();
-            RelayCommand.RaiseCanExecuteChanged();
+            _registerCommand.NotifyCanExecuteChanged();
         }
     }
 
@@ -84,7 +84,7 @@ public class RegisterViewModel : BaseViewModel
         {
             _isLoading = value;
             OnPropertyChanged();
-            RelayCommand.RaiseCanExecuteChanged();
+            _registerCommand.NotifyCanExecuteChanged();
         }
     }
 

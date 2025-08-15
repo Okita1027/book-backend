@@ -22,20 +22,26 @@ public partial class App : Application
 
     protected override void OnStartup(StartupEventArgs e)
     {
+        // 调整控制台编码
+        Console.InputEncoding = Encoding.UTF8;
+        Console.OutputEncoding = Encoding.UTF8;
+
         // 确保日志目录存在
         var logDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
         if (!Directory.Exists(logDirectory))
         {
             Directory.CreateDirectory(logDirectory);
         }
-        
+
         // 配置Serilog
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
             .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
             .MinimumLevel.Override("System", LogEventLevel.Warning)
             .WriteTo.Console(
-                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}"
+                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}",
+                standardErrorFromLevel: LogEventLevel.Error,
+                theme: Serilog.Sinks.SystemConsole.Themes.AnsiConsoleTheme.Code
             )
             .WriteTo.File(
                 Path.Combine("Logs", "log-.json"),
@@ -47,7 +53,7 @@ public partial class App : Application
             .CreateLogger();
 
         // 全局异常处理
-        this.DispatcherUnhandledException += App_DispatcherUnhandledException;
+        DispatcherUnhandledException += App_DispatcherUnhandledException;
         AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
 
@@ -103,21 +109,41 @@ public partial class App : Application
         services.AddTransient<MainWindow>();
     }
 
+    /// <summary>
+    /// 捕获UI线程（主线程）中未处理的异常，如按钮点击事件、数据绑定等操作中的异常。
+    /// </summary>
+    /// <param name="sender">应用程序实例</param>
+    /// <param name="e">包含异常信息的事件参数</param>
     private static void App_DispatcherUnhandledException(object sender,
         DispatcherUnhandledExceptionEventArgs e)
     {
         Log.Error(e.Exception, "UI线程未处理异常");
         MessageBox.Show("发生未预期的错误，请查看日志了解详情。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+        // 标记异常已被处理，防止应用程序崩溃
         e.Handled = true;
     }
 
+    /// <summary>
+    /// 捕获非UI线程中的未处理异常，这类异常通常会导致应用程序终止。
+    /// </summary>
+    /// <param name="sender">应用程序实例</param>
+    /// <param name="e">包含异常信息的事件参数</param>
     private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
         Log.Fatal(e.ExceptionObject as Exception, "非UI线程未处理异常");
         MessageBox.Show("发生严重错误，应用程序将关闭。", "严重错误", MessageBoxButton.OK, MessageBoxImage.Error);
     }
 
-    private static void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+    /// <summary>
+    /// 捕获未观察到的任务异常，这些异常通常是在异步任务中未处理的异常。
+    /// </summary>
+    /// <param name="sender">任务调度器实例</param>
+    /// <param name="e">包含异常信息的事件参数</param>
+    /// <remarks>
+    /// 当异步任务抛出异常但未被观察到时，会触发此事件。
+    /// 可以在事件处理程序中记录异常信息，防止应用程序崩溃。
+    /// </remarks>
+    private static void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
     {
         Log.Error(e.Exception, "未观察到的任务异常");
         e.SetObserved();

@@ -1,6 +1,6 @@
-﻿using System.Windows.Input;
-using book_frontend.Commands;
+using System.Windows.Input;
 using book_frontend.Services.Interfaces;
+using CommunityToolkit.Mvvm.Input;
 
 namespace book_frontend.ViewModels;
 
@@ -23,7 +23,7 @@ public class LoginViewModel : BaseViewModel
             // 当用户名变化后，尝试更新绑定属性，并刷新命令可用状态
             if (SetProperty(ref _email, value))
             {
-                RelayCommand.RaiseCanExecuteChanged();
+                _loginCommand.NotifyCanExecuteChanged();
             }
         }
     }
@@ -36,7 +36,7 @@ public class LoginViewModel : BaseViewModel
             // 当密码变化后，尝试更新绑定属性，并刷新命令可用状态
             if (SetProperty(ref _password, value))
             {
-                RelayCommand.RaiseCanExecuteChanged();
+                _loginCommand.NotifyCanExecuteChanged();
             }
         }
     }
@@ -49,7 +49,7 @@ public class LoginViewModel : BaseViewModel
             // 登录过程中禁用按钮，结束后恢复
             if (SetProperty(ref _isLoading, value))
             {
-                RelayCommand.RaiseCanExecuteChanged();
+                _loginCommand.NotifyCanExecuteChanged();
             }
         }
     }
@@ -71,9 +71,9 @@ public class LoginViewModel : BaseViewModel
         // execute：调用异步登录方法
         // canExecute：根据输入与加载状态决定按钮是否可用
         _loginCommand = new RelayCommand(
-            // _ 表示命令参数（这里未使用，所以用下划线表示忽略）
-            execute: async void (_) => await ExecuteLoginAsync(),
-            canExecute: _ => CanLogin()
+            // 异步执行登录方法
+            execute: async void () => await ExecuteLoginAsync(),
+            canExecute: CanLogin
         );
     }
 

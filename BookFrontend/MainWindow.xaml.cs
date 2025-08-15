@@ -27,7 +27,13 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         _authService = authService;
-        // 注意：不要在这里调用 ShowHomePage()，因为此时 DataContext 还未通过依赖注入设置
+        /*
+         * 不要在这里调用 ShowHomePage()，因为此时 DataContext 还未通过依赖注入设置
+         * DataContext是当前UI元素绑定数据的"上下文"/"数据源"，它的作用是：
+         *  - 数据绑定源：当XAML中的绑定表达式没有明确指定Source时，默认会从DataContext中获取数据
+         *  - 继承性：DataContext具有继承性，子元素会继承父元素的DataContext，除非显式设置了自己的DataContext
+         *  - MVVM模式基础：ViewModel通常被设置为View的DataContext，实现视图和数据的分离
+         */
     }
 
     /// <summary>
@@ -98,7 +104,7 @@ public partial class MainWindow : Window
         {
             _loginViewModel = new LoginViewModel(_authService);
             // 订阅导航到注册页面的事件
-            _loginViewModel.NavigateToRegister += () => ShowRegisterPage();
+            _loginViewModel.NavigateToRegister += ShowRegisterPage;
         }
         
         loginPage.DataContext = _loginViewModel;
@@ -117,7 +123,7 @@ public partial class MainWindow : Window
         {
             _registerViewModel = new RegisterViewModel(_authService);
             // 订阅导航到登录页面的事件
-            _registerViewModel.NavigateToLogin += () => ShowLoginPage();
+            _registerViewModel.NavigateToLogin += ShowLoginPage;
         }
         
         // 重置表单状态

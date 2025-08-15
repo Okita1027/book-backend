@@ -1,4 +1,4 @@
-﻿namespace book_frontend.Constants;
+namespace book_frontend.Constants;
 
 public class AppConstant
 {

@@ -1,10 +1,7 @@
-using System;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using book_frontend.Commands;
 using book_frontend.Models;
 using book_frontend.Services.Interfaces;
+using CommunityToolkit.Mvvm.Input;
 using Serilog;
 
 namespace book_frontend.ViewModels;
@@ -185,14 +182,14 @@ public class BookListViewModel : BaseViewModel
         Books = [];
 
         // 先初始化所有命令
-        SearchCommand = new RelayCommand(async void (_) => await SearchAsync(), _ => !IsLoading);
-        ResetCommand = new RelayCommand(_ => Reset(), _ => !IsLoading);
-        NextPageCommand = new RelayCommand(async void (_) => await GoToPageAsync(PageIndex + 1),
-            _ => !IsLoading && HasNextPage);
-        PrevPageCommand = new RelayCommand(async void (_) => await GoToPageAsync(PageIndex - 1),
-            _ => !IsLoading && HasPreviousPage);
+        SearchCommand = new RelayCommand(async () => await SearchAsync(), () => !IsLoading);
+        ResetCommand = new RelayCommand(Reset, () => !IsLoading);
+        NextPageCommand = new RelayCommand(async () => await GoToPageAsync(PageIndex + 1),
+            () => !IsLoading && HasNextPage);
+        PrevPageCommand = new RelayCommand(async () => await GoToPageAsync(PageIndex - 1),
+            () => !IsLoading && HasPreviousPage);
         JumpToPageCommand =
-            new RelayCommand(async void (_) => await JumpToPageAsync(), _ => !IsLoading && CanJumpToPage());
+            new RelayCommand(async () => await JumpToPageAsync(), () => !IsLoading && CanJumpToPage());
 
         // 然后设置属性值，避免在命令初始化前调用RefreshCommands
         PageSize = 12;
@@ -309,7 +306,11 @@ public class BookListViewModel : BaseViewModel
 
     private void RefreshCommands()
     {
-        RelayCommand.RaiseCanExecuteChanged();
+        SearchCommand.NotifyCanExecuteChanged();
+        ResetCommand.NotifyCanExecuteChanged();
+        NextPageCommand.NotifyCanExecuteChanged();
+        PrevPageCommand.NotifyCanExecuteChanged();
+        JumpToPageCommand.NotifyCanExecuteChanged();
         /*
          * HasNextPage 和 HasPreviousPage是计算属性
          * 它们的值依赖于其他属性（PageIndex、PageSize、Total）的变化

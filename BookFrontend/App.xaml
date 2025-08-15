@@ -14,7 +14,7 @@
                 <!-- 引用程序集中的资源文件，PACK URI格式：pack://application:,,,/[AssemblyName];component/[ResourceFilePath] -->
                 <ResourceDictionary
                     Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
-                <!-- 引用应用程序自定义样式资源 -->
+                <!-- 引用应用程序自定义的样式资源 -->
                 <ResourceDictionary Source="Views/ResourceDictionaries/Styles.xaml" />
                 <ResourceDictionary Source="Views/ResourceDictionaries/FormStyles.xaml" />
                 <ResourceDictionary Source="Views/ResourceDictionaries/TableStyles.xaml" />
