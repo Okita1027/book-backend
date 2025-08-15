@@ -6,7 +6,7 @@
         mc:Ignorable="d"
         xmlns:local="clr-namespace:book_frontend"
         xmlns:pages="clr-namespace:book_frontend.Views.Pages"
-        Title="图书管理" Height="720" Width="1200" Background="#F5F5F5"
+        Title="图书阅览管理系统" Height="720" Width="1200" Background="#F5F5F5"
         WindowState="Maximized">
     <DockPanel>
         <!-- 顶部导航栏占位 -->
