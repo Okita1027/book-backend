@@ -94,7 +94,12 @@ public partial class MainWindow : Window
         var loginPage = new LoginPage();
         
         // 创建或重用LoginViewModel
-        _loginViewModel ??= new LoginViewModel(_authService);
+        if (_loginViewModel == null)
+        {
+            _loginViewModel = new LoginViewModel(_authService);
+            // 订阅导航到注册页面的事件
+            _loginViewModel.NavigateToRegister += () => ShowRegisterPage();
+        }
         
         loginPage.DataContext = _loginViewModel;
         MainContentFrame.Navigate(loginPage);

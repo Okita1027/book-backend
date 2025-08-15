@@ -1,4 +1,6 @@
+using System.Windows;
 using System.Windows.Controls;
+using book_frontend.ViewModels;
 
 namespace book_frontend.Views.Pages
 {
@@ -9,6 +11,14 @@ namespace book_frontend.Views.Pages
         public LoginPage()
         {
             InitializeComponent();
+        }
+
+        private void RegisterButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is LoginViewModel viewModel)
+            {
+                viewModel.TriggerNavigateToRegister();
+            }
         }
     }
 }

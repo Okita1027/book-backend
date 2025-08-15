@@ -1,4 +1,4 @@
-﻿using System.Windows.Input;
+using System.Windows.Input;
 using book_frontend.Commands;
 using book_frontend.Services.Interfaces;
 
@@ -12,6 +12,8 @@ public class LoginViewModel : BaseViewModel
     private string _password = string.Empty;
     private bool _isLoading = false;
     private string _errorMessage = string.Empty;
+
+    public event Action? NavigateToRegister;
 
     public string Email
     {
@@ -120,5 +122,11 @@ public class LoginViewModel : BaseViewModel
         }
     }
 
-
+    /// <summary>
+    /// 触发导航到注册页面的事件
+    /// </summary>
+    public void TriggerNavigateToRegister()
+    {
+        NavigateToRegister?.Invoke();
+    }
 }

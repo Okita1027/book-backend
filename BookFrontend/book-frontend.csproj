@@ -55,10 +55,5 @@
 	    <XamlRuntime>Wpf</XamlRuntime>
 	    <SubType>Designer</SubType>
 	  </Page>
-	  <Page Update="Views\ResourceDictionaries\Password.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	    <XamlRuntime>Wpf</XamlRuntime>
-	    <SubType>Designer</SubType>
-	  </Page>
 	</ItemGroup>
 </Project>
