@@ -6,6 +6,7 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:viewModels="clr-namespace:book_frontend.ViewModels"
              xmlns:views="clr-namespace:book_frontend.Views.UserControls"
+             xmlns:controls="clr-namespace:book_frontend.Controls"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModels:RegisterViewModel}">
     <Grid>
@@ -47,17 +48,17 @@
                          Margin="0,0,0,20"
                          FontSize="16" />
 
-                <!-- 使用可复用的密码输入控件（密码） -->
-                <views:MaterialPasswordBox HintText="请输入密码"
-                                           IconKind="Lock"
-                                           Password="{Binding Password, UpdateSourceTrigger=PropertyChanged}"
-                                           Margin="0,0,0,20" />
+                <!-- 使用自定义控件（密码） -->
+                <controls:PasswordField HintText="请输入密码"
+                                        IconKind="Lock"
+                                        Password="{Binding Password, UpdateSourceTrigger=PropertyChanged}"
+                                        Margin="0,0,0,20" />
 
-                <!-- 使用可复用的密码输入控件（确认密码） -->
-                <views:MaterialPasswordBox HintText="请确认密码"
-                                           IconKind="LockCheck"
-                                           Password="{Binding ConfirmPassword, UpdateSourceTrigger=PropertyChanged}"
-                                           Margin="0,0,0,30" />
+                <!-- 使用自定义控件（确认密码） -->
+                <controls:PasswordField HintText="请确认密码"
+                                        IconKind="LockCheck"
+                                        Password="{Binding ConfirmPassword, UpdateSourceTrigger=PropertyChanged}"
+                                        Margin="0,0,0,30" />
 
                 <TextBlock Text="{Binding ErrorMessage}"
                            Foreground="Red"

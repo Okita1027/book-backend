@@ -5,6 +5,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       xmlns:views="clr-namespace:book_frontend.Views.UserControls"
+      xmlns:controls="clr-namespace:book_frontend.Controls"
       xmlns:viewModels="clr-namespace:book_frontend.ViewModels"
       mc:Ignorable="d"
       d:DesignHeight="480" d:DesignWidth="800"
@@ -46,12 +47,12 @@
             <!-- 间隔 -->
             <Border Grid.Row="3" />
 
-            <!-- 密码（使用可复用控件） -->
-            <views:MaterialPasswordBox Grid.Row="4"
-                                       HintText="密码"
-                                       IconKind="Lock"
-                                       Password="{Binding Password, UpdateSourceTrigger=PropertyChanged}"
-                                       Margin="0,0,0,8" />
+            <!-- 密码（使用自定义控件） -->
+            <controls:PasswordField Grid.Row="4"
+                                    HintText="密码"
+                                    IconKind="Lock"
+                                    Password="{Binding Password, UpdateSourceTrigger=PropertyChanged}"
+                                    Margin="0,0,0,8" />
 
             <!-- 间隔 -->
             <Border Grid.Row="5" />
