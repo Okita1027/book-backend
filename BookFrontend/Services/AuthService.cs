@@ -26,21 +26,38 @@ public class AuthService : IAuthService
                 Password = password
             };
 
-            var response = await _apiClient.PostAsync<LoginResponse>("Users/login", loginRequest);
+            // 后端返回的是AuthResponseDTO格式，需要转换为LoginResponse
+            var response = await _apiClient.PostAsync<AuthResponseDTO>("Users/login", loginRequest);
             
             if (response is { Success: true, Data: not null })
             {
-                var loginResponse = response.Data;
-                if (loginResponse.IsSuccess)
+                var authResponse = response.Data;
+                // 创建用户对象
+                var user = new User
                 {
-                    _currentUser = loginResponse.User;
-                    _currentToken = loginResponse.Token;
-                    _apiClient.SetAuthToken(_currentToken);
-                    
-                    // 可以在这里保存到本地存储
-                    SaveTokenToLocalStorage(_currentToken);
-                }
-                return loginResponse;
+                    Id = authResponse.Id,
+                    Name = authResponse.Name,
+                    Email = loginRequest.Email,
+                    Role = authResponse.Role == "Admin" ? UserRole.Admin : UserRole.User
+                };
+                
+                _currentUser = user;
+                _currentToken = authResponse.Token;
+                _apiClient.SetAuthToken(_currentToken);
+                
+                // 可以在这里保存到本地存储
+                SaveTokenToLocalStorage(_currentToken);
+                
+                return new LoginResponse
+                {
+                    IsSuccess = true,
+                    Token = authResponse.Token,
+                    User = user,
+                    Id = authResponse.Id,
+                    Name = authResponse.Name,
+                    Role = authResponse.Role,
+                    ExpiresAt = authResponse.ExpiresAt
+                };
             }
             else
             {
