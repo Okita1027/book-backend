@@ -1,4 +1,4 @@
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using book_frontend.Commands;
 using book_frontend.Services.Interfaces;
 
@@ -72,7 +72,7 @@ public class LoginViewModel : BaseViewModel
         // canExecute：根据输入与加载状态决定按钮是否可用
         _loginCommand = new RelayCommand(
             // _ 表示命令参数（这里未使用，所以用下划线表示忽略）
-            execute: async _ => await ExecuteLoginAsync(),
+            execute: async void (_) => await ExecuteLoginAsync(),
             canExecute: _ => CanLogin()
         );
     }

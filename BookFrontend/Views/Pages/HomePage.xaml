@@ -156,6 +156,7 @@
                                         <Border Grid.Column="5" Style="{StaticResource TableDataCellStyle}">
                                             <TextBlock Style="{StaticResource TableDataCenterTextStyle}">
                                                 <TextBlock.Text>
+                                                    <!-- 多重绑定 -->
                                                     <MultiBinding StringFormat="{}{0}/{1}">
                                                         <Binding Path="Stock" />
                                                         <Binding Path="Available" />

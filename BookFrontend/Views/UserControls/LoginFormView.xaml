@@ -23,18 +23,18 @@
             <StackPanel VerticalAlignment="Top">
                 <!-- 邮箱输入 -->
                 <controls:TextInputField IconKind="Email"
-                                       HintText="请输入邮箱地址"
-                                       Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" />
+                                         HintText="请输入邮箱地址"
+                                         Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" />
 
                 <!-- 密码输入 -->
                 <controls:PasswordInputField IconKind="Lock"
-                                           HintText="请输入密码"
-                                           Password="{Binding Password, UpdateSourceTrigger=PropertyChanged}"
-                                           Margin="0,0,0,10" />
+                                             HintText="请输入密码"
+                                             Password="{Binding Password, UpdateSourceTrigger=PropertyChanged}"
+                                             Margin="0,0,0,10" />
 
                 <!-- 消息显示 -->
                 <controls:MessageDisplay ErrorMessage="{Binding ErrorMessage}"
-                                        SuccessMessage="{Binding SuccessMessage}" />
+                                         SuccessMessage="{Binding SuccessMessage}" />
 
                 <Button Content="登录"
                         Command="{Binding LoginCommand}"
@@ -49,6 +49,7 @@
         </ScrollViewer>
 
         <!-- 底部内容容器（交由宿主页面决定点击行为） -->
-        <ContentPresenter Grid.Row="2" Content="{Binding FooterContent, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+        <ContentPresenter Grid.Row="2"
+                          Content="{Binding FooterContent, RelativeSource={RelativeSource AncestorType=UserControl}}" />
     </Grid>
 </UserControl>

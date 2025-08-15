@@ -6,7 +6,11 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d">
     <StackPanel>
-        <!-- 图标 -->
+        <!-- 
+            图标
+            - {RelativeSource AncestorType=UserControl} 实现了从子控件到父 UserControl 的属性绑定
+            - 这是 WPF 中实现自定义控件属性传递的标准模式
+         -->
         <materialDesign:PackIcon Kind="{Binding IconKind, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                  Foreground="#2196F3"
                                  Width="24" Height="24"

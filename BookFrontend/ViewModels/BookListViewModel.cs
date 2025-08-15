@@ -156,6 +156,7 @@ public class BookListViewModel : BaseViewModel
 
     // 页码跳转
     private string _jumpToPageInput = "1";
+
     public string JumpToPageInput
     {
         get => _jumpToPageInput;
@@ -190,7 +191,8 @@ public class BookListViewModel : BaseViewModel
             _ => !IsLoading && HasNextPage);
         PrevPageCommand = new RelayCommand(async void (_) => await GoToPageAsync(PageIndex - 1),
             _ => !IsLoading && HasPreviousPage);
-        JumpToPageCommand = new RelayCommand(async void (_) => await JumpToPageAsync(), _ => !IsLoading && CanJumpToPage());
+        JumpToPageCommand =
+            new RelayCommand(async void (_) => await JumpToPageAsync(), _ => !IsLoading && CanJumpToPage());
 
         // 然后设置属性值，避免在命令初始化前调用RefreshCommands
         PageSize = 12;
@@ -238,7 +240,8 @@ public class BookListViewModel : BaseViewModel
 
     private async Task LoadPageAsync(int pageIndex, bool append = false)
     {
-        _logger.Information("开始搜索图书，搜索条件: title={Title}, author={Author}, category={Category}, publisher={Publisher}, isbn={Isbn}, publishDateStart={PublishDateStart}, publishDateEnd={PublishDateEnd}, pageIndex={PageIndex}, pageSize={PageSize}",
+        _logger.Information(
+            "开始搜索图书，搜索条件: title={Title}, author={Author}, category={Category}, publisher={Publisher}, isbn={Isbn}, publishDateStart={PublishDateStart}, publishDateEnd={PublishDateEnd}, pageIndex={PageIndex}, pageSize={PageSize}",
             Title, Author, Category, Publisher, Isbn, PublishDateStart, PublishDateEnd, pageIndex, PageSize);
 
         try
@@ -260,6 +263,7 @@ public class BookListViewModel : BaseViewModel
             {
                 Books.Clear();
             }
+
             if (response is { Success: true, Data: not null })
             {
                 foreach (var b in response.Data.Items)

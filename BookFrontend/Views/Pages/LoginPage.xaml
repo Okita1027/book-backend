@@ -12,12 +12,14 @@
       d:DataContext="{d:DesignInstance Type=viewModels:LoginViewModel, IsDesignTimeCreatable=False}">
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
         <!-- 主要内容区域 -->
-        <Border Grid.Row="0" Style="{StaticResource PageMainContainerStyle}">
+        <Border Grid.Column="1" Style="{StaticResource PageMainContainerStyle}">
             
             <!-- 使用登录表单用户控件 -->
             <views:LoginFormView DataContext="{Binding}">
@@ -33,6 +35,6 @@
         </Border>
 
         <!-- 遮罩层：加载时显示 -->
-        <views:LoadingMask IsBusy="{Binding IsLoading}" LoadingText="正在登录..." />
+        <views:LoadingMask Grid.Column="1" IsBusy="{Binding IsLoading}" LoadingText="正在登录..." />
     </Grid>
 </Page>

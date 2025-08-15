@@ -3,9 +3,9 @@
 
     <!-- 页面主容器样式 -->
     <Style x:Key="PageMainContainerStyle" TargetType="Border">
-        <Setter Property="Background" Value="White"/>
-        <Setter Property="CornerRadius" Value="10"/>
-        <Setter Property="Margin" Value="30,20,30,20"/>
+        <Setter Property="Background" Value="White" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="Margin" Value="30,20,30,20" />
         <Setter Property="Effect">
             <Setter.Value>
                 <DropShadowEffect Color="Gray" Direction="270" ShadowDepth="3" Opacity="0.3" BlurRadius="10" />
@@ -15,12 +15,12 @@
 
     <!-- 卡片容器样式 -->
     <Style x:Key="CardContainerStyle" TargetType="Border">
-        <Setter Property="Background" Value="White"/>
-        <Setter Property="CornerRadius" Value="8"/>
-        <Setter Property="Padding" Value="16"/>
-        <Setter Property="Margin" Value="8"/>
-        <Setter Property="BorderBrush" Value="#E0E0E0"/>
-        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Background" Value="White" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="16" />
+        <Setter Property="Margin" Value="8" />
+        <Setter Property="BorderBrush" Value="#E0E0E0" />
+        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Effect">
             <Setter.Value>
                 <DropShadowEffect Color="Gray" Direction="270" ShadowDepth="2" Opacity="0.2" BlurRadius="6" />
@@ -30,81 +30,81 @@
 
     <!-- 内容区域样式 -->
     <Style x:Key="ContentAreaStyle" TargetType="ScrollViewer">
-        <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
-        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
-        <Setter Property="Margin" Value="40,0,40,0"/>
-        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="Margin" Value="40,0,40,0" />
+        <Setter Property="Background" Value="Transparent" />
     </Style>
 
     <!-- 底部操作区域样式 -->
     <Style x:Key="FooterActionAreaStyle" TargetType="StackPanel">
-        <Setter Property="Orientation" Value="Horizontal"/>
-        <Setter Property="HorizontalAlignment" Value="Center"/>
-        <Setter Property="Margin" Value="0,20,0,30"/>
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="0,20,0,30" />
     </Style>
 
     <!-- 页面网格布局样式 -->
     <Style x:Key="PageGridStyle" TargetType="Grid">
-        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Background" Value="Transparent" />
     </Style>
 
     <!-- 表单网格布局样式 -->
     <Style x:Key="FormGridStyle" TargetType="Grid">
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Margin" Value="0,10,0,0"/>
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Margin" Value="0,10,0,0" />
     </Style>
 
     <!-- 垂直堆栈面板样式 -->
     <Style x:Key="VerticalStackPanelStyle" TargetType="StackPanel">
-        <Setter Property="Orientation" Value="Vertical"/>
-        <Setter Property="VerticalAlignment" Value="Top"/>
-        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Orientation" Value="Vertical" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Background" Value="Transparent" />
     </Style>
 
     <!-- 水平堆栈面板样式 -->
     <Style x:Key="HorizontalStackPanelStyle" TargetType="StackPanel">
-        <Setter Property="Orientation" Value="Horizontal"/>
-        <Setter Property="HorizontalAlignment" Value="Left"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Background" Value="Transparent" />
     </Style>
 
     <!-- 分隔线样式 -->
     <Style x:Key="SeparatorStyle" TargetType="Border">
-        <Setter Property="Height" Value="1"/>
-        <Setter Property="Background" Value="#E0E0E0"/>
-        <Setter Property="Margin" Value="0,10,0,10"/>
+        <Setter Property="Height" Value="1" />
+        <Setter Property="Background" Value="#E0E0E0" />
+        <Setter Property="Margin" Value="0,10,0,10" />
     </Style>
 
     <!-- 内容分组容器样式 -->
     <Style x:Key="ContentGroupStyle" TargetType="Border">
-        <Setter Property="Background" Value="#FAFAFA"/>
-        <Setter Property="BorderBrush" Value="#E0E0E0"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="CornerRadius" Value="4"/>
-        <Setter Property="Padding" Value="12"/>
-        <Setter Property="Margin" Value="0,8,0,8"/>
+        <Setter Property="Background" Value="#FAFAFA" />
+        <Setter Property="BorderBrush" Value="#E0E0E0" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Padding" Value="12" />
+        <Setter Property="Margin" Value="0,8,0,8" />
     </Style>
 
     <!-- 链接文本样式 -->
     <Style x:Key="LinkTextStyle" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="14"/>
-        <Setter Property="Foreground" Value="Gray"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="Gray" />
+        <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
     <!-- 链接按钮样式 -->
     <Style x:Key="LinkButtonStyle" TargetType="Button">
-        <Setter Property="Foreground" Value="#2196F3"/>
-        <Setter Property="FontSize" Value="14"/>
-        <Setter Property="Margin" Value="5,0,0,0"/>
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Foreground" Value="#2196F3" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Margin" Value="5,0,0,0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="#1976D2"/>
-                <Setter Property="TextBlock.TextDecorations" Value="Underline"/>
+                <Setter Property="Foreground" Value="#1976D2" />
+                <Setter Property="TextBlock.TextDecorations" Value="Underline" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -113,7 +113,7 @@
     <Style x:Key="LoadingMaskStyle" TargetType="Grid">
         <Setter Property="Background" Value="#80000000" />
     </Style>
-    
+
     <Style x:Key="LoadingContainerStyle" TargetType="Border">
         <Setter Property="Background" Value="White" />
         <Setter Property="CornerRadius" Value="10" />
@@ -127,12 +127,12 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <Style x:Key="LoadingContentStyle" TargetType="StackPanel">
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
-    
+
     <Style x:Key="LoadingTextStyle" TargetType="TextBlock">
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="Margin" Value="0,8,0,0" />
