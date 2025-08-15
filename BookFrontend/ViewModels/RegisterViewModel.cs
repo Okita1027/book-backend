@@ -150,8 +150,8 @@ public class RegisterViewModel : BaseViewModel
             {
                 SuccessMessage = "注册成功！正在跳转到登录页面...";
 
-                // 延迟3秒后跳转到登录页面
-                await Task.Delay(3000);
+                // 延迟1秒后跳转到登录页面
+                await Task.Delay(1000);
 
                 // 清空表单
                 ClearForm();

@@ -8,11 +8,14 @@ namespace book_frontend.Controls
     {
         static PasswordField()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(PasswordField), new FrameworkPropertyMetadata(typeof(PasswordField)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(PasswordField),
+                new FrameworkPropertyMetadata(typeof(PasswordField)));
         }
 
         public static readonly DependencyProperty HintTextProperty =
-            DependencyProperty.Register(nameof(HintText), typeof(string), typeof(PasswordField), new PropertyMetadata(string.Empty));
+            DependencyProperty.Register(nameof(HintText), typeof(string), typeof(PasswordField),
+                new PropertyMetadata(string.Empty));
+
         public string HintText
         {
             get => (string)GetValue(HintTextProperty);
@@ -20,7 +23,9 @@ namespace book_frontend.Controls
         }
 
         public static readonly DependencyProperty IconKindProperty =
-            DependencyProperty.Register(nameof(IconKind), typeof(PackIconKind), typeof(PasswordField), new PropertyMetadata(PackIconKind.Lock));
+            DependencyProperty.Register(nameof(IconKind), typeof(PackIconKind), typeof(PasswordField),
+                new PropertyMetadata(PackIconKind.Lock));
+
         public PackIconKind IconKind
         {
             get => (PackIconKind)GetValue(IconKindProperty);
@@ -28,7 +33,9 @@ namespace book_frontend.Controls
         }
 
         public static readonly DependencyProperty PasswordProperty =
-            DependencyProperty.Register(nameof(Password), typeof(string), typeof(PasswordField), new FrameworkPropertyMetadata(string.Empty, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+            DependencyProperty.Register(nameof(Password), typeof(string), typeof(PasswordField),
+                new FrameworkPropertyMetadata(string.Empty, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
         public string Password
         {
             get => (string)GetValue(PasswordProperty);

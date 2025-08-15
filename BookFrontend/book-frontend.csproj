@@ -26,7 +26,6 @@
 		<Folder Include="Services\" />
 		<Folder Include="Services\Interfaces\" />
 		<Folder Include="Views\Pages\" />
-		<Folder Include="Views\ResourceDictionaries\" />
 		<Folder Include="Views\UserControls\" />
 		<Folder Include="Views\Windows\" />
 	</ItemGroup>
@@ -52,6 +51,11 @@
 	    <SubType>Designer</SubType>
 	  </Page>
 	  <Page Update="Views\ResourceDictionaries\Styles.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	    <XamlRuntime>Wpf</XamlRuntime>
+	    <SubType>Designer</SubType>
+	  </Page>
+	  <Page Update="Views\ResourceDictionaries\Password.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	    <XamlRuntime>Wpf</XamlRuntime>
 	    <SubType>Designer</SubType>

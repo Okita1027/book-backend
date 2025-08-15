@@ -22,17 +22,28 @@ public partial class App : Application
 
     protected override void OnStartup(StartupEventArgs e)
     {
+        // 确保日志目录存在
+        var logDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
+        if (!Directory.Exists(logDirectory))
+        {
+            Directory.CreateDirectory(logDirectory);
+        }
+        
         // 配置Serilog
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
             .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
             .MinimumLevel.Override("System", LogEventLevel.Warning)
-            .WriteTo.Console()
+            .WriteTo.Console(
+                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}"
+            )
             .WriteTo.File(
                 Path.Combine("Logs", "log-.txt"),
                 rollingInterval: RollingInterval.Day,
                 retainedFileCountLimit: 7,
-                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}",
+                encoding: Encoding.UTF8
+            )
             .CreateLogger();
 
         // 全局异常处理
@@ -117,6 +128,7 @@ public partial class App : Application
     {
         // 释放依赖注入容器资源
         _serviceProvider?.Dispose();
+        Log.CloseAndFlush();
         base.OnExit(e);
     }
 }
