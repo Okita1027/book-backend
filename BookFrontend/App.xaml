@@ -16,6 +16,9 @@
                     Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
                 <!-- 引用应用程序自定义样式资源 -->
                 <ResourceDictionary Source="Views/ResourceDictionaries/Styles.xaml" />
+                <ResourceDictionary Source="Views/ResourceDictionaries/FormStyles.xaml" />
+                <ResourceDictionary Source="Views/ResourceDictionaries/TableStyles.xaml" />
+                <ResourceDictionary Source="Views/ResourceDictionaries/LayoutStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <!-- 全局数据转换器（用于在数据绑定过程中转换数据格式） -->
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />

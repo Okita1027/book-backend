@@ -17,26 +17,15 @@
         </Grid.RowDefinitions>
 
         <!-- 主要内容区域 -->
-        <Border Grid.Row="0" Background="White" CornerRadius="10" Margin="30,20,30,20">
-            <Border.Effect>
-                <DropShadowEffect Color="Gray" Direction="270" ShadowDepth="3" Opacity="0.3" BlurRadius="10" />
-            </Border.Effect>
+        <Border Grid.Row="0" Style="{StaticResource PageMainContainerStyle}">
             
             <!-- 使用登录表单用户控件 -->
             <views:LoginFormView DataContext="{Binding}">
                 <views:LoginFormView.FooterContent>
-                    <StackPanel Orientation="Horizontal"
-                                HorizontalAlignment="Center"
-                                Margin="0,20,0,30">
-                        <TextBlock Text="还没有账户？"
-                                   FontSize="14"
-                                   Foreground="Gray"
-                                   VerticalAlignment="Center" />
+                    <StackPanel Style="{StaticResource FooterActionAreaStyle}">
+                        <TextBlock Text="还没有账户？" Style="{StaticResource LinkTextStyle}" />
                         <Button Content="立即注册"
-                                Style="{StaticResource MaterialDesignFlatButton}"
-                                Foreground="#2196F3"
-                                FontSize="14"
-                                Margin="5,0,0,0"
+                                Style="{StaticResource LinkButtonStyle}"
                                 Click="RegisterButton_Click" />
                     </StackPanel>
                 </views:LoginFormView.FooterContent>

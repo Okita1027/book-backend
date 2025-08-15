@@ -16,19 +16,12 @@
             Hidden (1) -> 元素不可见，但仍占用空间
             Collapsed (2) -> 元素不可见，且不占用空间
      -->
-    <Grid Background="{Binding MaskBackground, ElementName=LoadingMaskControl, FallbackValue=#80000000}"
-          Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=LoadingMaskControl}">
+    <Grid Style="{StaticResource LoadingMaskStyle}" Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=LoadingMaskControl}">
 
         <!-- 内容容器，可根据样式切换 -->
-        <Border x:Name="LoadingContainer"
-                Background="{Binding ContainerBackground, ElementName=LoadingMaskControl, FallbackValue=White}"
-                CornerRadius="{Binding ContainerCornerRadius, ElementName=LoadingMaskControl, FallbackValue=8}"
-                Padding="{Binding ContainerPadding, ElementName=LoadingMaskControl, FallbackValue=16}"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                MinWidth="200">
+        <Border Style="{StaticResource LoadingContainerStyle}">
 
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel Style="{StaticResource LoadingContentStyle}">
                 <!-- 进度条；IsIndeterminate="True"表示不确定进度的循环动画 -->
                 <ProgressBar IsIndeterminate="True"
                              Width="{Binding ProgressBarWidth, ElementName=LoadingMaskControl, FallbackValue=150}"
@@ -37,10 +30,7 @@
 
                 <!-- 加载文本 -->
                 <TextBlock Text="{Binding LoadingText, ElementName=LoadingMaskControl, FallbackValue=正在加载...}"
-                           HorizontalAlignment="Center"
-                           Margin="0,8,0,0"
-                           FontSize="{Binding TextFontSize, ElementName=LoadingMaskControl, FallbackValue=14}"
-                           Foreground="{Binding TextForeground, ElementName=LoadingMaskControl, FallbackValue=Black}" />
+                           Style="{StaticResource LoadingTextStyle}" />
             </StackPanel>
         </Border>
     </Grid>

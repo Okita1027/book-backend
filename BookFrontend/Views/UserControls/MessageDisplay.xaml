@@ -7,20 +7,12 @@
     <StackPanel>
         <!-- 错误消息 -->
         <TextBlock Text="{Binding ErrorMessage, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                   Foreground="Red"
-                   FontSize="14"
-                   TextWrapping="Wrap"
-                   HorizontalAlignment="Center"
-                   Margin="0,0,0,10"
+                   Style="{StaticResource ErrorTextStyle}"
                    Visibility="{Binding ErrorMessage, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource StringToVisibilityConverter}}" />
 
         <!-- 成功消息 -->
         <TextBlock Text="{Binding SuccessMessage, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                   Foreground="Green"
-                   FontSize="14"
-                   TextWrapping="Wrap"
-                   HorizontalAlignment="Center"
-                   Margin="0,0,0,10"
+                   Style="{StaticResource SuccessTextStyle}"
                    Visibility="{Binding SuccessMessage, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource StringToVisibilityConverter}}" />
     </StackPanel>
 </UserControl>

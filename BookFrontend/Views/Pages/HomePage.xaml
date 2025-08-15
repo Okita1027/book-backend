@@ -20,8 +20,7 @@
         </Grid.RowDefinitions>
 
         <!-- 搜索表单 -->
-        <Border Padding="16" Background="White" BorderBrush="Beige"
-                CornerRadius="6" Margin="10" Grid.Row="0">
+        <Border Style="{StaticResource SearchFormContainerStyle}" Grid.Row="0">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -37,45 +36,44 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Orientation：排列方向 -->
-                <StackPanel Margin="6" Orientation="Vertical">
-                    <TextBlock Text="图书名称" />
-                    <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" KeyDown="TextBox_KeyDown" />
+                <StackPanel Style="{StaticResource FormFieldContainerStyle}">
+                    <TextBlock Text="图书名称" Style="{StaticResource FormLabelStyle}" />
+                    <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" KeyDown="TextBox_KeyDown" Style="{StaticResource FormTextBoxStyle}" />
                 </StackPanel>
-                <StackPanel Grid.Row="0" Grid.Column="1" Margin="6" Orientation="Vertical">
-                    <TextBlock Text="作者" />
-                    <TextBox Text="{Binding Author, UpdateSourceTrigger=PropertyChanged}" KeyDown="TextBox_KeyDown" />
+                <StackPanel Grid.Row="0" Grid.Column="1" Style="{StaticResource FormFieldContainerStyle}">
+                    <TextBlock Text="作者" Style="{StaticResource FormLabelStyle}" />
+                    <TextBox Text="{Binding Author, UpdateSourceTrigger=PropertyChanged}" KeyDown="TextBox_KeyDown" Style="{StaticResource FormTextBoxStyle}" />
                 </StackPanel>
-                <StackPanel Grid.Row="0" Grid.Column="2" Margin="6" Orientation="Vertical">
-                    <TextBlock Text="类别名称" />
-                    <TextBox Text="{Binding Category, UpdateSourceTrigger=PropertyChanged}" KeyDown="TextBox_KeyDown" />
+                <StackPanel Grid.Row="0" Grid.Column="2" Style="{StaticResource FormFieldContainerStyle}">
+                    <TextBlock Text="类别名称" Style="{StaticResource FormLabelStyle}" />
+                    <TextBox Text="{Binding Category, UpdateSourceTrigger=PropertyChanged}" KeyDown="TextBox_KeyDown" Style="{StaticResource FormTextBoxStyle}" />
                 </StackPanel>
-                <StackPanel Grid.Row="0" Grid.Column="3" Margin="6" Orientation="Vertical">
-                    <TextBlock Text="出版社名称" />
-                    <TextBox Text="{Binding Publisher, UpdateSourceTrigger=PropertyChanged}" KeyDown="TextBox_KeyDown" />
+                <StackPanel Grid.Row="0" Grid.Column="3" Style="{StaticResource FormFieldContainerStyle}">
+                    <TextBlock Text="出版社名称" Style="{StaticResource FormLabelStyle}" />
+                    <TextBox Text="{Binding Publisher, UpdateSourceTrigger=PropertyChanged}" KeyDown="TextBox_KeyDown" Style="{StaticResource FormTextBoxStyle}" />
                 </StackPanel>
-                <StackPanel Grid.Row="1" Grid.Column="0" Margin="6" Orientation="Vertical">
-                    <TextBlock Text="ISBN" />
-                    <TextBox Text="{Binding Isbn, UpdateSourceTrigger=PropertyChanged}" KeyDown="TextBox_KeyDown" />
+                <StackPanel Grid.Row="1" Grid.Column="0" Style="{StaticResource FormFieldContainerStyle}">
+                    <TextBlock Text="ISBN" Style="{StaticResource FormLabelStyle}" />
+                    <TextBox Text="{Binding Isbn, UpdateSourceTrigger=PropertyChanged}" KeyDown="TextBox_KeyDown" Style="{StaticResource FormTextBoxStyle}" />
                 </StackPanel>
-                <StackPanel Grid.Row="1" Grid.Column="1" Margin="6" Orientation="Vertical">
-                    <TextBlock Text="出版日期开始" />
-                    <DatePicker SelectedDate="{Binding PublishDateStart}" />
+                <StackPanel Grid.Row="1" Grid.Column="1" Style="{StaticResource FormFieldContainerStyle}">
+                    <TextBlock Text="出版日期开始" Style="{StaticResource FormLabelStyle}" />
+                    <DatePicker SelectedDate="{Binding PublishDateStart}" Style="{StaticResource FormDatePickerStyle}" />
                 </StackPanel>
-                <StackPanel Grid.Row="1" Grid.Column="2" Margin="6" Orientation="Vertical">
-                    <TextBlock Text="出版日期结束" />
-                    <DatePicker SelectedDate="{Binding PublishDateEnd}" />
+                <StackPanel Grid.Row="1" Grid.Column="2" Style="{StaticResource FormFieldContainerStyle}">
+                    <TextBlock Text="出版日期结束" Style="{StaticResource FormLabelStyle}" />
+                    <DatePicker SelectedDate="{Binding PublishDateEnd}" Style="{StaticResource FormDatePickerStyle}" />
                 </StackPanel>
 
-                <StackPanel Grid.Row="2" Grid.ColumnSpan="4" Grid.Column="0" Orientation="Horizontal"
-                            HorizontalAlignment="Right" Margin="6">
-                    <Button Content="重置" Margin="0,0,8,0" Command="{Binding ResetCommand}" />
-                    <Button Content="搜索" Command="{Binding SearchCommand}" />
+                <StackPanel Grid.Row="2" Grid.ColumnSpan="4" Grid.Column="0" Style="{StaticResource FormButtonGroupStyle}">
+                    <Button Content="重置" Command="{Binding ResetCommand}" Style="{StaticResource FormResetButtonStyle}" />
+                    <Button Content="搜索" Command="{Binding SearchCommand}" Style="{StaticResource FormSearchButtonStyle}" />
                 </StackPanel>
             </Grid>
         </Border>
 
         <!-- 结果列表 -->
-        <Border Grid.Row="1" Margin="10" Background="White" CornerRadius="6" Padding="8">
+        <Border Grid.Row="1" Style="{StaticResource DataTableContainerStyle}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -83,7 +81,7 @@
                 </Grid.RowDefinitions>
 
                 <!-- 标题栏 -->
-                <Border Grid.Row="0" BorderBrush="#DDD" BorderThickness="1" Background="#F8F9FA">
+                <Border Grid.Row="0" Style="{StaticResource TableHeaderContainerStyle}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="2*" />
@@ -96,40 +94,40 @@
                             <!-- 预留滚动条宽度 -->
                             <ColumnDefinition Width="17" />
                         </Grid.ColumnDefinitions>
-                        <Border Grid.Column="0" BorderBrush="#DDD" BorderThickness="0 0 1 0" Padding="8">
-                            <TextBlock Text="图书名称" FontWeight="Bold" />
+                        <Border Grid.Column="0" Style="{StaticResource TableHeaderCellStyle}">
+                            <TextBlock Text="图书名称" Style="{StaticResource TableHeaderTextStyle}" />
                         </Border>
-                        <Border Grid.Column="1" BorderBrush="#DDD" BorderThickness="0 0 1 0" Padding="8">
-                            <TextBlock Text="作者" FontWeight="Bold" />
+                        <Border Grid.Column="1" Style="{StaticResource TableHeaderCellStyle}">
+                            <TextBlock Text="作者" Style="{StaticResource TableHeaderTextStyle}" />
                         </Border>
-                        <Border Grid.Column="2" BorderBrush="#DDD" BorderThickness="0 0 1 0" Padding="8">
-                            <TextBlock Text="出版社" FontWeight="Bold" />
+                        <Border Grid.Column="2" Style="{StaticResource TableHeaderCellStyle}">
+                            <TextBlock Text="出版社" Style="{StaticResource TableHeaderTextStyle}" />
                         </Border>
-                        <Border Grid.Column="3" BorderBrush="#DDD" BorderThickness="0 0 1 0" Padding="8">
-                            <TextBlock Text="ISBN" FontWeight="Bold" HorizontalAlignment="Center" />
+                        <Border Grid.Column="3" Style="{StaticResource TableHeaderCellStyle}">
+                            <TextBlock Text="ISBN" Style="{StaticResource TableHeaderTextStyle}" HorizontalAlignment="Center" />
                         </Border>
-                        <Border Grid.Column="4" BorderBrush="#DDD" BorderThickness="0 0 1 0" Padding="8">
-                            <TextBlock Text="出版日期" FontWeight="Bold" HorizontalAlignment="Center" />
+                        <Border Grid.Column="4" Style="{StaticResource TableHeaderCellStyle}">
+                            <TextBlock Text="出版日期" Style="{StaticResource TableHeaderTextStyle}" HorizontalAlignment="Center" />
                         </Border>
-                        <Border Grid.Column="5" BorderBrush="#DDD" BorderThickness="0 0 1 0" Padding="8">
-                            <TextBlock Text="库存/可借" FontWeight="Bold" HorizontalAlignment="Center" />
+                        <Border Grid.Column="5" Style="{StaticResource TableHeaderCellStyle}">
+                            <TextBlock Text="库存/可借" Style="{StaticResource TableHeaderTextStyle}" HorizontalAlignment="Center" />
                         </Border>
-                        <Border Grid.Column="6" BorderBrush="#DDD" BorderThickness="0 0 0 0" Padding="8">
-                            <TextBlock Text="类别" FontWeight="Bold" />
+                        <Border Grid.Column="6" Style="{StaticResource TableHeaderCellStyle}" BorderThickness="0">
+                            <TextBlock Text="类别" Style="{StaticResource TableHeaderTextStyle}" />
                         </Border>
                     </Grid>
                 </Border>
 
                 <!-- 滚动条 -->
-                <ScrollViewer x:Name="BookListScrollViewer" Grid.Row="1" VerticalScrollBarVisibility="Visible"
+                <ScrollViewer x:Name="BookListScrollViewer" Grid.Row="1" Style="{StaticResource TableScrollViewerStyle}"
                               ScrollChanged="BookListScrollViewer_ScrollChanged">
                     <!-- 条目控件：根据一个数据集合来重复创建 UI 元素 -->
-                    <ItemsControl ItemsSource="{Binding Books}">
+                    <ItemsControl ItemsSource="{Binding Books}" Style="{StaticResource TableItemsControlStyle}">
                         <!-- 声明数据模板 -->
                         <ItemsControl.ItemTemplate>
                             <!-- 详细设定模板中每条数据是如何渲染的 -->
                             <DataTemplate>
-                                <Border BorderBrush="#EEE" BorderThickness="1 0 1 1">
+                                <Border Style="{StaticResource TableRowContainerStyle}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="2*" />
@@ -140,29 +138,23 @@
                                             <ColumnDefinition Width="1*" />
                                             <ColumnDefinition Width="1.5*" />
                                         </Grid.ColumnDefinitions>
-                                        <Border Grid.Column="0" BorderBrush="#EEE" BorderThickness="0 0 1 0"
-                                                Padding="8">
-                                            <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                                        <Border Grid.Column="0" Style="{StaticResource TableDataCellStyle}">
+                                            <TextBlock Text="{Binding Title}" Style="{StaticResource TableDataTitleTextStyle}" />
                                         </Border>
-                                        <Border Grid.Column="1" BorderBrush="#EEE" BorderThickness="0 0 1 0"
-                                                Padding="8">
-                                            <TextBlock Text="{Binding AuthorName}" TextWrapping="Wrap" />
+                                        <Border Grid.Column="1" Style="{StaticResource TableDataCellStyle}">
+                                            <TextBlock Text="{Binding AuthorName}" Style="{StaticResource TableDataTextStyle}" />
                                         </Border>
-                                        <Border Grid.Column="2" BorderBrush="#EEE" BorderThickness="0 0 1 0"
-                                                Padding="8">
-                                            <TextBlock Text="{Binding PublisherName}" TextWrapping="Wrap" />
+                                        <Border Grid.Column="2" Style="{StaticResource TableDataCellStyle}">
+                                            <TextBlock Text="{Binding PublisherName}" Style="{StaticResource TableDataTextStyle}" />
                                         </Border>
-                                        <Border Grid.Column="3" BorderBrush="#EEE" BorderThickness="0 0 1 0"
-                                                Padding="8">
-                                            <TextBlock Text="{Binding Isbn}" TextWrapping="Wrap" />
+                                        <Border Grid.Column="3" Style="{StaticResource TableDataCellStyle}">
+                                            <TextBlock Text="{Binding Isbn}" Style="{StaticResource TableDataCenterTextStyle}" />
                                         </Border>
-                                        <Border Grid.Column="4" BorderBrush="#EEE" BorderThickness="0 0 1 0"
-                                                Padding="8">
-                                            <TextBlock Text="{Binding PublishedDate, StringFormat=yyyy-MM-dd}" />
+                                        <Border Grid.Column="4" Style="{StaticResource TableDataCellStyle}">
+                                            <TextBlock Text="{Binding PublishedDate, StringFormat=yyyy-MM-dd}" Style="{StaticResource TableDataCenterTextStyle}" />
                                         </Border>
-                                        <Border Grid.Column="5" BorderBrush="#EEE" BorderThickness="0 0 1 0"
-                                                Padding="8">
-                                            <TextBlock HorizontalAlignment="Center">
+                                        <Border Grid.Column="5" Style="{StaticResource TableDataCellStyle}">
+                                            <TextBlock Style="{StaticResource TableDataCenterTextStyle}">
                                                 <TextBlock.Text>
                                                     <MultiBinding StringFormat="{}{0}/{1}">
                                                         <Binding Path="Stock" />
@@ -171,9 +163,8 @@
                                                 </TextBlock.Text>
                                             </TextBlock>
                                         </Border>
-                                        <Border Grid.Column="6" BorderBrush="#EEE" BorderThickness="0 0 0 0"
-                                                Padding="8">
-                                            <TextBlock TextWrapping="Wrap">
+                                        <Border Grid.Column="6" Style="{StaticResource TableDataCellStyle}" BorderThickness="0">
+                                            <TextBlock Style="{StaticResource TableDataTextStyle}">
                                                 <TextBlock.Text>
                                                     <Binding Path="CategoryNames"
                                                              Converter="{StaticResource StringArrayToStringConverter}" />
