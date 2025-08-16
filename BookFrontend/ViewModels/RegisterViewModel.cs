@@ -141,11 +141,12 @@ public class RegisterViewModel : BaseViewModel
             {
                 Name = Name.Trim(),
                 Email = Email.Trim().ToLower(),
+                Password = Password.Trim(),
                 Role = UserRole.User
             };
 
             // 调用注册服务
-            var response = await _authService.RegisterAsync(user, Password);
+            var response = await _authService.RegisterAsync(user);
 
             if (response.Success)
             {

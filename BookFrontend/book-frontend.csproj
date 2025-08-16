@@ -22,7 +22,6 @@
   </ItemGroup>
   <!--显式地在项目中包含这些空文件夹，即使这些文件夹当前没有文件,在构建或部署时，这些目录结构会被保留;还能为IDE提供支持-->
   <ItemGroup>
-    <Folder Include="Assests\Images\" />
     <Folder Include="Assests\Icons\" />
     <Folder Include="Converters\" />
     <Folder Include="Helpers\" />

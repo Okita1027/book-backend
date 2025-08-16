@@ -7,18 +7,17 @@ public interface IAuthService
     /// <summary>
     /// 用户登录
     /// </summary>
-    /// <param name="username">用户名</param>
+    /// <param name="email">邮箱</param>
     /// <param name="password">密码</param>
     /// <returns>登录结果</returns>
-    Task<LoginResponse> LoginAsync(string username, string password);
+    Task<LoginResponse> LoginAsync(string email, string password);
     
     /// <summary>
     /// 用户注册
     /// </summary>
     /// <param name="user">用户信息</param>
-    /// <param name="password">密码</param>
     /// <returns>注册结果</returns>
-    Task<ApiResponse<User>> RegisterAsync(User user, string password);
+    Task<ApiResponse<User>> RegisterAsync(User user);
     
     /// <summary>
     /// 登出

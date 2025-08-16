@@ -16,13 +16,13 @@ public class AuthService : IAuthService
         _apiClient = apiClient;
     }
 
-    public async Task<LoginResponse> LoginAsync(string username, string password)
+    public async Task<LoginResponse> LoginAsync(string email, string password)
     {
         try
         {
             var loginRequest = new LoginRequest
             {
-                Email = username,
+                Email = email,
                 Password = password
             };
 
@@ -78,7 +78,7 @@ public class AuthService : IAuthService
         }
     }
 
-    public async Task<ApiResponse<User>> RegisterAsync(User user, string password)
+    public async Task<ApiResponse<User>> RegisterAsync(User user)
     {
         try
         {
@@ -86,8 +86,7 @@ public class AuthService : IAuthService
             {
                 user.Name,
                 user.Email,
-                Password = password,
-                user.Role
+                user.Password
             };
 
             return await _apiClient.PostAsync<User>("Users/register", registerRequest);
