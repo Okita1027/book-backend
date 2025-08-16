@@ -18,7 +18,9 @@ public class ApiClient
         _httpClient = httpClient;
         _jsonOptions = new JsonSerializerOptions
         {
+            // 将.NET对象的属性名转换为驼峰格式的JSON属性名
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            // 忽略属性名的大小写
             PropertyNameCaseInsensitive = true,
         };
         // 处理后端返回的自定义日期格式，例如 "yyyy-MM-dd HH:mm:ss"

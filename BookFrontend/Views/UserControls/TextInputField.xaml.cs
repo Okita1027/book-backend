@@ -11,7 +11,7 @@ namespace book_frontend.Views.UserControls
     {
         /*
          * DependencyProperty.Register：注册依赖属性
-         *  nameof(Text)：属性名"Text"
+         *  nameof(Text)：属性名Text
          *  typeof(string)：属性类型为string
          *  typeof(TextInputField)：所属类型
          *  FrameworkPropertyMetadata：元数据

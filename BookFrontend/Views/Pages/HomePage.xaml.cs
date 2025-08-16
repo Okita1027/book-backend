@@ -3,6 +3,7 @@ using System.Windows.Input;
 using System.Windows;
 using book_frontend.ViewModels;
 using System.Windows.Threading;
+using book_frontend.Services.Interfaces;
 
 namespace book_frontend.Views.Pages
 {
@@ -11,9 +12,10 @@ namespace book_frontend.Views.Pages
     /// </summary>
     public partial class HomePage : Page
     {
-        public HomePage()
+        public HomePage(IBookService bookService)
         {
             InitializeComponent();
+            DataContext = new BookListViewModel(bookService);
         }
 
         /// <summary>

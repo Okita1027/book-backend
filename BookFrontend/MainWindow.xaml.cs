@@ -25,16 +25,18 @@ namespace book_frontend;
 public partial class MainWindow : Window
 {
     private readonly IAuthService _authService;
+    private readonly IBookService _bookService;
     private LoginViewModel? _loginViewModel;
     private RegisterViewModel? _registerViewModel;
     
     public ICommand ShowWindowCommand { get; set; }
     public ICommand ExitApplicationCommand { get; set; }
     
-    public MainWindow(IAuthService authService)
+    public MainWindow(IAuthService authService, IBookService bookService)
     {
         InitializeComponent();
         _authService = authService;
+        _bookService = bookService;
         Closing += Window_Closing;
         ShowWindowCommand = new RelayCommand(ShowWindow);
         ExitApplicationCommand = new RelayCommand(ExitApplication);
@@ -129,7 +131,7 @@ public partial class MainWindow : Window
     /// </summary>
     private void ShowHomePage()
     {
-        var homePage = new HomePage();
+        var homePage = new HomePage(_bookService);
         if (DataContext is MainViewModel mainViewModel)
         {
             homePage.DataContext = mainViewModel.Home;

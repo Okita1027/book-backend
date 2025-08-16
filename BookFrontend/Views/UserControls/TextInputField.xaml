@@ -18,7 +18,14 @@
                                  Margin="0,0,0,5"
                                  Visibility="{Binding ShowIcon, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BooleanToVisibilityConverter}}" />
         
-        <!-- 文本输入框 -->
+        <!-- 
+            文本输入框
+            UpdateSourceTrigger：定义了绑定源何时被更新
+                1. Default（默认）：使用绑定目标属性的默认更新行为；对于大多数控件属性，默认值是LostFocus
+                2. PropertyChanged（属性更改）：当目标属性值发生变化时立即更新源；实时更新，最及时
+                3. LostFocus（失去焦点）：当目标控件失去焦点时更新源；较为保守的更新策略
+                4. Explicit（显式）：只能通过显式调用BindingExpression.UpdateSource()来更新源；最少的更新次数
+         -->
         <TextBox x:Name="InputTextBox"
                  materialDesign:HintAssist.Hint="{Binding HintText, RelativeSource={RelativeSource AncestorType=UserControl}}"
                  materialDesign:HintAssist.IsFloating="True"

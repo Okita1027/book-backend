@@ -8,6 +8,7 @@ namespace book_frontend.Converters;
 /// 布尔值到可见性转换器
 /// 用于将布尔值转换为Visibility枚举值
 /// </summary>
+[Obsolete("该类不使用（因为WPF已提供了转换器）")]
 public class BooleanToVisibilityConverter : IValueConverter
 {
     /// <summary>
