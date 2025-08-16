@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="2.0.1" />
     <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.8" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.8" />
@@ -19,6 +20,7 @@
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageReference Include="System.Text.Json" Version="9.0.8" />
   </ItemGroup>
+  <!--显式地在项目中包含这些空文件夹，即使这些文件夹当前没有文件,在构建或部署时，这些目录结构会被保留;还能为IDE提供支持-->
   <ItemGroup>
     <Folder Include="Assests\Images\" />
     <Folder Include="Assests\Icons\" />
@@ -28,18 +30,25 @@
     <Folder Include="Services\" />
     <Folder Include="Services\Interfaces\" />
     <Folder Include="Views\Pages\" />
+    <Folder Include="Views\ResourceDictionaries\" />
     <Folder Include="Views\UserControls\" />
     <Folder Include="Views\Windows\" />
   </ItemGroup>
   <ItemGroup>
+    <!--"None"类型的文件是指那些不属于编译过程的文件，通常是配置文件、资源文件等。-->
     <None Update="appsettings.json">
+      <!--只有当源文件比输出目录中的文件更新时，才会将文件复制到输出目录（例如 bin\Debug 或 bin\Release-->
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
+  <!-- <Page Update="...">表示这些是WPF的Page类型文件（XAML页面文件），需要特殊的处理方式 -->
     <Page Update="Views\Pages\HomePage.xaml">
+    <!-- 指定生成器为MSBuild编译器，这意味着XAML文件会在构建过程中被编译成BAML（Binary Application Markup Language）并嵌入到程序集中 -->
       <Generator>MSBuild:Compile</Generator>
+      <!-- 指定XAML运行时环境为WPF，明确告诉编译器这些是WPF XAML文件 -->
       <XamlRuntime>Wpf</XamlRuntime>
+      <!-- 表示这些文件在IDE中应该以设计视图方式打开，允许可视化编辑 -->
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\Pages\LoginPage.xaml">
@@ -52,10 +61,31 @@
       <XamlRuntime>Wpf</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\ResourceDictionaries\Styles.xaml">
+    <Page Update="Views\ResourceDictionaries\FormStyles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <XamlRuntime>Wpf</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Views\ResourceDictionaries\LayoutStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <XamlRuntime>Wpf</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\ResourceDictionaries\CommonStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <XamlRuntime>Wpf</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\ResourceDictionaries\TableStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <XamlRuntime>Wpf</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Assests\Icons\lemon.ico" />
+    <Resource Include="Assests\Icons\lemon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 </Project>

@@ -15,7 +15,7 @@
                 <ResourceDictionary
                     Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
                 <!-- 引用应用程序自定义的样式资源 -->
-                <ResourceDictionary Source="Views/ResourceDictionaries/Styles.xaml" />
+                <ResourceDictionary Source="Views/ResourceDictionaries/CommonStyles.xaml" />
                 <ResourceDictionary Source="Views/ResourceDictionaries/FormStyles.xaml" />
                 <ResourceDictionary Source="Views/ResourceDictionaries/TableStyles.xaml" />
                 <ResourceDictionary Source="Views/ResourceDictionaries/LayoutStyles.xaml" />

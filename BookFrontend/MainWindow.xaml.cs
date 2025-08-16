@@ -1,8 +1,10 @@
+using System.ComponentModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -10,7 +12,10 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using book_frontend.ViewModels;
 using book_frontend.Views.Pages;
+using Hardcodet.Wpf.TaskbarNotification;
 using book_frontend.Services.Interfaces;
+using CommunityToolkit.Mvvm.Input;
+using Application = System.Windows.Application;
 
 namespace book_frontend;
 
@@ -23,10 +28,17 @@ public partial class MainWindow : Window
     private LoginViewModel? _loginViewModel;
     private RegisterViewModel? _registerViewModel;
     
+    public ICommand ShowWindowCommand { get; set; }
+    public ICommand ExitApplicationCommand { get; set; }
+    
     public MainWindow(IAuthService authService)
     {
         InitializeComponent();
         _authService = authService;
+        Closing += Window_Closing;
+        ShowWindowCommand = new RelayCommand(ShowWindow);
+        ExitApplicationCommand = new RelayCommand(ExitApplication);
+        
         /*
          * 不要在这里调用 ShowHomePage()，因为此时 DataContext 还未通过依赖注入设置
          * DataContext是当前UI元素绑定数据的"上下文"/"数据源"，它的作用是：
@@ -35,6 +47,39 @@ public partial class MainWindow : Window
          *  - MVVM模式基础：ViewModel通常被设置为View的DataContext，实现视图和数据的分离
          */
     }
+
+    /// <summary>
+    /// 窗口正在关闭时触发的事件
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void Window_Closing(object? sender, CancelEventArgs e)
+    {
+        // 取消关闭操作，并隐藏窗口
+        e.Cancel = true;
+        Hide();
+    }
+
+    /// <summary>
+    /// 托盘菜单“打开”选项的执行方法
+    /// </summary>
+    private void ShowWindow()
+    {
+        // 激活窗口并将其带到最前面
+        Show();
+        WindowState = WindowState.Normal;
+        Activate();
+    }
+
+    /// <summary>
+    /// 托盘菜单“退出”选项的执行方法
+    /// </summary>
+    private static void ExitApplication()
+    {
+        // 真正退出程序
+        Application.Current.Shutdown();
+    }
+    
 
     /// <summary>
     /// 设置主ViewModel的DataContext

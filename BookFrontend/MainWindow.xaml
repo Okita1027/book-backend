@@ -3,21 +3,36 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
         mc:Ignorable="d"
         xmlns:local="clr-namespace:book_frontend"
-        xmlns:pages="clr-namespace:book_frontend.Views.Pages"
-        Title="图书阅览管理系统" Height="720" Width="1200" Background="#F5F5F5"
+        xmlns:constants="clr-namespace:book_frontend.Constants"
+        Title="{x:Static constants:UiConstant.TrayTooltip}" Height="720" Width="1200" Background="#F5F5F5"
+        Closing="Window_Closing"
         WindowState="Maximized">
     <DockPanel>
+        <tb:TaskbarIcon x:Name="TaskbarIcon"
+                        DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                        IconSource="/Assests/Icons/lemon.ico"
+                        ToolTipText="{x:Static constants:UiConstant.TrayTooltip}"
+                        DoubleClickCommand="{Binding ShowWindowCommand}">
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="打开" Command="{Binding ShowWindowCommand}" />
+                    <MenuItem Header="退出" Command="{Binding ExitApplicationCommand}" />
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
         <!-- 顶部导航栏占位 -->
         <Border DockPanel.Dock="Top" Background="#673AB7" Padding="10">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="图书阅览系统" Foreground="White" FontSize="18" FontWeight="Bold" />
+                <TextBlock Text="{x:Static constants:UiConstant.TrayTooltip}" Foreground="White" FontSize="18"
+                           FontWeight="Bold" />
                 <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
-                    <Button Content="首页" Margin="4" Click="HomeButton_Click"/>
-                    <Button Content="后台管理" Margin="4"/>
-                    <Button Content="登录" Margin="4" Click="LoginButton_Click"/>
-                    <Button Content="注册" Margin="4" Click="RegisterButton_Click"/>
+                    <Button Content="首页" Margin="4" Click="HomeButton_Click" />
+                    <Button Content="后台管理" Margin="4" />
+                    <Button Content="登录" Margin="4" Click="LoginButton_Click" />
+                    <Button Content="注册" Margin="4" Click="RegisterButton_Click" />
                 </StackPanel>
             </StackPanel>
         </Border>

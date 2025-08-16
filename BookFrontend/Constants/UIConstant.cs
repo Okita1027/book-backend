@@ -6,6 +6,12 @@ public static class UiConstant
     public const string Loading = "正在加载...";
     public const string JumpTo = "跳转到";
     public const string CurrentPage = "当前页码";
+    
+    // 托盘相关常量
+    public const string TrayTooltip = "图书阅览管理系统";
+    public const string TrayMenuOpen = "打开";
+    public const string TrayMenuExit = "退出";
+    public const string TrayHideMessage = "程序已最小化到系统托盘";
 
     // 登录相关
     public const string UserLogin = "用户登录";
