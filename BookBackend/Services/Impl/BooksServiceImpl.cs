@@ -14,6 +14,7 @@ namespace book_backend.Services.Impl
 {
     public class BooksServiceImpl(ApplicationDbContext context, ILogger logger) : IBooksService
     {
+        // TODO:这个方法的问题很大，待优化
         public async Task<List<RawBookVO>> GetAllRawBooksAsync()
         {
             // 第一步：执行一个扁平化查询，类似于你提供的 SQL 语句

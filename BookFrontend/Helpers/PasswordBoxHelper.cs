@@ -4,6 +4,7 @@ using System.Windows.Controls;
 
 namespace book_frontend.Helpers;
 
+[Obsolete("没有用的代码")]
 public class PasswordBoxHelper
 {
     // 防止循环更新的标记
@@ -30,7 +31,7 @@ public class PasswordBoxHelper
                 OnBoundPasswordChanged)
         );
 
-    public static void SetBoundPassword(DependencyObject dp, string value) =>
+    private static void SetBoundPassword(DependencyObject dp, string value) =>
         dp.SetValue(BoundPasswordProperty, value);
 
     public static string GetBoundPassword(DependencyObject dp) =>

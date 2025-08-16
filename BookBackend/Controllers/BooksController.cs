@@ -13,7 +13,7 @@ namespace book_backend.Controllers
     public class BooksController(IBooksService booksService) : ControllerBase
     {
         /// <summary>
-        /// 获取所有书籍
+        /// 获取所有书籍 TODO:待优化
         /// </summary>
         /// <returns>原生类不加工</returns>
         [HttpGet("/api/RawBooks")]
@@ -140,7 +140,7 @@ namespace book_backend.Controllers
         {
             try
             {
-                int generatedId = await booksService.AddBookAsync(bookDTO);
+                var generatedId = await booksService.AddBookAsync(bookDTO);
                 return CreatedAtAction("GetBook", new { id = generatedId }, bookDTO);
             }
             catch (ArgumentException ex)
