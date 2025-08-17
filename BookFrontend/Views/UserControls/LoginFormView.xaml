@@ -17,7 +17,8 @@
         </Grid.RowDefinitions>
 
         <!-- 标题 -->
-        <TextBlock Grid.Row="0" Text="{x:Static constants:UiConstant.UserLogin}" Style="{StaticResource PageTitleStyle}" />
+        <TextBlock Grid.Row="0" Text="{x:Static constants:UiConstant.UserLogin}"
+                   Style="{StaticResource PageTitleStyle}" />
 
         <!-- 登录表单主体 -->
         <ScrollViewer Grid.Row="1" Style="{StaticResource ContentAreaStyle}">
@@ -35,10 +36,11 @@
 
                 <!-- 记住我选项 -->
                 <CheckBox Content="记住我"
+                          Visibility="Hidden"
                           IsChecked="{Binding RememberMe, UpdateSourceTrigger=PropertyChanged}"
                           Style="{StaticResource MaterialDesignCheckBox}"
                           Margin="0,0,0,10"
-                          FontSize="14"
+                          FontSize="16"
                           Foreground="#666" />
 
                 <!-- 消息显示 -->

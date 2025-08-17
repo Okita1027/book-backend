@@ -9,8 +9,6 @@ public class Publisher
     [Required(ErrorMessage = "出版社名称不能为空")]
     public string Name { get; set; } = string.Empty;
 
-    public string? Address { get; set; }
-    public string? ContactInfo { get; set; }
     public DateTime CreatedTime { get; set; }
     public DateTime UpdatedTime { get; set; }
 

@@ -9,7 +9,6 @@ public class Category
     [Required(ErrorMessage = "分类名称不能为空")]
     public string Name { get; set; } = string.Empty;
 
-    public string? Description { get; set; }
     public DateTime CreatedTime { get; set; }
     public DateTime UpdatedTime { get; set; }
 

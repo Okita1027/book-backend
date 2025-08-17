@@ -48,7 +48,7 @@ public interface IBookService
     /// </summary>
     /// <param name="book">图书信息</param>
     /// <returns></returns>
-    Task<ApiResponse<BookVO>> AddBookAsync(BookVO book);
+    Task<ApiResponse<BookVO>> AddBookAsync(EditBookDTO book);
 
     /// <summary>
     /// 更新图书
@@ -56,7 +56,7 @@ public interface IBookService
     /// <param name="id">图书ID</param>
     /// <param name="book">图书信息</param>
     /// <returns></returns>
-    Task<ApiResponse<BookVO>> UpdateBookAsync(int id, BookVO book);
+    Task<ApiResponse<BookVO>> UpdateBookAsync(int id, EditBookDTO book);
 
     /// <summary>
     /// 删除图书

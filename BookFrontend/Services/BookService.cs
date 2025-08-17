@@ -78,12 +78,12 @@ public class BookService : IBookService
         return await _apiClient.GetAsync<PagedResponse<BookVO>>(endpoint);
     }
 
-    public async Task<ApiResponse<BookVO>> AddBookAsync(BookVO book)
+    public async Task<ApiResponse<BookVO>> AddBookAsync(EditBookDTO book)
     {
         return await _apiClient.PostAsync<BookVO>("Books/add", book);
     }
 
-    public async Task<ApiResponse<BookVO>> UpdateBookAsync(int id, BookVO book)
+    public async Task<ApiResponse<BookVO>> UpdateBookAsync(int id, EditBookDTO book)
     {
         return await _apiClient.PutAsync<BookVO>($"Books/{id}", book);
     }
