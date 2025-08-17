@@ -12,6 +12,7 @@ public class LoginViewModel : BaseViewModel
     private string _password = string.Empty;
     private bool _isLoading = false;
     private string _errorMessage = string.Empty;
+    private bool _rememberMe = false;
 
     public event Action? NavigateToRegister;
 
@@ -59,6 +60,12 @@ public class LoginViewModel : BaseViewModel
         get => _errorMessage;
         set => SetProperty(ref _errorMessage, value);
     }
+    
+    public bool RememberMe
+    {
+        get => _rememberMe;
+        set => SetProperty(ref _rememberMe, value);
+    }
 
     // 将公开的命令暴露为 ICommand，供 XAML 绑定
     // => 是表达式体定义操作符，表示这个属性的getter直接返回 _loginCommand 字段的值
@@ -94,8 +101,8 @@ public class LoginViewModel : BaseViewModel
 
         try
         {
-            // 调用认证服务进行登录
-            var result = await _authService.LoginAsync(Email, Password);
+            // 调用认证服务进行登录，传递RememberMe参数
+            var result = await _authService.LoginAsync(Email, Password, RememberMe);
 
             if (result.IsSuccess)
             {

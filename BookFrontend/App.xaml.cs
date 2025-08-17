@@ -8,8 +8,10 @@ using book_frontend.Services;
 using book_frontend.Services.Interfaces;
 using book_frontend.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
+using Serilog.Extensions.Logging;
 
 namespace book_frontend;
 
@@ -93,6 +95,13 @@ public partial class App : Application
         });
         // 注册ApiClient(单例)
         services.AddSingleton<ApiClient>();
+        
+        // 注册日志服务
+        services.AddLogging(builder => builder.AddSerilog(Log.Logger));
+        
+        // 注册凭据管理器服务(单例)
+        services.AddSingleton<ICredentialManagerService, CredentialManagerService>();
+        
         // 注册服务层(单例)
         services.AddSingleton<IAuthService, AuthService>();
         services.AddSingleton<IBookService, BookService>();

@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Globalization;
+using System.Net;
 using book_frontend.Models;
 
 namespace book_frontend.Helpers;
@@ -12,6 +13,19 @@ public class ApiClient
     private readonly HttpClient _httpClient;
     private readonly JsonSerializerOptions _jsonOptions;
     private string? _authToken;
+    private string? _refreshToken;
+    private DateTime _tokenExpiresAt;
+    private readonly SemaphoreSlim _refreshSemaphore = new(1, 1);
+    
+    /// <summary>
+    /// Token刷新事件，当Token被刷新时触发
+    /// </summary>
+    public event Action<string, string>? TokenRefreshed;
+    
+    /// <summary>
+    /// 认证失败事件，当RefreshToken也过期时触发
+    /// </summary>
+    public event Action? AuthenticationFailed;
 
     public ApiClient(HttpClient httpClient)
     {
@@ -37,6 +51,100 @@ public class ApiClient
         _authToken = token;
         _httpClient.DefaultRequestHeaders.Remove("Authorization");
         _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+    }
+    
+    /// <summary>
+    /// 设置认证Token和RefreshToken
+    /// </summary>
+    /// <param name="accessToken">访问Token</param>
+    /// <param name="refreshToken">刷新Token</param>
+    /// <param name="expiresAt">Token过期时间</param>
+    public void SetTokens(string accessToken, string refreshToken, DateTime expiresAt)
+    {
+        _authToken = accessToken;
+        _refreshToken = refreshToken;
+        _tokenExpiresAt = expiresAt;
+        _httpClient.DefaultRequestHeaders.Remove("Authorization");
+        _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+    }
+    
+    /// <summary>
+    /// 清除所有Token
+    /// </summary>
+    public void ClearTokens()
+    {
+        _authToken = null;
+        _refreshToken = null;
+        _tokenExpiresAt = DateTime.MinValue;
+        _httpClient.DefaultRequestHeaders.Remove("Authorization");
+    }
+    
+    /// <summary>
+    /// 检查Token是否即将过期（提前5分钟刷新）
+    /// </summary>
+    /// <returns>是否需要刷新</returns>
+    private bool IsTokenExpiringSoon()
+    {
+        return _tokenExpiresAt != DateTime.MinValue && 
+               _tokenExpiresAt.Subtract(TimeSpan.FromMinutes(5)) <= DateTime.UtcNow;
+    }
+    
+    /// <summary>
+    /// 刷新访问Token
+    /// </summary>
+    /// <returns>是否刷新成功</returns>
+    private async Task<bool> RefreshTokenAsync()
+    {
+        if (string.IsNullOrEmpty(_refreshToken))
+        {
+            return false;
+        }
+
+        await _refreshSemaphore.WaitAsync();
+        try
+        {
+            // 双重检查，避免并发刷新
+            if (!IsTokenExpiringSoon())
+            {
+                return true;
+            }
+
+            var refreshRequest = new { RefreshToken = _refreshToken };
+            var content = CreateJsonContent(refreshRequest);
+            
+            var response = await _httpClient.PostAsync("Auth/refresh-token", content);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var authResponse = JsonSerializer.Deserialize<AuthResponseDTO>(responseContent, _jsonOptions);
+                
+                if (authResponse != null && !string.IsNullOrEmpty(authResponse.Token))
+                {
+                    SetTokens(authResponse.Token, authResponse.RefreshToken, authResponse.ExpiresAt);
+                    TokenRefreshed?.Invoke(authResponse.Token, authResponse.RefreshToken);
+                    return true;
+                }
+            }
+            else if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                // RefreshToken也过期了，触发认证失败事件
+                ClearTokens();
+                AuthenticationFailed?.Invoke();
+            }
+            
+            return false;
+        }
+        catch (Exception ex)
+        {
+            // 刷新失败，记录日志但不抛出异常
+            System.Diagnostics.Debug.WriteLine($"Token refresh failed: {ex.Message}");
+            return false;
+        }
+        finally
+        {
+            _refreshSemaphore.Release();
+        }
     }
 
     public Task<ApiResponse<T>> GetAsync<T>(string endpoint)
@@ -99,8 +207,26 @@ public class ApiClient
     {
         try
         {
+            // 检查Token是否需要刷新（仅在有RefreshToken时）
+            if (!string.IsNullOrEmpty(_refreshToken) && IsTokenExpiringSoon())
+            {
+                await RefreshTokenAsync();
+            }
+
             var response = await requestFunc();
             var content = await response.Content.ReadAsStringAsync();
+
+            // 如果返回401且有RefreshToken，尝试刷新Token后重试一次
+            if (response.StatusCode == HttpStatusCode.Unauthorized && !string.IsNullOrEmpty(_refreshToken))
+            {
+                var refreshSuccess = await RefreshTokenAsync();
+                if (refreshSuccess)
+                {
+                    // Token刷新成功，重试原请求
+                    response = await requestFunc();
+                    content = await response.Content.ReadAsStringAsync();
+                }
+            }
 
             if (response.IsSuccessStatusCode)
             {

@@ -163,8 +163,8 @@ namespace book_backend.Services.Impl
             string? authorName, string? publisherName, DateTime? publishedDateBegin, DateTime? publishedDateEnd)
         {
             // 添加日志记录传入的参数
-            // logger.Information("Search parameters - Title: {Title}, ISBN: {Isbn}, Category: {CategoryName}, Author: {AuthorName}, Publisher: {PublisherName}, DateBegin: {DateBegin}, DateEnd: {DateEnd}",
-            //     title, isbn, categoryName, authorName, publisherName, publishedDateBegin, publishedDateEnd);
+            logger.Information("Search parameters - Title: {Title}, ISBN: {Isbn}, Category: {CategoryName}, Author: {AuthorName}, Publisher: {PublisherName}, DateBegin: {DateBegin}, DateEnd: {DateEnd}",
+            title, isbn, categoryName, authorName, publisherName, publishedDateBegin, publishedDateEnd);
 
             
             // 获取所有书籍、加载关联的 Author、Publisher和BookCategory,然后转为LINQ查询
