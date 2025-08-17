@@ -1,0 +1,120 @@
+using book_frontend.Models.Entities;
+using book_frontend.Services.Interfaces;
+using Microsoft.Extensions.Logging;
+
+namespace book_frontend.ViewModels;
+
+public class AdminViewModel : BaseViewModel
+{
+    private readonly IAuthService _authService;
+    private readonly ILogger<AdminViewModel> _logger;
+    private string _currentPageTitle = "欢迎";
+    private string _currentUserName = string.Empty;
+
+
+    public string CurrentPageTitle
+    {
+        get => _currentPageTitle;
+        set => SetProperty(ref _currentPageTitle, value);
+    }
+
+    public string CurrentUserName
+    {
+        get => _currentUserName;
+        set => SetProperty(ref _currentUserName, value);
+    }
+
+    public AdminViewModel(IAuthService authService, ILogger<AdminViewModel> logger)
+    {
+        _authService = authService;
+        _logger = logger;
+        
+        // 获取当前用户信息
+        LoadCurrentUser();
+    }
+
+    /// <summary>
+    /// 检查是否有管理员权限
+    /// </summary>
+    /// <returns>是否有管理员权限</returns>
+    public bool HasAdminPermission()
+    {
+        try
+        {
+            // 首先检查是否已登录
+            if (!_authService.IsLoggedIn())
+            {
+                _logger.LogWarning("User is not logged in when checking admin permission");
+                return false;
+            }
+
+            // 获取当前用户信息
+            var currentUser = _authService.GetCurrentUser();
+            if (currentUser == null)
+            {
+                _logger.LogWarning("Current user is null when checking admin permission");
+                return false;
+            }
+
+            // 检查用户是否为管理员
+            // 注意：这里假设User模型有IsAdmin属性或Role属性
+            // 如果没有，需要根据实际的用户模型进行调整
+            var isAdmin = IsUserAdmin(currentUser);
+            
+            if (!isAdmin)
+            {
+                _logger.LogWarning("User {Email} does not have admin permission", currentUser.Email);
+            }
+            
+            return isAdmin;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error checking admin permission");
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// 判断用户是否为管理员
+    /// </summary>
+    /// <param name="user">用户对象</param>
+    /// <returns>是否为管理员</returns>
+    private bool IsUserAdmin(User user)
+    {
+        // 使用User模型的Role属性判断管理员权限
+        return user.Role == UserRole.Admin;
+    }
+
+    /// <summary>
+    /// 加载当前用户信息
+    /// </summary>
+    private void LoadCurrentUser()
+    {
+        try
+        {
+            var currentUser = _authService.GetCurrentUser();
+            if (currentUser != null)
+            {
+                CurrentUserName = currentUser.Name ?? currentUser.Email ?? "未知用户";
+            }
+            else
+            {
+                CurrentUserName = "未登录";
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error loading current user information");
+            CurrentUserName = "加载失败";
+        }
+    }
+
+    /// <summary>
+    /// 刷新当前用户信息
+    /// </summary>
+    public void RefreshCurrentUser()
+    {
+        LoadCurrentUser();
+    }
+}

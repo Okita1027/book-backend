@@ -1,4 +1,4 @@
-﻿namespace book_backend.Models.VO;
+﻿namespace book_frontend.Models.VOs;
 
 public class RawBookVO
 {

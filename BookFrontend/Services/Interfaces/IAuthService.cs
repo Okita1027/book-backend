@@ -1,4 +1,5 @@
-using book_frontend.Models;
+using book_frontend.Models.DTOs;
+using book_frontend.Models.Entities;
 
 namespace book_frontend.Services.Interfaces;
 

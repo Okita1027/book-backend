@@ -1,5 +1,5 @@
 using System.Collections.ObjectModel;
-using book_frontend.Models;
+using book_frontend.Models.Entities;
 using book_frontend.Services.Interfaces;
 using CommunityToolkit.Mvvm.Input;
 using Serilog;

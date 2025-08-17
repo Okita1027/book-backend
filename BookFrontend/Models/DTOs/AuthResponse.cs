@@ -1,6 +1,6 @@
-namespace book_frontend.Models;
+namespace book_frontend.Models.DTOs;
 
-public class AuthResponseDTO
+public class AuthResponse
 {
     public string Token { get; set; } = string.Empty;
     public string RefreshToken { get; set; } = string.Empty;

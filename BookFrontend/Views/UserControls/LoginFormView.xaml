@@ -33,6 +33,14 @@
                                              Password="{Binding Password, UpdateSourceTrigger=PropertyChanged}"
                                              Margin="0,0,0,10" />
 
+                <!-- 记住我选项 -->
+                <CheckBox Content="记住我"
+                          IsChecked="{Binding RememberMe, UpdateSourceTrigger=PropertyChanged}"
+                          Style="{StaticResource MaterialDesignCheckBox}"
+                          Margin="0,0,0,10"
+                          FontSize="14"
+                          Foreground="#666" />
+
                 <!-- 消息显示 -->
                 <controls:MessageDisplay ErrorMessage="{Binding ErrorMessage}"
                                          SuccessMessage="{Binding SuccessMessage}" />

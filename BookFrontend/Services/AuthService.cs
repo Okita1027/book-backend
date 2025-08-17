@@ -1,8 +1,8 @@
 using book_frontend.Helpers;
-using book_frontend.Models;
+using book_frontend.Models.DTOs;
+using book_frontend.Models.Entities;
 using book_frontend.Services.Interfaces;
 using Microsoft.Extensions.Logging;
-using System.Text.Json;
 
 namespace book_frontend.Services;
 
@@ -37,7 +37,7 @@ public class AuthService : IAuthService
             };
 
             // 后端返回的是AuthResponseDTO格式，需要转换为LoginResponse
-            var response = await _apiClient.PostAsync<AuthResponseDTO>("Users/login", loginRequest);
+            var response = await _apiClient.PostAsync<AuthResponse>("Auth/login", loginRequest);
             
             if (response is { Success: true, Data: not null })
             {
@@ -200,7 +200,7 @@ public class AuthService : IAuthService
                     {
                         // 使用RefreshToken获取新的访问Token
                         var refreshRequest = new { RefreshToken = refreshToken };
-                        var response = await _apiClient.PostAsync<AuthResponseDTO>("Auth/refresh-token", refreshRequest);
+                        var response = await _apiClient.PostAsync<AuthResponse>("Auth/refresh-token", refreshRequest);
                         
                         if (response is { Success: true, Data: not null })
                         {

@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 using System.Globalization;
 using System.Net;
 using book_frontend.Models;
+using book_frontend.Models.DTOs;
 
 namespace book_frontend.Helpers;
 
@@ -117,7 +118,7 @@ public class ApiClient
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                var authResponse = JsonSerializer.Deserialize<AuthResponseDTO>(responseContent, _jsonOptions);
+                var authResponse = JsonSerializer.Deserialize<AuthResponse>(responseContent, _jsonOptions);
                 
                 if (authResponse != null && !string.IsNullOrEmpty(authResponse.Token))
                 {

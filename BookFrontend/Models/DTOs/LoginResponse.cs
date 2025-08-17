@@ -1,4 +1,6 @@
-namespace book_frontend.Models;
+using book_frontend.Models.Entities;
+
+namespace book_frontend.Models.DTOs;
 
 public class LoginResponse
 {

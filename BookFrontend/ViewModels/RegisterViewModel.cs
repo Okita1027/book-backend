@@ -1,9 +1,7 @@
-using book_frontend.Services.Interfaces;
-using book_frontend.Models;
-using book_frontend.Constants;
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
+using book_frontend.Constants;
+using book_frontend.Models.Entities;
+using book_frontend.Services.Interfaces;
 using CommunityToolkit.Mvvm.Input;
 
 namespace book_frontend.ViewModels;
@@ -21,6 +19,7 @@ public class RegisterViewModel : BaseViewModel
     private string _successMessage = string.Empty;
 
     public event Action? NavigateToLogin;
+    public event Action? RegisterSuccessful;
 
     public RegisterViewModel(IAuthService authService)
     {
@@ -157,6 +156,9 @@ public class RegisterViewModel : BaseViewModel
 
                 // 清空表单
                 ClearForm();
+                
+                // 触发注册成功事件
+                RegisterSuccessful?.Invoke();
                 NavigateToLogin?.Invoke();
             }
             else

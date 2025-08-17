@@ -1,4 +1,3 @@
-using System.Windows.Input;
 using book_frontend.Services.Interfaces;
 using CommunityToolkit.Mvvm.Input;
 
@@ -15,6 +14,7 @@ public class LoginViewModel : BaseViewModel
     private bool _rememberMe = false;
 
     public event Action? NavigateToRegister;
+    public event Action? LoginSuccessful;
 
     public string Email
     {
@@ -106,10 +106,9 @@ public class LoginViewModel : BaseViewModel
 
             if (result.IsSuccess)
             {
-                // 登录成功：
-                // - 这里暂不做页面跳转，下一步我们会实现导航到图书列表页
-                // - 你可以在这里设置欢迎消息或将登录状态暴露给UI
+                // 登录成功：清空错误信息并触发登录成功事件
                 ErrorMessage = string.Empty;
+                LoginSuccessful?.Invoke();
             }
             else
             {

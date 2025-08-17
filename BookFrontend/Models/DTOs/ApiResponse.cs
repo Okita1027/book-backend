@@ -1,6 +1,4 @@
-using System.Windows.Documents;
-
-namespace book_frontend.Models;
+namespace book_frontend.Models.DTOs;
 
 /// <summary>
 /// 通用API响应模型

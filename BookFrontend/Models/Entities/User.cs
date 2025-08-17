@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace book_frontend.Models;
+namespace book_frontend.Models.Entities;
 
 public class User
 {

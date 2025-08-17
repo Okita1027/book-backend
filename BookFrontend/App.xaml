@@ -23,9 +23,9 @@
             <!-- 全局数据转换器（用于在数据绑定过程中转换数据格式） -->
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <converters:StringArrayToStringConverter x:Key="StringArrayToStringConverter" />
-            <converters:BooleanToVisibilityConverter x:Key="CustomBooleanToVisibilityConverter" />
             <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
             <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
+            <converters:BooleanToStringConverter x:Key="BooleanToStringConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

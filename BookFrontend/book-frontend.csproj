@@ -28,7 +28,6 @@
     <Folder Include="Assests\Icons\" />
     <Folder Include="Converters\" />
     <Folder Include="Helpers\" />
-    <Folder Include="Models\" />
     <Folder Include="Services\" />
     <Folder Include="Services\Interfaces\" />
     <Folder Include="Views\Pages\" />

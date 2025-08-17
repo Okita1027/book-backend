@@ -15,6 +15,8 @@ using book_frontend.Views.Pages;
 using Hardcodet.Wpf.TaskbarNotification;
 using book_frontend.Services.Interfaces;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using Application = System.Windows.Application;
 
 namespace book_frontend;
@@ -26,17 +28,22 @@ public partial class MainWindow : Window
 {
     private readonly IAuthService _authService;
     private readonly IBookService _bookService;
+    private readonly ILogger<MainWindow> _logger;
+    private readonly IServiceProvider _serviceProvider;
     private LoginViewModel? _loginViewModel;
     private RegisterViewModel? _registerViewModel;
+    private AdminViewModel? _adminViewModel;
     
     public ICommand ShowWindowCommand { get; set; }
     public ICommand ExitApplicationCommand { get; set; }
     
-    public MainWindow(IAuthService authService, IBookService bookService)
+    public MainWindow(IAuthService authService, IBookService bookService, ILogger<MainWindow> logger, IServiceProvider serviceProvider)
     {
         InitializeComponent();
         _authService = authService;
         _bookService = bookService;
+        _logger = logger;
+        _serviceProvider = serviceProvider;
         Closing += Window_Closing;
         ShowWindowCommand = new RelayCommand(ShowWindow);
         ExitApplicationCommand = new RelayCommand(ExitApplication);
@@ -127,6 +134,22 @@ public partial class MainWindow : Window
     }
 
     /// <summary>
+    /// 后台管理按钮点击事件
+    /// </summary>
+    private void AdminButton_Click(object sender, RoutedEventArgs e)
+    {
+        ShowAdminPage();
+    }
+
+    /// <summary>
+    /// 退出按钮点击事件
+    /// </summary>
+    private void LogoutButton_Click(object sender, RoutedEventArgs e)
+    {
+        PerformLogout();
+    }
+
+    /// <summary>
     /// 显示首页Page
     /// </summary>
     private void ShowHomePage()
@@ -152,6 +175,8 @@ public partial class MainWindow : Window
             _loginViewModel = new LoginViewModel(_authService);
             // 订阅导航到注册页面的事件
             _loginViewModel.NavigateToRegister += ShowRegisterPage;
+            // 订阅登录成功事件
+            _loginViewModel.LoginSuccessful += OnLoginSuccessful;
         }
         
         loginPage.DataContext = _loginViewModel;
@@ -171,6 +196,8 @@ public partial class MainWindow : Window
             _registerViewModel = new RegisterViewModel(_authService);
             // 订阅导航到登录页面的事件
             _registerViewModel.NavigateToLogin += ShowLoginPage;
+            // 订阅注册成功事件
+            _registerViewModel.RegisterSuccessful += OnRegisterSuccessful;
         }
         
         // 重置表单状态
@@ -178,5 +205,112 @@ public partial class MainWindow : Window
         
         registerPage.DataContext = _registerViewModel;
         MainContentFrame.Navigate(registerPage);
+    }
+
+    /// <summary>
+    /// 显示后台管理页面
+    /// </summary>
+    private void ShowAdminPage()
+    {
+        try
+        {
+            // 创建或重用AdminViewModel
+            if (_adminViewModel == null)
+            {
+                var adminLogger = _serviceProvider.GetRequiredService<ILogger<AdminViewModel>>();
+                _adminViewModel = new AdminViewModel(_authService, adminLogger);
+            }
+
+            // 检查管理员权限
+            if (!_adminViewModel.HasAdminPermission())
+            {
+                System.Windows.MessageBox.Show("您没有管理员权限，无法访问后台管理系统。", "权限不足", 
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                _logger.LogWarning("User attempted to access admin page without permission");
+                return;
+            }
+
+            var adminPage = new AdminPage();
+            adminPage.DataContext = _adminViewModel;
+            MainContentFrame.Navigate(adminPage);
+            
+            _logger.LogInformation("User navigated to admin page");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error navigating to admin page");
+            System.Windows.MessageBox.Show("无法打开后台管理页面，请稍后重试。", "系统错误", 
+                MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    /// <summary>
+    /// 处理登录成功事件
+    /// </summary>
+    private void OnLoginSuccessful()
+    {
+        // 通知MainViewModel登录状态已更改
+        if (DataContext is MainViewModel mainViewModel)
+        {
+            mainViewModel.NotifyLoginStateChanged();
+        }
+        
+        // 导航回首页
+        ShowHomePage();
+    }
+    
+    /// <summary>
+    /// 处理注册成功事件
+    /// </summary>
+    private void OnRegisterSuccessful()
+    {
+        // 通知MainViewModel登录状态已更改
+        if (DataContext is MainViewModel mainViewModel)
+        {
+            mainViewModel.NotifyLoginStateChanged();
+        }
+    }
+    
+    /// <summary>
+    /// 退出登录的具体实现
+    /// </summary>
+    private async void PerformLogout()
+    {
+        try
+        {
+            // 确认退出
+            var result = System.Windows.MessageBox.Show("确定要退出登录吗？", "确认退出", 
+                MessageBoxButton.YesNo, MessageBoxImage.Question);
+            
+            if (result == MessageBoxResult.Yes)
+            {
+                // 执行退出登录
+                await _authService.LogoutAsync();
+                
+                // 通知MainViewModel登录状态已更改
+                if (DataContext is MainViewModel mainViewModel)
+                {
+                    mainViewModel.NotifyLoginStateChanged();
+                }
+                
+                // 清理ViewModel缓存
+                _loginViewModel = null;
+                _registerViewModel = null;
+                _adminViewModel = null;
+                
+                // 导航回首页
+                ShowHomePage();
+                
+                _logger.LogInformation("User logged out successfully");
+                System.Windows.MessageBox.Show("已成功退出登录。", "退出成功", 
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error during logout");
+            System.Windows.MessageBox.Show("退出登录时发生错误，请稍后重试。", "系统错误", 
+                MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 }

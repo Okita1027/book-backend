@@ -1,4 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using book_backend.Data;
@@ -44,6 +44,8 @@ public class UsersServiceImpl : IUsersService
         // Adapt<T>()用于运行时对象映射
         var user = editUserDTO.Adapt<User>();
         user.RegistrationDate = DateTime.Now;
+        // 对密码进行MD5加密
+        user.PasswordHash = editUserDTO.Password.MDString();
 
         _context.Users.Add(user);
         await _context.SaveChangesAsync();

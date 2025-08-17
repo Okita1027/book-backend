@@ -6,6 +6,7 @@
         xmlns:tb="http://www.hardcodet.net/taskbar"
         mc:Ignorable="d"
         xmlns:constants="clr-namespace:book_frontend.Constants"
+        xmlns:viewModels="clr-namespace:book_frontend.ViewModels"
         Title="{x:Static constants:UiConstant.TrayTooltip}" Height="720" Width="1200" Background="#F5F5F5"
         Closing="Window_Closing"
         WindowState="Maximized">
@@ -29,11 +30,41 @@
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="{x:Static constants:UiConstant.TrayTooltip}" Foreground="White" FontSize="18"
                            FontWeight="Bold" />
-                <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
-                    <Button Content="首页" Margin="4" Click="HomeButton_Click" />
-                    <Button Content="后台管理" Margin="4" />
-                    <Button Content="登录" Margin="4" Click="LoginButton_Click" />
-                    <Button Content="注册" Margin="4" Click="RegisterButton_Click" />
+                <StackPanel Orientation="Horizontal" Margin="20,0,0,0"
+                            d:DataContext="{d:DesignInstance viewModels:MainViewModel}">
+                    <Button x:Name="MainPage" Content="首页" Margin="4" Click="HomeButton_Click" Style="{StaticResource PrimaryButtonStyle}" />
+                    <Button x:Name="AdminButton" Content="后台管理" Margin="4" Click="AdminButton_Click" Style="{StaticResource PrimaryButtonStyle}"
+                            Visibility="{Binding IsLoggedIn, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <Button x:Name="LoginButton" Content="登录" Margin="4" Click="LoginButton_Click">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsLoggedIn}" Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsLoggedIn}" Value="False">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button x:Name="RegisterButton" Content="注册" Margin="4" Click="RegisterButton_Click">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsLoggedIn}" Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsLoggedIn}" Value="False">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button x:Name="LogoutButton" Content="退出" Margin="4" Click="LogoutButton_Click" Style="{StaticResource PrimaryButtonStyle}"
+                            Visibility="{Binding IsLoggedIn, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 </StackPanel>
             </StackPanel>
         </Border>

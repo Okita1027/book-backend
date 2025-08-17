@@ -1,6 +1,5 @@
 using book_frontend.Services.Interfaces;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
 namespace book_frontend.ViewModels;
 
@@ -10,6 +9,11 @@ public class MainViewModel : BaseViewModel
     private readonly ILogger<MainViewModel> _logger;
     
     public BookListViewModel Home { get; }
+    
+    /// <summary>
+    /// 获取当前用户是否已登录
+    /// </summary>
+    public bool IsLoggedIn => _authService.IsLoggedIn();
 
     public MainViewModel(IBookService bookService, IAuthService authService, ILogger<MainViewModel> logger)
     {
@@ -31,7 +35,8 @@ public class MainViewModel : BaseViewModel
             if (autoLoginResult.IsSuccess)
             {
                 _logger.LogInformation("Auto login successful for user: {UserName}", autoLoginResult.Name);
-                // 可以在这里触发UI更新或导航到主页面
+                // 触发登录状态变更通知
+                OnPropertyChanged(nameof(IsLoggedIn));
             }
             else
             {
@@ -43,5 +48,13 @@ public class MainViewModel : BaseViewModel
         {
             _logger.LogError(ex, "Error during auto login initialization");
         }
+    }
+    
+    /// <summary>
+    /// 通知登录状态已更改
+    /// </summary>
+    public void NotifyLoginStateChanged()
+    {
+        OnPropertyChanged(nameof(IsLoggedIn));
     }
 }
