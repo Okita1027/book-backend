@@ -13,10 +13,10 @@ namespace book_frontend.Views.UserControls
     {
         private BookManagementViewModel _viewModel;
         
-        public BookManagement()
+        public BookManagement(BookManagementViewModel viewModel)
         {
             InitializeComponent();
-            _viewModel = new BookManagementViewModel();
+            _viewModel = viewModel;
             DataContext = _viewModel;
             
             // 处理DataGrid选择变化

@@ -220,7 +220,7 @@ public partial class MainWindow : Window
                 return;
             }
 
-            var adminPage = new AdminPage();
+            var adminPage = _serviceProvider.GetRequiredService<AdminPage>();
             adminPage.DataContext = _adminViewModel;
             MainContentFrame.Navigate(adminPage);
             

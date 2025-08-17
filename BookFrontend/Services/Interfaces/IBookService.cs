@@ -64,4 +64,11 @@ public interface IBookService
     /// <param name="id">图书ID</param>
     /// <returns></returns>
     Task<ApiResponse<bool>> DeleteBookAsync(int id);
+    
+    /// <summary>
+    /// 批量删除图书
+    /// </summary>
+    /// <param name="ids">图书ID集合</param>
+    /// <returns></returns>
+    Task<ApiResponse<bool>> DeleteBooksAsync(List<int> ids);
 }

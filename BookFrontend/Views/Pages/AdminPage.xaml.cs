@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using book_frontend.ViewModels;
 using book_frontend.Views.UserControls;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace book_frontend.Views.Pages;
 
@@ -10,8 +11,11 @@ namespace book_frontend.Views.Pages;
 /// </summary>
 public partial class AdminPage : Page
 {
-    public AdminPage()
+    private readonly IServiceProvider _serviceProvider;
+    
+    public AdminPage(IServiceProvider serviceProvider)
     {
+        _serviceProvider = serviceProvider;
         InitializeComponent();
         
         // 默认显示欢迎页面
@@ -59,7 +63,7 @@ public partial class AdminPage : Page
     /// </summary>
     private void ShowBookManagement()
     {
-        var bookManagementControl = new BookManagement();
+        var bookManagementControl = _serviceProvider.GetRequiredService<BookManagement>();
         AdminContentFrame.Navigate(bookManagementControl);
     }
 

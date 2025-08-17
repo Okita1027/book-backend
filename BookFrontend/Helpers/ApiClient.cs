@@ -4,7 +4,6 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Globalization;
 using System.Net;
-using book_frontend.Models;
 using book_frontend.Models.DTOs;
 
 namespace book_frontend.Helpers;
@@ -165,6 +164,7 @@ public class ApiClient
         return SendRequestAsync<T>(() => _httpClient.PutAsync(endpoint, content));
     }
 
+    /*
     /// <summary>
     /// DELETE请求
     /// </summary>
@@ -196,6 +196,19 @@ public class ApiClient
                 Data = false,
             };
         }
+    }
+    */
+
+    /// <summary>
+    /// DELETE请求（批量删除）
+    /// </summary>
+    /// <param name="endpoint">API端点路径</param>
+    /// <param name="data">要删除的数据</param>
+    /// <returns>包含操作结果和状态信息的ApiResponse对象</returns>
+    public Task<ApiResponse<bool>> DeleteAsync(string endpoint, object? data = null)
+    {
+        var content = CreateJsonContent(data);
+        return SendRequestAsync<bool>(() => _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Delete, endpoint) { Content = content }));
     }
 
     private StringContent CreateJsonContent(object? data)

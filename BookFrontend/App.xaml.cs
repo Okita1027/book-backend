@@ -106,10 +106,21 @@ public partial class App : Application
         services.AddSingleton<IAuthService, AuthService>();
         services.AddSingleton<IBookService, BookService>();
         services.AddSingleton<IUserService, UserService>();
+        services.AddSingleton<IAuthorService, AuthorService>();
+        services.AddSingleton<IPublisherService, PublisherService>();
+        services.AddSingleton<ICategoryService, CategoryService>();
         // 注册ViewModels(瞬时)
         services.AddTransient<LoginViewModel>();
         services.AddTransient<RegisterViewModel>();
         services.AddTransient<MainViewModel>();
+        services.AddTransient<BookManagementViewModel>();
+        
+        // 注册用户控件(瞬时)
+        services.AddTransient<Views.UserControls.BookManagement>();
+        
+        // 注册页面(瞬时)
+        services.AddTransient<Views.Pages.AdminPage>();
+        
         // 注册主窗口(瞬时)
         services.AddTransient<MainWindow>();
     }

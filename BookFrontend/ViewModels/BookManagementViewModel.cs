@@ -38,9 +38,9 @@ namespace book_frontend.ViewModels
         // 加载状态
         private bool _isLoading = false;
 
-        public BookManagementViewModel()
+        public BookManagementViewModel(IBookService bookService)
         {
-            _bookService = new BookService();
+            _bookService = bookService;
             InitializeCommands();
 
             // 初始加载数据

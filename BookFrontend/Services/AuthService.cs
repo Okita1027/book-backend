@@ -78,14 +78,12 @@ public class AuthService : IAuthService
                     ExpiresAt = authResponse.ExpiresAt
                 };
             }
-            else
+
+            return new LoginResponse
             {
-                return new LoginResponse
-                {
-                    IsSuccess = false,
-                    ErrorMessage = response.Message ?? "登录失败"
-                };
-            }
+                IsSuccess = false,
+                ErrorMessage = response.Message ?? "登录失败"
+            };
         }
         catch (Exception ex)
         {
@@ -239,12 +237,10 @@ public class AuthService : IAuthService
                                 ExpiresAt = authResponse.ExpiresAt
                             };
                         }
-                        else
-                        {
-                            // RefreshToken可能已过期，删除存储的凭据
-                            await _credentialManager.DeleteTokensAsync(username);
-                            _logger.LogWarning("RefreshToken expired for user: {Username}, credentials removed", username);
-                        }
+
+                        // RefreshToken可能已过期，删除存储的凭据
+                        await _credentialManager.DeleteTokensAsync(username);
+                        _logger.LogWarning("RefreshToken expired for user: {Username}, credentials removed", username);
                     }
                     catch (Exception ex)
                     {
