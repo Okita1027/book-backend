@@ -26,6 +26,7 @@ Log.Logger = new LoggerConfiguration()
 builder.Services.AddScoped<IBooksService, BooksServiceImpl>();
 builder.Services.AddScoped<IUsersService, UsersServiceImpl>();
 builder.Services.AddScoped<ILoansService, LoansServiceImpl>();
+builder.Services.AddScoped<IAuthService, AuthServiceImpl>();
 
 // 配置跨域
 builder.Services.AddCors(options =>

@@ -1,4 +1,4 @@
-﻿using book_backend.Models.Entity;
+using book_backend.Models.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -27,6 +27,7 @@ namespace book_backend.Data
         // 在操纵Book类时，系统会自动生成BooksCategories关联表的记录
         // 但为了更方便地操作中间表，还是在这里进行声明
         public DbSet<BookCategory> BookCategories { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -89,6 +90,21 @@ namespace book_backend.Data
                 .WithOne(b => b.Author)
                 .HasForeignKey(b => b.AuthorId)
                 .OnDelete(DeleteBehavior.Cascade);
+            
+            // 配置RefreshToken 和 User 之间的一对多关系
+            modelBuilder.Entity<RefreshToken>()
+                .HasOne(rt => rt.User)
+                .WithMany()
+                .HasForeignKey(rt => rt.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            // 配置RefreshToken的索引以提高查询性能
+            modelBuilder.Entity<RefreshToken>()
+                .HasIndex(rt => rt.Token)
+                .IsUnique();
+            
+            modelBuilder.Entity<RefreshToken>()
+                .HasIndex(rt => rt.UserId);
             
         }
 

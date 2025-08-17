@@ -8,6 +8,7 @@
     <UserSecretsId>1340a55c-d821-44f2-827e-1d76d1e294c8</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Mapster" Version="7.4.0" />
     <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1" />
     <PackageReference Include="Masuit.Tools.Core" Version="2025.4.5" />
