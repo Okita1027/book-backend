@@ -143,7 +143,7 @@ namespace book_backend.Services.Impl
         public async Task RevokeAllUserTokensAsync(int userId, string ipAddress, string? reason = null)
         {
             var tokens = await _context.RefreshTokens
-                .Where(rt => rt.UserId == userId && rt.IsActive)
+                .Where(rt => rt.UserId == userId && !rt.IsRevoked && rt.ExpiresAt > DateTime.UtcNow)
                 .ToListAsync();
 
             foreach (var token in tokens)
@@ -166,7 +166,7 @@ namespace book_backend.Services.Impl
                 .Include(rt => rt.User)
                 .FirstOrDefaultAsync(rt => rt.Token == refreshToken);
 
-            return token?.IsActive == true ? token.User : null;
+            return token != null && !token.IsRevoked && !token.IsExpired ? token.User : null;
         }
 
         public string GenerateJwtToken(User user)
