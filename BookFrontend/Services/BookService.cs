@@ -1,6 +1,7 @@
+using System.Net.Http;
 using book_frontend.Helpers;
 using book_frontend.Models.DTOs;
-using book_frontend.Models.Entities;
+using book_frontend.Models.VOs;
 using book_frontend.Services.Interfaces;
 
 namespace book_frontend.Services;
@@ -9,22 +10,34 @@ public class BookService : IBookService
 {
     private readonly ApiClient _apiClient;
 
+    public BookService()
+    {
+        var httpClient = new HttpClient();
+        
+        // 从配置文件读取API基础地址
+        var config = ConfigurationHelper.GetConfig();
+        var apiBaseUrl = !string.IsNullOrEmpty(config.ApiBaseUrl) ? config.ApiBaseUrl : "http://localhost:8888/api/";
+        
+        httpClient.BaseAddress = new Uri(apiBaseUrl);
+        _apiClient = new ApiClient(httpClient);
+    }
+
     public BookService(ApiClient apiClient)
     {
         _apiClient = apiClient;
     }
 
-    public async Task<ApiResponse<List<Book>>> GetAllBooksAsync()
+    public async Task<ApiResponse<List<BookVO>>> GetAllBooksAsync()
     {
-        return await _apiClient.GetAsync<List<Book>>("Books");
+        return await _apiClient.GetAsync<List<BookVO>>("Books");
     }
 
-    public async Task<ApiResponse<Book>> GetBookByIdAsync(int id)
+    public async Task<ApiResponse<BookVO>> GetBookByIdAsync(int id)
     {
-        return await _apiClient.GetAsync<Book>($"Books/{id}");
+        return await _apiClient.GetAsync<BookVO>($"Books/{id}");
     }
 
-    public async Task<ApiResponse<PagedResponse<Book>>> SearchBooksAsync(
+    public async Task<ApiResponse<PagedResponse<BookVO>>> SearchBooksAsync(
         string? title = null,
         string? author = null, 
         string? category = null,
@@ -62,17 +75,17 @@ public class BookService : IBookService
         var queryString = string.Join("&", queryParams);
         var endpoint = $"Books/searchPaginated?{queryString}";
 
-        return await _apiClient.GetAsync<PagedResponse<Book>>(endpoint);
+        return await _apiClient.GetAsync<PagedResponse<BookVO>>(endpoint);
     }
 
-    public async Task<ApiResponse<Book>> AddBookAsync(Book book)
+    public async Task<ApiResponse<BookVO>> AddBookAsync(BookVO book)
     {
-        return await _apiClient.PostAsync<Book>("Books/add", book);
+        return await _apiClient.PostAsync<BookVO>("Books/add", book);
     }
 
-    public async Task<ApiResponse<Book>> UpdateBookAsync(int id, Book book)
+    public async Task<ApiResponse<BookVO>> UpdateBookAsync(int id, BookVO book)
     {
-        return await _apiClient.PutAsync<Book>($"Books/{id}", book);
+        return await _apiClient.PutAsync<BookVO>($"Books/{id}", book);
     }
 
     public async Task<ApiResponse<bool>> DeleteBookAsync(int id)

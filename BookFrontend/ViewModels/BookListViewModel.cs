@@ -1,5 +1,5 @@
 using System.Collections.ObjectModel;
-using book_frontend.Models.Entities;
+using book_frontend.Models.VOs;
 using book_frontend.Services.Interfaces;
 using CommunityToolkit.Mvvm.Input;
 using Serilog;
@@ -130,7 +130,7 @@ public class BookListViewModel : BaseViewModel
      * 列表和状态
      * ObservableCollection：当集合中的元素被添加、删除或更新时，它会自动通知用户界面（UI）进行相应的更新
      */
-    public ObservableCollection<Book> Books { get; }
+    public ObservableCollection<BookVO> Books { get; }
 
     private bool _isLoading;
 

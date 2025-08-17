@@ -1,23 +1,13 @@
 using System.ComponentModel;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using book_frontend.Services.Interfaces;
 using book_frontend.ViewModels;
 using book_frontend.Views.Pages;
-using Hardcodet.Wpf.TaskbarNotification;
-using book_frontend.Services.Interfaces;
-using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Application = System.Windows.Application;
+using RelayCommand = CommunityToolkit.Mvvm.Input.RelayCommand;
 
 namespace book_frontend;
 
@@ -224,7 +214,7 @@ public partial class MainWindow : Window
             // 检查管理员权限
             if (!_adminViewModel.HasAdminPermission())
             {
-                System.Windows.MessageBox.Show("您没有管理员权限，无法访问后台管理系统。", "权限不足", 
+                MessageBox.Show("您没有管理员权限，无法访问后台管理系统。", "权限不足", 
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 _logger.LogWarning("User attempted to access admin page without permission");
                 return;
@@ -239,7 +229,7 @@ public partial class MainWindow : Window
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error navigating to admin page");
-            System.Windows.MessageBox.Show("无法打开后台管理页面，请稍后重试。", "系统错误", 
+            MessageBox.Show("无法打开后台管理页面，请稍后重试。", "系统错误", 
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -279,7 +269,7 @@ public partial class MainWindow : Window
         try
         {
             // 确认退出
-            var result = System.Windows.MessageBox.Show("确定要退出登录吗？", "确认退出", 
+            var result = MessageBox.Show("确定要退出登录吗？", "确认退出", 
                 MessageBoxButton.YesNo, MessageBoxImage.Question);
             
             if (result == MessageBoxResult.Yes)
@@ -302,14 +292,12 @@ public partial class MainWindow : Window
                 ShowHomePage();
                 
                 _logger.LogInformation("User logged out successfully");
-                System.Windows.MessageBox.Show("已成功退出登录。", "退出成功", 
-                    MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error during logout");
-            System.Windows.MessageBox.Show("退出登录时发生错误，请稍后重试。", "系统错误", 
+            MessageBox.Show("退出登录时发生错误，请稍后重试。", "系统错误", 
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }

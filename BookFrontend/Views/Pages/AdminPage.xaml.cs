@@ -18,7 +18,14 @@ public partial class AdminPage : Page
         ShowWelcomePage();
     }
 
-    // 图书管理功能已移除
+    /// <summary>
+    /// 图书管理按钮点击事件
+    /// </summary>
+    private void BookManagementButton_Click(object sender, RoutedEventArgs e)
+    {
+        ShowBookManagement();
+        UpdateCurrentPageTitle("图书管理");
+    }
 
     /// <summary>
     /// 用户管理按钮点击事件
@@ -45,6 +52,15 @@ public partial class AdminPage : Page
     {
         ShowSystemSettings();
         UpdateCurrentPageTitle("系统设置");
+    }
+
+    /// <summary>
+    /// 显示图书管理页面
+    /// </summary>
+    private void ShowBookManagement()
+    {
+        var bookManagementControl = new BookManagement();
+        AdminContentFrame.Navigate(bookManagementControl);
     }
 
     /// <summary>

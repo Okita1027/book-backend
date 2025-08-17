@@ -44,7 +44,20 @@
                            FontSize="14" 
                            Foreground="#333" />
 
-                <!-- 图书管理按钮已移除 -->
+                <!-- 图书管理按钮 -->
+                <Button Name="BookManagementButton" 
+                        Click="BookManagementButton_Click"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Left"
+                        Padding="15,10"
+                        Margin="5,2">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Book" Width="20" Height="20" 
+                                                 VerticalAlignment="Center" Margin="0,0,10,0" />
+                        <TextBlock Text="图书管理" VerticalAlignment="Center" FontSize="14" />
+                    </StackPanel>
+                </Button>
 
                 <!-- 用户管理按钮 -->
                 <Button Name="UserManagementButton" 

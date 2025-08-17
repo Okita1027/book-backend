@@ -1,5 +1,5 @@
 using book_frontend.Models.DTOs;
-using book_frontend.Models.Entities;
+using book_frontend.Models.VOs;
 
 namespace book_frontend.Services.Interfaces;
 
@@ -8,61 +8,60 @@ public interface IBookService
     /// <summary>
     /// 获取所有图书
     /// </summary>
-    /// <returns>图书列表</returns>
-    Task<ApiResponse<List<Book>>> GetAllBooksAsync();
-    
+    /// <returns></returns>
+    Task<ApiResponse<List<BookVO>>> GetAllBooksAsync();
+
     /// <summary>
     /// 根据ID获取图书
     /// </summary>
     /// <param name="id">图书ID</param>
-    /// <returns>图书信息</returns>
-    Task<ApiResponse<Book>> GetBookByIdAsync(int id);
-    
+    /// <returns></returns>
+    Task<ApiResponse<BookVO>> GetBookByIdAsync(int id);
 
     /// <summary>
-    /// 分页搜索图书
+    /// 搜索图书（分页）
     /// </summary>
-    /// <param name="title"></param>
-    /// <param name="author"></param>
-    /// <param name="category"></param>
-    /// <param name="publisher"></param>
-    /// <param name="isbn"></param>
-    /// <param name="publishDateStart"></param>
-    /// <param name="publishDateEnd"></param>
-    /// <param name="pageIndex"></param>
-    /// <param name="pageSize"></param>
-    /// <returns>分页图书列表</returns>
-    Task<ApiResponse<PagedResponse<Book>>> SearchBooksAsync(
+    /// <param name="title">标题</param>
+    /// <param name="author">作者</param>
+    /// <param name="category">分类</param>
+    /// <param name="publisher">出版社</param>
+    /// <param name="isbn">ISBN</param>
+    /// <param name="publishDateStart">出版日期开始</param>
+    /// <param name="publishDateEnd">出版日期结束</param>
+    /// <param name="pageIndex">页码</param>
+    /// <param name="pageSize">页大小</param>
+    /// <returns></returns>
+    Task<ApiResponse<PagedResponse<BookVO>>> SearchBooksAsync(
         string? title = null,
-        string? author = null, 
+        string? author = null,
         string? category = null,
         string? publisher = null,
         string? isbn = null,
         DateTime? publishDateStart = null,
         DateTime? publishDateEnd = null,
-        int pageIndex = 1, 
+        int pageIndex = 1,
         int pageSize = 12
     );
-    
+
     /// <summary>
     /// 添加图书
     /// </summary>
     /// <param name="book">图书信息</param>
-    /// <returns>添加结果</returns>
-    Task<ApiResponse<Book>> AddBookAsync(Book book);
-    
+    /// <returns></returns>
+    Task<ApiResponse<BookVO>> AddBookAsync(BookVO book);
+
     /// <summary>
     /// 更新图书
     /// </summary>
     /// <param name="id">图书ID</param>
     /// <param name="book">图书信息</param>
-    /// <returns>更新结果</returns>
-    Task<ApiResponse<Book>> UpdateBookAsync(int id, Book book);
-    
+    /// <returns></returns>
+    Task<ApiResponse<BookVO>> UpdateBookAsync(int id, BookVO book);
+
     /// <summary>
     /// 删除图书
     /// </summary>
     /// <param name="id">图书ID</param>
-    /// <returns>删除结果</returns>
+    /// <returns></returns>
     Task<ApiResponse<bool>> DeleteBookAsync(int id);
 }
