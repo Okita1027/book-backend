@@ -42,7 +42,7 @@ public class UsersServiceImpl : IUsersService
         }
 
         // Adapt<T>()用于运行时对象映射
-        User user = editUserDTO.Adapt<User>();
+        var user = editUserDTO.Adapt<User>();
         user.RegistrationDate = DateTime.Now;
 
         _context.Users.Add(user);
@@ -73,7 +73,7 @@ public class UsersServiceImpl : IUsersService
 
     public async Task UpdateUserAsync(int id, EditUserDTO editUserDTO)
     {
-        User existingUser = await _context.Users.FindAsync(id);
+        var existingUser = await _context.Users.FindAsync(id);
         if (existingUser == null)
         {
             throw new ArgumentException(USER_NOT_FOUND);

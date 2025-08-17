@@ -101,11 +101,11 @@ namespace book_backend.Controllers
             {
                 return BadRequest(ModelState);
             }
-            string email = userLoginDto.Email;
-            string password = userLoginDto.Password;
+            var email = userLoginDto.Email;
+            var password = userLoginDto.Password;
             try
             {
-                AuthResponseDTO authResponseDto = await _usersService.LoginUserAsync(email, password);
+                var authResponseDto = await _usersService.LoginUserAsync(email, password);
                 return Ok(authResponseDto);
             }
             catch (ArgumentException ex)
