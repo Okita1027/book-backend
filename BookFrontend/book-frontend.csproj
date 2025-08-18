@@ -7,7 +7,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Assests\Icons\lemon.ico</ApplicationIcon>
+    <!-- 发布时复制配置文件 -->
+    <PublishSingleFile>true</PublishSingleFile>
   </PropertyGroup>
+  <!-- MSBuild中的容器元素，用于将相似的项目项分组 -->
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="CredentialManagement" Version="1.0.2" />
@@ -29,10 +32,13 @@
     <Folder Include="Assests\Icons\" />
     <Folder Include="Converters\" />
     <Folder Include="Helpers\" />
+    <Folder Include="Logs\" />
     <Folder Include="Services\" />
     <Folder Include="Services\Interfaces\" />
     <Folder Include="Views\Pages\" />
     <Folder Include="Views\ResourceDictionaries\" />
+    <Folder Include="Views\Windows\" />
+    <Folder Include="Views\UserControls\" />
   </ItemGroup>
   <ItemGroup>
     <!--"None"类型的文件是指那些不属于编译过程的文件，通常是配置文件、资源文件等。-->
@@ -40,6 +46,15 @@
       <!--只有当源文件比输出目录中的文件更新时，才会将文件复制到输出目录（例如 bin\Debug 或 bin\Release-->
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <!-- 从None项组中移除lemon.ico文件(避免文件被同时视为None类型和Resource类型（防止冲突）) -->
+    <None Remove="Assests\Icons\lemon.ico" />
+    <!-- 标记为WPF资源 -->
+    <Resource Include="Assests\Icons\lemon.ico">
+      <!-- 始终复制到输出目录 -->
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
   <!-- <Page Update="...">表示这些是WPF的Page类型文件（XAML页面文件），需要特殊的处理方式 -->
@@ -81,11 +96,5 @@
       <XamlRuntime>Wpf</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="Assests\Icons\lemon.ico" />
-    <Resource Include="Assests\Icons\lemon.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
   </ItemGroup>
 </Project>

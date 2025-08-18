@@ -9,6 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using static book_backend.Constants.IServiceConstants;
 
 namespace book_backend.Services.Impl
 {
@@ -41,7 +42,7 @@ namespace book_backend.Services.Impl
             if (user == null || user.PasswordHash != loginDto.Password.MDString())
             {
                 _logger.LogWarning("Login failed for email: {Email} from IP: {IpAddress}", loginDto.Email, ipAddress);
-                throw new BusinessException("邮箱或密码错误");
+                throw new BusinessException(EMAIL_PASSWORD_INCORRECT);
             }
 
             // 生成JWT访问令牌

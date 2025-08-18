@@ -32,4 +32,11 @@ public interface IUserService
     /// <param name="id">用户ID</param>
     /// <returns>删除结果</returns>
     Task<ApiResponse<bool>> DeleteUserAsync(int id);
+    
+    /// <summary>
+    /// （批量）删除用户
+    /// </summary>
+    /// <param name="ids">用户ID列表</param>
+    /// <returns>删除结果</returns>
+    Task<ApiResponse<bool>> DeleteUsersAsync(List<int> ids);
 }

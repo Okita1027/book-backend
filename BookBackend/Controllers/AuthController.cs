@@ -4,6 +4,7 @@ using book_backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using static book_backend.Constants.IServiceConstants;
 
 namespace book_backend.Controllers
 {
@@ -31,6 +32,10 @@ namespace book_backend.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<AuthResponseDTO>> Login([FromBody] UserLoginDTO loginDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { Message = INCORRECT_FIELD_VALIDATION });
+            }
             try
             {
                 var ipAddress = GetIpAddress();
@@ -49,7 +54,7 @@ namespace book_backend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Login error occurred");
-                return StatusCode(500, new { message = "登录过程中发生错误" });
+                return StatusCode(500, new { message = OPERATION_FAILED });
             }
         }
 

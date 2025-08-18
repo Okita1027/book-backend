@@ -59,7 +59,7 @@ public class UsersServiceImpl : IUsersService
         // MD5校验密码
         if (user == null || user.PasswordHash != password.MDString())
         {
-            throw new ArgumentException(USERNAME_PASSWORD_INCORRECT);
+            throw new ArgumentException(EMAIL_PASSWORD_INCORRECT);
         }
         // 登录成功,生成JWT TOKEN
         (string Token, DateTime ExpiresAt) jwtToken = GenerateJwtToken(user);

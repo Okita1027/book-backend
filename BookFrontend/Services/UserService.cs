@@ -33,4 +33,9 @@ public class UserService : IUserService
     {
         return await _apiClient.DeleteAsync($"Users/{id}");
     }
+
+    public async Task<ApiResponse<bool>> DeleteUsersAsync(List<int> ids)
+    {
+        return await _apiClient.DeleteAsync("Users", ids);
+    }
 }

@@ -20,6 +20,7 @@ public interface IServiceConstants
     const string NOT_ENOUGH_AVAILABLE = "无可用资源";
     const string CATEGORY_NOT_FOUND = "书籍类别不存在";
     const string USER_NOT_FOUND = "用户不存在";
-    const string USERNAME_PASSWORD_INCORRECT = "用户名或密码错误";
+    const string EMAIL_PASSWORD_INCORRECT = "邮箱或密码错误";
+    const string INCORRECT_FIELD_VALIDATION = "数据格式错误";
     const string EMAIL_ALREADY_REGISTERED = "邮箱已被注册";
 }

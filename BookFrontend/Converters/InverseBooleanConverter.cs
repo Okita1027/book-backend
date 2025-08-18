@@ -20,18 +20,22 @@ public class InverseBooleanConverter : IValueConverter
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (value is bool boolValue)
+        {
             return !boolValue;
-            
+        }
+
         return true; // 默认返回true
     }
 
     /// <summary>
-    /// 反向转换（用于双向绑定）
+    /// 反向转换,从目标到源（用于双向绑定）
     /// </summary>
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (value is bool boolValue)
+        {
             return !boolValue;
+        }
             
         return false; // 默认返回false
     }

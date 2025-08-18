@@ -16,12 +16,12 @@ public class ApiClient
     private string? _refreshToken;
     private DateTime _tokenExpiresAt;
     private readonly SemaphoreSlim _refreshSemaphore = new(1, 1);
-    
+
     /// <summary>
     /// Token刷新事件，当Token被刷新时触发
     /// </summary>
     public event Action<string, string>? TokenRefreshed;
-    
+
     /// <summary>
     /// 认证失败事件，当RefreshToken也过期时触发
     /// </summary>
@@ -52,7 +52,7 @@ public class ApiClient
         _httpClient.DefaultRequestHeaders.Remove("Authorization");
         _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
     }
-    
+
     /// <summary>
     /// 设置认证Token和RefreshToken
     /// </summary>
@@ -67,7 +67,7 @@ public class ApiClient
         _httpClient.DefaultRequestHeaders.Remove("Authorization");
         _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
     }
-    
+
     /// <summary>
     /// 清除所有Token
     /// </summary>
@@ -78,17 +78,17 @@ public class ApiClient
         _tokenExpiresAt = DateTime.MinValue;
         _httpClient.DefaultRequestHeaders.Remove("Authorization");
     }
-    
+
     /// <summary>
     /// 检查Token是否即将过期（提前5分钟刷新）
     /// </summary>
     /// <returns>是否需要刷新</returns>
     private bool IsTokenExpiringSoon()
     {
-        return _tokenExpiresAt != DateTime.MinValue && 
+        return _tokenExpiresAt != DateTime.MinValue &&
                _tokenExpiresAt.Subtract(TimeSpan.FromMinutes(5)) <= DateTime.UtcNow;
     }
-    
+
     /// <summary>
     /// 刷新访问Token
     /// </summary>
@@ -111,14 +111,14 @@ public class ApiClient
 
             var refreshRequest = new { RefreshToken = _refreshToken };
             var content = CreateJsonContent(refreshRequest);
-            
+
             var response = await _httpClient.PostAsync("Auth/refresh-token", content);
-            
+
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
                 var authResponse = JsonSerializer.Deserialize<AuthResponse>(responseContent, _jsonOptions);
-                
+
                 if (authResponse != null && !string.IsNullOrEmpty(authResponse.Token))
                 {
                     SetTokens(authResponse.Token, authResponse.RefreshToken, authResponse.ExpiresAt);
@@ -132,7 +132,7 @@ public class ApiClient
                 ClearTokens();
                 AuthenticationFailed?.Invoke();
             }
-            
+
             return false;
         }
         catch (Exception ex)
@@ -203,12 +203,13 @@ public class ApiClient
     /// DELETE请求（批量删除）
     /// </summary>
     /// <param name="endpoint">API端点路径</param>
-    /// <param name="data">要删除的数据</param>
+    /// <param name="ids">要删除的数据id集合</param>
     /// <returns>包含操作结果和状态信息的ApiResponse对象</returns>
-    public Task<ApiResponse<bool>> DeleteAsync(string endpoint, object? data = null)
+    public Task<ApiResponse<bool>> DeleteAsync(string endpoint, List<int>? ids = null)
     {
-        var content = CreateJsonContent(data);
-        return SendRequestAsync<bool>(() => _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Delete, endpoint) { Content = content }));
+        var content = CreateJsonContent(ids);
+        return SendRequestAsync<bool>(() =>
+            _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Delete, endpoint) { Content = content }));
     }
 
     private StringContent CreateJsonContent(object? data)
@@ -250,24 +251,50 @@ public class ApiClient
                     return new ApiResponse<T>
                     {
                         Success = true,
-                        Data = default(T),
+                        Data = default,
                         Code = (int)response.StatusCode,
+                        Message = "修改/删除成功"
                     };
                 }
-                
+
                 var data = JsonSerializer.Deserialize<T>(content, _jsonOptions);
                 return new ApiResponse<T>
                 {
                     Success = true,
                     Data = data,
                     Code = (int)response.StatusCode,
+                    Message = "操作成功"
                 };
+            }
+
+            // 尝试解析后端返回的错误信息
+            string errorMessage = $"请求失败: {response.StatusCode}";
+            if (!string.IsNullOrWhiteSpace(content))
+            {
+                try
+                {
+                    // 尝试解析后端返回的错误对象
+                    var errorResponse = JsonSerializer.Deserialize<JsonElement>(content, _jsonOptions);
+                    if (errorResponse.TryGetProperty("message", out var messageProperty))
+                    {
+                        var backendMessage = messageProperty.GetString();
+                        if (!string.IsNullOrEmpty(backendMessage))
+                        {
+                            errorMessage = backendMessage;
+                        }
+                    }
+                }
+                catch
+                {
+                    // 如果解析失败，使用原始内容作为错误信息
+                    errorMessage = content;
+                }
             }
 
             return new ApiResponse<T>
             {
                 Success = false,
-                Message = $"请求失败: {response.StatusCode}",
+                Message = errorMessage,
                 Code = (int)response.StatusCode,
             };
         }
@@ -277,7 +304,7 @@ public class ApiClient
             {
                 Code = 500,
                 Success = false,
-                Message = $"网络错误: {ex.Message}",
+                Message = $"未知错误: {ex.Message}",
             };
         }
     }

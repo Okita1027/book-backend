@@ -8,7 +8,9 @@ public static class ConfigurationHelper
     private static AppConfig? _config;
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
-        PropertyNameCaseInsensitive = true
+        // 大小写不敏感 + 驼峰命名规则
+        PropertyNameCaseInsensitive = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
     
     /// <summary>
@@ -34,7 +36,20 @@ public static class ConfigurationHelper
         }
         try
         {
-            // 优先读取配置文件
+            /*
+             * 优先读取配置文件
+             *  AppDomain
+             *      AppDomain（应用程序域）是.NET中的一种轻量级隔离机制
+             *      它是.NET应用程序运行的环境边界
+             *      每个.NET应用程序至少运行在一个AppDomain中
+             *  CurrentDomain
+             *      CurrentDomain是AppDomain类的静态属性
+             *      它返回当前线程正在运行的AppDomain实例
+             *      通过这个属性可以访问当前应用程序域的各种信息
+             *  BaseDirectory
+             *      BaseDirectory是AppDomain实例的一个属性
+             *      它返回应用程序的基目录路径
+             */
             var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
             if (File.Exists(configPath))
             {
