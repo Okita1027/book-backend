@@ -33,33 +33,57 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <!-- 第一行搜索条件 -->
+                <!-- 第一行搜索条件 (4个字段) -->
                 <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,0">
                     <TextBlock Text="图书标题" FontWeight="Bold" Margin="0,0,0,5" />
                     <TextBox Text="{Binding SearchTitle, UpdateSourceTrigger=PropertyChanged}"
                              materialDesign:HintAssist.Hint="请输入图书标题"
-                             Style="{StaticResource MaterialDesignOutlinedTextBox}" />
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding SearchCommand}" />
+                        </TextBox.InputBindings>
+                    </TextBox>
                 </StackPanel>
 
                 <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,10,0">
                     <TextBlock Text="作者" FontWeight="Bold" Margin="0,0,0,5" />
                     <TextBox Text="{Binding SearchAuthor, UpdateSourceTrigger=PropertyChanged}"
                              materialDesign:HintAssist.Hint="请输入作者姓名"
-                             Style="{StaticResource MaterialDesignOutlinedTextBox}" />
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding SearchCommand}" />
+                        </TextBox.InputBindings>
+                    </TextBox>
                 </StackPanel>
 
                 <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,10,0">
                     <TextBlock Text="ISBN" FontWeight="Bold" Margin="0,0,0,5" />
                     <TextBox Text="{Binding SearchIsbn, UpdateSourceTrigger=PropertyChanged}"
                              materialDesign:HintAssist.Hint="请输入ISBN"
-                             Style="{StaticResource MaterialDesignOutlinedTextBox}" />
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding SearchCommand}" />
+                        </TextBox.InputBindings>
+                    </TextBox>
+                </StackPanel>
+
+                <StackPanel Grid.Row="0" Grid.Column="3" Margin="0,0,10,0">
+                    <TextBlock Text="出版社" FontWeight="Bold" Margin="0,0,0,5" />
+                    <TextBox Text="{Binding SearchPublisher, UpdateSourceTrigger=PropertyChanged}"
+                             materialDesign:HintAssist.Hint="请输入出版社"
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding SearchCommand}" />
+                        </TextBox.InputBindings>
+                    </TextBox>
                 </StackPanel>
 
                 <!-- 搜索按钮 -->
-                <StackPanel Grid.Row="0" Grid.Column="3" VerticalAlignment="Bottom">
+                <StackPanel Grid.Row="0" Grid.Column="4" VerticalAlignment="Bottom">
                     <Button Command="{Binding SearchCommand}"
                             Style="{StaticResource MaterialDesignRaisedButton}"
                             Background="#2196F3"
@@ -74,23 +98,34 @@
                     </Button>
                 </StackPanel>
 
-                <!-- 第二行搜索条件 -->
+                <!-- 第二行搜索条件 (3个字段) -->
                 <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,15,10,0">
-                    <TextBlock Text="出版社" FontWeight="Bold" Margin="0,0,0,5" />
-                    <TextBox Text="{Binding SearchPublisher, UpdateSourceTrigger=PropertyChanged}"
-                             materialDesign:HintAssist.Hint="请输入出版社"
-                             Style="{StaticResource MaterialDesignOutlinedTextBox}" />
-                </StackPanel>
-
-                <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,15,10,0">
                     <TextBlock Text="分类" FontWeight="Bold" Margin="0,0,0,5" />
                     <TextBox Text="{Binding SearchCategory, UpdateSourceTrigger=PropertyChanged}"
                              materialDesign:HintAssist.Hint="请输入分类"
-                             Style="{StaticResource MaterialDesignOutlinedTextBox}" />
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding SearchCommand}" />
+                        </TextBox.InputBindings>
+                    </TextBox>
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,15,10,0">
+                    <TextBlock Text="出版日期开始" FontWeight="Bold" Margin="0,0,0,5" />
+                    <DatePicker SelectedDate="{Binding SearchPublishDateStart, UpdateSourceTrigger=PropertyChanged}"
+                                materialDesign:HintAssist.Hint="请选择开始日期"
+                                Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,15,10,0">
+                    <TextBlock Text="出版日期结束" FontWeight="Bold" Margin="0,0,0,5" />
+                    <DatePicker SelectedDate="{Binding SearchPublishDateEnd, UpdateSourceTrigger=PropertyChanged}"
+                                materialDesign:HintAssist.Hint="请选择结束日期"
+                                Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
                 </StackPanel>
 
                 <!-- 重置按钮 -->
-                <StackPanel Grid.Row="1" Grid.Column="3" VerticalAlignment="Bottom">
+                <StackPanel Grid.Row="1" Grid.Column="4" VerticalAlignment="Bottom">
                     <Button Command="{Binding ResetCommand}"
                             Style="{StaticResource MaterialDesignOutlinedButton}"
                             BorderBrush="#666"

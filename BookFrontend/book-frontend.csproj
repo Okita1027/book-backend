@@ -33,7 +33,6 @@
     <Folder Include="Services\Interfaces\" />
     <Folder Include="Views\Pages\" />
     <Folder Include="Views\ResourceDictionaries\" />
-    <Folder Include="Views\Windows\" />
   </ItemGroup>
   <ItemGroup>
     <!--"None"类型的文件是指那些不属于编译过程的文件，通常是配置文件、资源文件等。-->

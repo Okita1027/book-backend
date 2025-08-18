@@ -40,23 +40,7 @@ public partial class AdminPage : Page
         UpdateCurrentPageTitle("用户管理");
     }
 
-    /// <summary>
-    /// 借阅管理按钮点击事件
-    /// </summary>
-    private void LoanManagementButton_Click(object sender, RoutedEventArgs e)
-    {
-        ShowLoanManagement();
-        UpdateCurrentPageTitle("借阅管理");
-    }
 
-    /// <summary>
-    /// 系统设置按钮点击事件
-    /// </summary>
-    private void SystemSettingsButton_Click(object sender, RoutedEventArgs e)
-    {
-        ShowSystemSettings();
-        UpdateCurrentPageTitle("系统设置");
-    }
 
     /// <summary>
     /// 显示图书管理页面
@@ -103,39 +87,7 @@ public partial class AdminPage : Page
         AdminContentFrame.Navigate(placeholder);
     }
 
-    /// <summary>
-    /// 显示借阅管理页面（暂时显示占位内容）
-    /// </summary>
-    private void ShowLoanManagement()
-    {
-        var placeholder = new TextBlock
-        {
-            Text = "借阅管理功能正在开发中...",
-            HorizontalAlignment = HorizontalAlignment.Center,
-            VerticalAlignment = VerticalAlignment.Center,
-            FontSize = 16,
-            Foreground = System.Windows.Media.Brushes.Gray
-        };
-        
-        AdminContentFrame.Navigate(placeholder);
-    }
 
-    /// <summary>
-    /// 显示系统设置页面（暂时显示占位内容）
-    /// </summary>
-    private void ShowSystemSettings()
-    {
-        var placeholder = new TextBlock
-        {
-            Text = "系统设置功能正在开发中...",
-            HorizontalAlignment = HorizontalAlignment.Center,
-            VerticalAlignment = VerticalAlignment.Center,
-            FontSize = 16,
-            Foreground = System.Windows.Media.Brushes.Gray
-        };
-        
-        AdminContentFrame.Navigate(placeholder);
-    }
 
     /// <summary>
     /// 更新当前页面标题

@@ -26,6 +26,8 @@ namespace book_frontend.ViewModels
         private string _searchIsbn = string.Empty;
         private string _searchPublisher = string.Empty;
         private string _searchCategory = string.Empty;
+        private DateTime? _searchPublishDateStart = null;
+        private DateTime? _searchPublishDateEnd = null;
 
         // 分页相关
         private int _currentPage = 1;
@@ -81,6 +83,18 @@ namespace book_frontend.ViewModels
         {
             get => _searchCategory;
             set => SetProperty(ref _searchCategory, value);
+        }
+
+        public DateTime? SearchPublishDateStart
+        {
+            get => _searchPublishDateStart;
+            set => SetProperty(ref _searchPublishDateStart, value);
+        }
+
+        public DateTime? SearchPublishDateEnd
+        {
+            get => _searchPublishDateEnd;
+            set => SetProperty(ref _searchPublishDateEnd, value);
         }
 
         public int CurrentPage
@@ -183,8 +197,8 @@ namespace book_frontend.ViewModels
                     SearchCategory,
                     SearchPublisher,
                     SearchIsbn,
-                    null, // publishDateStart
-                    null, // publishDateEnd
+                    SearchPublishDateStart,
+                    SearchPublishDateEnd,
                     CurrentPage,
                     PageSize
                 );
@@ -234,6 +248,8 @@ namespace book_frontend.ViewModels
             SearchIsbn = string.Empty;
             SearchPublisher = string.Empty;
             SearchCategory = string.Empty;
+            SearchPublishDateStart = null;
+            SearchPublishDateEnd = null;
             CurrentPage = 1;
 
             await LoadBooksAsync();

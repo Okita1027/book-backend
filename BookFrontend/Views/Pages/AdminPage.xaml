@@ -74,35 +74,7 @@
                     </StackPanel>
                 </Button>
 
-                <!-- 借阅管理按钮 -->
-                <Button Name="LoanManagementButton" 
-                        Click="LoanManagementButton_Click"
-                        Style="{StaticResource MaterialDesignFlatButton}"
-                        HorizontalAlignment="Stretch"
-                        HorizontalContentAlignment="Left"
-                        Padding="15,10"
-                        Margin="5,2">
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="BookOpenPageVariant" Width="20" Height="20" 
-                                                 VerticalAlignment="Center" Margin="0,0,10,0" />
-                        <TextBlock Text="借阅管理" VerticalAlignment="Center" FontSize="14" />
-                    </StackPanel>
-                </Button>
 
-                <!-- 系统设置按钮 -->
-                <Button Name="SystemSettingsButton" 
-                        Click="SystemSettingsButton_Click"
-                        Style="{StaticResource MaterialDesignFlatButton}"
-                        HorizontalAlignment="Stretch"
-                        HorizontalContentAlignment="Left"
-                        Padding="15,10"
-                        Margin="5,2">
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="Settings" Width="20" Height="20" 
-                                                 VerticalAlignment="Center" Margin="0,0,10,0" />
-                        <TextBlock Text="系统设置" VerticalAlignment="Center" FontSize="14" />
-                    </StackPanel>
-                </Button>
             </StackPanel>
         </Border>
 

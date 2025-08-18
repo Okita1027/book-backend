@@ -7,6 +7,7 @@ namespace book_frontend.Converters;
 /// 日期时间格式转换器
 /// 用于在WPF中将DateTime对象转换为指定格式的字符串显示
 /// </summary>
+[Obsolete("这个类不使用")]
 public class DateTimeConverter : IValueConverter
 {
     /// <summary>
