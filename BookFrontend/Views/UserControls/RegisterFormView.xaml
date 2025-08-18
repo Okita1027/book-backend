@@ -9,6 +9,13 @@
              xmlns:constants="clr-namespace:book_frontend.Constants"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModels:RegisterViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../ResourceDictionaries/UserControlStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -49,12 +56,7 @@
 
                 <Button Content="{x:Static constants:UiConstant.RegisterButton}"
                         Command="{Binding RegisterCommand}"
-                        Style="{StaticResource MaterialDesignRaisedButton}"
-                        Background="#2196F3"
-                        Foreground="White"
-                        FontSize="16"
-                        Height="45"
-                        Margin="0,10,0,0"
+                        Style="{StaticResource AuthButtonStyle}"
                         IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}" />
             </StackPanel>
         </ScrollViewer>

@@ -3,6 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:converters="clr-namespace:book_frontend.Converters"
+        xmlns:viewModels="clr-namespace:book_frontend.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Height="600" Width="400"
         WindowStartupLocation="CenterOwner"
@@ -14,21 +17,21 @@
         TextOptions.TextFormattingMode="Ideal"
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
-        FontFamily="{DynamicResource MaterialDesignFont}">
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        d:DataContext="{d:DesignInstance viewModels:BookEditViewModel }">
 
     <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
-        <converters:EditModeToSaveTextConverter x:Key="EditModeToSaveTextConverter" />
-        
-        <!-- 类别CheckBox样式 -->
-        <Style x:Key="CategoryCheckBoxStyle" TargetType="CheckBox" BasedOn="{StaticResource MaterialDesignCheckBox}">
-            <Setter Property="Margin" Value="0,4" />
-            <Setter Property="FontSize" Value="12" />
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../ResourceDictionaries/BookEditDialogStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+            <converters:EditModeToSaveTextConverter x:Key="EditModeToSaveTextConverter" />
+        </ResourceDictionary>
     </Window.Resources>
 
-    <Grid Margin="20">
+    <Grid Style="{StaticResource BookEditDialogContainerStyle}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
@@ -36,100 +39,124 @@
         </Grid.RowDefinitions>
 
         <!-- 加载遮罩 -->
-        <Grid Grid.Row="0" Grid.RowSpan="3" 
+        <Grid Grid.Row="0" Grid.RowSpan="3"
               Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
-              Background="#80FFFFFF" Panel.ZIndex="999">
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
-                           Value="0" IsIndeterminate="True" Width="50" Height="50" />
-                <TextBlock Text="加载中..." Margin="0,10,0,0" HorizontalAlignment="Center" />
+              Style="{StaticResource LoadingMaskContainerStyle}">
+            <StackPanel Style="{StaticResource LoadingIndicatorStyle}">
+                <ProgressBar Style="{StaticResource LoadingProgressBarStyle}" />
+                <TextBlock Text="加载中..." Style="{StaticResource LoadingTextStyle}" />
             </StackPanel>
         </Grid>
 
         <!-- 主要内容区域 -->
-        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" 
+        <ScrollViewer Grid.Row="0" Style="{StaticResource FormScrollViewerStyle}"
                       IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}">
             <StackPanel>
-                
+
                 <!-- 图书标题 -->
-                <TextBox materialDesign:HintAssist.Hint="图书标题"
-                         materialDesign:HintAssist.IsFloating="True"
-                         Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"
-                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                         MaxLength="200" />
+                <StackPanel Style="{StaticResource FormFieldContainerStyle}" Margin="0,0,0,12">
+                    <TextBlock Text="图书标题" FontWeight="Bold" />
+                    <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource FormTextBoxStyle}"
+                             MaxLength="200"
+                             materialDesign:HintAssist.Hint="请输入图书标题" />
+                </StackPanel>
 
-                <!-- ISBN -->
-                <TextBox materialDesign:HintAssist.Hint="ISBN"
-                         materialDesign:HintAssist.IsFloating="True"
-                         Text="{Binding Isbn, UpdateSourceTrigger=PropertyChanged}"
-                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                         MaxLength="13" />
-
-                <!-- 出版日期 -->
-                <DatePicker materialDesign:HintAssist.Hint="出版日期"
-                           materialDesign:HintAssist.IsFloating="True"
-                           SelectedDate="{Binding PublishedDate}"
-                           Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
-
-                <!-- 库存和可用数量 -->
-                <Grid>
+                <!-- ISBN 和 出版日期 -->
+                <Grid Style="{StaticResource QuantityInputGridStyle}" Margin="0,0,0,12">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="10" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    
-                    <TextBox Grid.Column="0"
-                             materialDesign:HintAssist.Hint="库存数量"
-                             materialDesign:HintAssist.IsFloating="True"
-                             Text="{Binding Stock, UpdateSourceTrigger=PropertyChanged}"
-                             Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                             PreviewTextInput="NumberTextBox_PreviewTextInput" />
-                    
-                    <TextBox Grid.Column="2"
-                             materialDesign:HintAssist.Hint="可用数量"
-                             materialDesign:HintAssist.IsFloating="True"
-                             Text="{Binding Available, UpdateSourceTrigger=PropertyChanged}"
-                             Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                             PreviewTextInput="NumberTextBox_PreviewTextInput" />
+
+                    <StackPanel Grid.Column="0" Style="{StaticResource FormFieldContainerStyle}">
+                        <TextBlock Text="ISBN" FontWeight="Bold" />
+                        <TextBox Text="{Binding Isbn, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource FormTextBoxStyle}"
+                                 MaxLength="13"
+                                 PreviewTextInput="IsbnTextBox_PreviewTextInput"
+                                 materialDesign:HintAssist.Hint="请输入ISBN" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" Style="{StaticResource FormFieldContainerStyle}">
+                        <TextBlock Text="出版日期" FontWeight="Bold" />
+                        <DatePicker SelectedDate="{Binding PublishedDate}"
+                                    Style="{StaticResource FormDatePickerStyle}" />
+                    </StackPanel>
                 </Grid>
 
-                <!-- 作者选择 -->
-                <ComboBox materialDesign:HintAssist.Hint="选择作者"
-                          materialDesign:HintAssist.IsFloating="True"
-                          ItemsSource="{Binding Authors}"
-                          SelectedValue="{Binding SelectedAuthorId}"
-                          SelectedValuePath="Id"
-                          DisplayMemberPath="Name"
-                          Style="{StaticResource MaterialDesignOutlinedComboBox}" />
+                <!-- 库存和可用数量 -->
+                <Grid Style="{StaticResource QuantityInputGridStyle}" Margin="0,0,0,12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-                <!-- 出版社选择 -->
-                <ComboBox materialDesign:HintAssist.Hint="选择出版社"
-                          materialDesign:HintAssist.IsFloating="True"
-                          ItemsSource="{Binding Publishers}"
-                          SelectedValue="{Binding SelectedPublisherId}"
-                          SelectedValuePath="Id"
-                          DisplayMemberPath="Name"
-                          Style="{StaticResource MaterialDesignOutlinedComboBox}" />
+                    <StackPanel Grid.Column="0" Style="{StaticResource FormFieldContainerStyle}">
+                        <TextBlock Text="库存数量" FontWeight="Bold" />
+                        <TextBox Text="{Binding Stock, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource FormTextBoxStyle}"
+                                 PreviewTextInput="NumberTextBox_PreviewTextInput" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" Style="{StaticResource FormFieldContainerStyle}">
+                        <TextBlock Text="可用数量" FontWeight="Bold" />
+                        <TextBox Text="{Binding Available, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource FormTextBoxStyle}"
+                                 PreviewTextInput="NumberTextBox_PreviewTextInput" />
+                    </StackPanel>
+                </Grid>
+
+                <!-- 作者选择 和 出版社选择 -->
+                <Grid Style="{StaticResource QuantityInputGridStyle}" Margin="0,0,0,12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Style="{StaticResource FormFieldContainerStyle}">
+                        <TextBlock Text="作者" FontWeight="Bold" />
+                        <ComboBox materialDesign:HintAssist.Hint="选择作者"
+                                  materialDesign:HintAssist.IsFloating="True"
+                                  ItemsSource="{Binding Authors}"
+                                  SelectedValue="{Binding SelectedAuthorId}"
+                                  SelectedValuePath="Id"
+                                  DisplayMemberPath="Name"
+                                  Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                  Margin="0,0,0,8" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" Style="{StaticResource FormFieldContainerStyle}">
+                        <TextBlock Text="出版社" FontWeight="Bold" />
+                        <ComboBox materialDesign:HintAssist.Hint="选择出版社"
+                                  materialDesign:HintAssist.IsFloating="True"
+                                  ItemsSource="{Binding Publishers}"
+                                  SelectedValue="{Binding SelectedPublisherId}"
+                                  SelectedValuePath="Id"
+                                  DisplayMemberPath="Name"
+                                  Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                  Margin="0,0,0,8" />
+                    </StackPanel>
+                </Grid>
 
                 <!-- 分类选择 -->
-                <GroupBox Header="选择分类" Style="{StaticResource MaterialDesignCardGroupBox}" Margin="0,8">
-                    <GroupBox.HeaderTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Tag" Height="20" Width="20" VerticalAlignment="Center" />
-                                <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Text="{Binding}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </GroupBox.HeaderTemplate>
-                    
-                    <ScrollViewer MaxHeight="120" VerticalScrollBarVisibility="Auto">
+                <GroupBox Header="分类选择" Style="{StaticResource CategorySelectionGroupBoxStyle}" Margin="0,0,0,12">
+                    <ScrollViewer Style="{StaticResource CategorySelectionScrollViewerStyle}">
                         <ItemsControl ItemsSource="{Binding Categories}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="2" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <CheckBox Content="{Binding Name}"
+                                              IsChecked="{Binding IsSelected}"
                                               Style="{StaticResource CategoryCheckBoxStyle}"
-                                              IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                                              Margin="0,2" />
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
@@ -140,52 +167,43 @@
         </ScrollViewer>
 
         <!-- 验证错误信息 -->
-        <Border Grid.Row="1" 
-                Background="{DynamicResource MaterialDesignValidationErrorBrush}"
-                CornerRadius="4" Padding="12,8" Margin="0,8,0,0"
-                Visibility="{Binding ValidationErrors, Converter={StaticResource StringToVisibilityConverter}}">
-            <TextBlock Text="{Binding ValidationErrors}" 
-                       Foreground="White" 
-                       TextWrapping="Wrap" 
-                       FontSize="12" />
+        <Border Grid.Row="1"
+                Style="{StaticResource ValidationErrorContainerStyle}"
+                Visibility="{Binding HasValidationErrors, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TextBlock Text="{Binding ValidationErrorMessage}" Style="{StaticResource ValidationErrorTextStyle}" />
         </Border>
 
         <!-- 按钮区域 -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" 
-                    HorizontalAlignment="Right" Margin="0,16,0,0">
-            
-            <Button Content="取消" 
-                    Command="{Binding CancelCommand}"
-                    Style="{StaticResource MaterialDesignOutlinedButton}"
-                    Width="80" Height="36" Margin="0,0,12,0"
-                    IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBooleanConverter}}" />
-            
-            <Button Content="{Binding IsEditMode, Converter={StaticResource EditModeToSaveTextConverter}}"
-                    Command="{Binding SaveCommand}"
-                    Width="80" Height="36">
-                <Button.Style>
-                    <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}">
-                        <Setter Property="IsEnabled" Value="True" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsSaving}" Value="True">
-                                <Setter Property="IsEnabled" Value="False" />
-                                <Setter Property="Content">
-                                    <Setter.Value>
-                                        <StackPanel Orientation="Horizontal">
-                                            <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
-                                                       Value="0" IsIndeterminate="True" 
-                                                       Width="16" Height="16" Margin="0,0,8,0" />
-                                            <TextBlock Text="保存中" VerticalAlignment="Center" />
-                                        </StackPanel>
-                                    </Setter.Value>
-                                </Setter>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-            </Button>
-            
-        </StackPanel>
+        <Border Grid.Row="2" Style="{StaticResource ButtonAreaContainerStyle}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 
+                <Button Content="取消"
+                        Command="{Binding CancelCommand}"
+                        Style="{StaticResource CancelButtonStyle}"
+                        IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBooleanConverter}}" />
+
+                <Button Content="{Binding IsEditMode, Converter={StaticResource EditModeToSaveTextConverter}}"
+                        Command="{Binding SaveCommand}">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource SaveButtonStyle}">
+                            <Setter Property="IsEnabled" Value="True" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSaving}" Value="True">
+                                    <Setter Property="IsEnabled" Value="False" />
+                                    <Setter Property="Content">
+                                        <Setter.Value>
+                                            <StackPanel Orientation="Horizontal">
+                                                <ProgressBar Style="{StaticResource SavingProgressBarStyle}" />
+                                                <TextBlock Text="保存中" Style="{StaticResource SavingTextStyle}" />
+                                            </StackPanel>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>

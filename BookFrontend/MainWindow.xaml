@@ -32,8 +32,8 @@
                            FontWeight="Bold" />
                 <StackPanel Orientation="Horizontal" Margin="20,0,0,0"
                             d:DataContext="{d:DesignInstance viewModels:MainViewModel}">
-                    <Button x:Name="MainPage" Content="首页" Margin="4" Click="HomeButton_Click" Style="{StaticResource PrimaryButtonStyle}" />
-                    <Button x:Name="AdminButton" Content="后台管理" Margin="4" Click="AdminButton_Click" Style="{StaticResource PrimaryButtonStyle}"
+                    <Button x:Name="MainPage" Content="首页" Click="HomeButton_Click" Style="{StaticResource PrimaryButtonStyle}" />
+                    <Button x:Name="AdminButton" Content="后台管理" Click="AdminButton_Click" Style="{StaticResource PrimaryButtonStyle}"
                             Visibility="{Binding IsLoggedIn, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     <Button x:Name="LoginButton" Content="登录" Margin="4" Click="LoginButton_Click">
                         <Button.Style>

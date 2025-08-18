@@ -360,7 +360,7 @@ namespace book_backend.Services.Impl
             }
 
             Book book = bookDTO.Adapt<Book>();
-            book.Available = bookDTO.Stock;
+            // book.Available = bookDTO.Stock;
             context.Books.Add(book);
 
             // 添加书籍类别和书籍的关联(处理联结表BookCategory)

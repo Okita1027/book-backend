@@ -6,10 +6,18 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:viewModels="clr-namespace:book_frontend.ViewModels"
              mc:Ignorable="d"
-             d:DesignHeight="600" d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance Type=viewModels:BookManagementViewModel, IsDesignTimeCreatable=False}">
+             d:DesignHeight="600" d:DesignWidth="1000"
+             d:DataContext="{d:DesignInstance viewModels:BookManagementViewModel}">
 
-    <Grid Margin="20">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../ResourceDictionaries/BookManagementStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Style="{StaticResource BookManagementContainerStyle}">
         <Grid.RowDefinitions>
             <!-- 搜索条件区域 -->
             <RowDefinition Height="Auto" />
@@ -22,8 +30,7 @@
         </Grid.RowDefinitions>
 
         <!-- 搜索条件区域 -->
-        <Border Grid.Row="0" Background="White" BorderBrush="#e0e0e0" BorderThickness="1"
-                CornerRadius="5" Padding="20" Margin="0,0,0,15">
+        <Border Grid.Row="0" Style="{StaticResource SearchAreaContainerStyle}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -39,7 +46,7 @@
 
                 <!-- 第一行搜索条件 (4个字段) -->
                 <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,0">
-                    <TextBlock Text="图书标题" FontWeight="Bold" Margin="0,0,0,5" />
+                    <TextBlock Text="图书标题" Style="{StaticResource SearchLabelStyle}" />
                     <TextBox Text="{Binding SearchTitle, UpdateSourceTrigger=PropertyChanged}"
                              materialDesign:HintAssist.Hint="请输入图书标题"
                              Style="{StaticResource MaterialDesignOutlinedTextBox}">
@@ -50,7 +57,7 @@
                 </StackPanel>
 
                 <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,10,0">
-                    <TextBlock Text="作者" FontWeight="Bold" Margin="0,0,0,5" />
+                    <TextBlock Text="作者" Style="{StaticResource SearchLabelStyle}" />
                     <TextBox Text="{Binding SearchAuthor, UpdateSourceTrigger=PropertyChanged}"
                              materialDesign:HintAssist.Hint="请输入作者姓名"
                              Style="{StaticResource MaterialDesignOutlinedTextBox}">
@@ -61,7 +68,7 @@
                 </StackPanel>
 
                 <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,10,0">
-                    <TextBlock Text="ISBN" FontWeight="Bold" Margin="0,0,0,5" />
+                    <TextBlock Text="ISBN" Style="{StaticResource SearchLabelStyle}" />
                     <TextBox Text="{Binding SearchIsbn, UpdateSourceTrigger=PropertyChanged}"
                              materialDesign:HintAssist.Hint="请输入ISBN"
                              Style="{StaticResource MaterialDesignOutlinedTextBox}">
@@ -72,7 +79,7 @@
                 </StackPanel>
 
                 <StackPanel Grid.Row="0" Grid.Column="3" Margin="0,0,10,0">
-                    <TextBlock Text="出版社" FontWeight="Bold" Margin="0,0,0,5" />
+                    <TextBlock Text="出版社" Style="{StaticResource SearchLabelStyle}" />
                     <TextBox Text="{Binding SearchPublisher, UpdateSourceTrigger=PropertyChanged}"
                              materialDesign:HintAssist.Hint="请输入出版社"
                              Style="{StaticResource MaterialDesignOutlinedTextBox}">
@@ -85,11 +92,7 @@
                 <!-- 搜索按钮 -->
                 <StackPanel Grid.Row="0" Grid.Column="4" VerticalAlignment="Bottom">
                     <Button Command="{Binding SearchCommand}"
-                            Style="{StaticResource MaterialDesignRaisedButton}"
-                            Background="#2196F3"
-                            Foreground="White"
-                            Padding="20,8"
-                            Margin="10,0,0,0">
+                            Style="{StaticResource SearchButtonStyle}">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Magnify" Width="16" Height="16"
                                                      VerticalAlignment="Center" Margin="0,0,5,0" />
@@ -100,7 +103,7 @@
 
                 <!-- 第二行搜索条件 (3个字段) -->
                 <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,15,10,0">
-                    <TextBlock Text="分类" FontWeight="Bold" Margin="0,0,0,5" />
+                    <TextBlock Text="分类" Style="{StaticResource SearchLabelStyle}" />
                     <TextBox Text="{Binding SearchCategory, UpdateSourceTrigger=PropertyChanged}"
                              materialDesign:HintAssist.Hint="请输入分类"
                              Style="{StaticResource MaterialDesignOutlinedTextBox}">
@@ -111,14 +114,14 @@
                 </StackPanel>
 
                 <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,15,10,0">
-                    <TextBlock Text="出版日期开始" FontWeight="Bold" Margin="0,0,0,5" />
+                    <TextBlock Text="出版日期开始" Style="{StaticResource SearchLabelStyle}" />
                     <DatePicker SelectedDate="{Binding SearchPublishDateStart, UpdateSourceTrigger=PropertyChanged}"
                                 materialDesign:HintAssist.Hint="请选择开始日期"
                                 Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
                 </StackPanel>
 
                 <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,15,10,0">
-                    <TextBlock Text="出版日期结束" FontWeight="Bold" Margin="0,0,0,5" />
+                    <TextBlock Text="出版日期结束" Style="{StaticResource SearchLabelStyle}" />
                     <DatePicker SelectedDate="{Binding SearchPublishDateEnd, UpdateSourceTrigger=PropertyChanged}"
                                 materialDesign:HintAssist.Hint="请选择结束日期"
                                 Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
@@ -127,11 +130,7 @@
                 <!-- 重置按钮 -->
                 <StackPanel Grid.Row="1" Grid.Column="4" VerticalAlignment="Bottom">
                     <Button Command="{Binding ResetCommand}"
-                            Style="{StaticResource MaterialDesignOutlinedButton}"
-                            BorderBrush="#666"
-                            Foreground="#666"
-                            Padding="20,8"
-                            Margin="10,0,0,0">
+                            Style="{StaticResource ResetButtonStyle}">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Refresh" Width="16" Height="16"
                                                      VerticalAlignment="Center" Margin="0,0,5,0" />
@@ -143,15 +142,10 @@
         </Border>
 
         <!-- 操作按钮区域 -->
-        <Border Grid.Row="1" Background="White" BorderBrush="#e0e0e0" BorderThickness="1"
-                CornerRadius="5" Padding="15" Margin="0,0,0,15">
+        <Border Grid.Row="1" Style="{StaticResource ActionButtonAreaStyle}">
             <StackPanel Orientation="Horizontal">
                 <Button Command="{Binding AddCommand}"
-                        Style="{StaticResource MaterialDesignRaisedButton}"
-                        Background="#4CAF50"
-                        Foreground="White"
-                        Padding="15,8"
-                        Margin="0,0,10,0">
+                        Style="{StaticResource AddButtonStyle}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="Plus" Width="16" Height="16"
                                                  VerticalAlignment="Center" Margin="0,0,5,0" />
@@ -160,11 +154,7 @@
                 </Button>
 
                 <Button Command="{Binding EditCommand}"
-                        Style="{StaticResource MaterialDesignRaisedButton}"
-                        Background="#FF9800"
-                        Foreground="White"
-                        Padding="15,8"
-                        Margin="0,0,10,0">
+                        Style="{StaticResource EditButtonStyle}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="Pencil" Width="16" Height="16"
                                                  VerticalAlignment="Center" Margin="0,0,5,0" />
@@ -173,10 +163,7 @@
                 </Button>
 
                 <Button Command="{Binding DeleteCommand}"
-                        Style="{StaticResource MaterialDesignRaisedButton}"
-                        Background="#F44336"
-                        Foreground="White"
-                        Padding="15,8">
+                        Style="{StaticResource DeleteButtonStyle}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="Delete" Width="16" Height="16"
                                                  VerticalAlignment="Center" Margin="0,0,5,0" />
@@ -187,24 +174,10 @@
         </Border>
 
         <!-- 数据展示区域 -->
-        <Border Grid.Row="2" Background="White" BorderBrush="#e0e0e0" BorderThickness="1"
-                CornerRadius="5" Margin="0,0,0,15">
+        <Border Grid.Row="2" Style="{StaticResource DataGridContainerStyle}">
             <DataGrid x:Name="BooksDataGrid"
                       ItemsSource="{Binding Books}"
-                      AutoGenerateColumns="False"
-                      CanUserAddRows="False"
-                      CanUserDeleteRows="False"
-                      CanUserReorderColumns="True"
-                      CanUserResizeColumns="True"
-                      CanUserSortColumns="True"
-                      SelectionMode="Extended"
-                      SelectionUnit="FullRow"
-                      GridLinesVisibility="Horizontal"
-                      HeadersVisibility="Column"
-                      AlternatingRowBackground="#f9f9f9"
-                      RowBackground="White"
-                      FontSize="18"
-                      Margin="1">
+                      Style="{StaticResource BookDataGridStyle}">
 
                 <DataGrid.Columns>
                     <!-- 选择列 -->
@@ -271,8 +244,7 @@
         </Border>
 
         <!-- 分页区域 -->
-        <Border Grid.Row="3" Background="White" BorderBrush="#e0e0e0" BorderThickness="1"
-                CornerRadius="5" Padding="15">
+        <Border Grid.Row="3" Style="{StaticResource PaginationContainerStyle}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -283,11 +255,11 @@
                 <!-- 分页信息 -->
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock Text="共" Margin="0,0,5,0" />
-                    <TextBlock Text="{Binding TotalCount}" FontWeight="Bold" Foreground="#2196F3" />
+                    <TextBlock Text="{Binding TotalCount}" Style="{StaticResource PaginationInfoStyle}" />
                     <TextBlock Text="条记录，第" Margin="5,0" />
-                    <TextBlock Text="{Binding CurrentPage}" FontWeight="Bold" Foreground="#2196F3" />
+                    <TextBlock Text="{Binding CurrentPage}" Style="{StaticResource PaginationInfoStyle}" />
                     <TextBlock Text="/" Margin="2,0" />
-                    <TextBlock Text="{Binding TotalPages}" FontWeight="Bold" Foreground="#2196F3" />
+                    <TextBlock Text="{Binding TotalPages}" Style="{StaticResource PaginationInfoStyle}" />
                     <TextBlock Text="页" Margin="2,0,0,0" />
                 </StackPanel>
 

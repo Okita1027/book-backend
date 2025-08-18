@@ -25,14 +25,16 @@
                 <!-- 
                     进度条：IsIndeterminate="True"表示不确定进度的循环动画 
                     ElementName=LoadingMaskControl: 指定绑定源为LoadingMaskControl控件本身
+                    Fallback: 当绑定失败时使用的默认值
                 -->
                 <ProgressBar IsIndeterminate="True"
                              Width="{Binding ProgressBarWidth, ElementName=LoadingMaskControl, FallbackValue=150}"
                              Height="{Binding ProgressBarHeight, ElementName=LoadingMaskControl, FallbackValue=6}"
                              Foreground="{Binding ProgressBarForeground, ElementName=LoadingMaskControl, FallbackValue=#2196F3}" />
                 <!-- 加载文本 -->
-                <TextBlock Text="{Binding LoadingText, ElementName=LoadingMaskControl, FallbackValue={x:Static constants:UiConstant.Loading}}"
-                           Style="{StaticResource LoadingTextStyle}" />
+                <TextBlock
+                    Text="{Binding LoadingText, ElementName=LoadingMaskControl, FallbackValue={x:Static constants:UiConstant.Loading}}"
+                    Style="{StaticResource LoadingTextStyle}" />
             </StackPanel>
         </Border>
     </Grid>

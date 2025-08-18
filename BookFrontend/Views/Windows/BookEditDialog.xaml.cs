@@ -73,6 +73,16 @@ namespace book_frontend.Views
         }
 
         /// <summary>
+        /// ISBN输入框的输入验证
+        /// </summary>
+        private void IsbnTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            // 只允许输入数字
+            var regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
+        }
+
+        /// <summary>
         /// 窗口加载完成事件
         /// </summary>
         private void Window_Loaded(object sender, RoutedEventArgs e)

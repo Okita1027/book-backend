@@ -5,6 +5,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:viewModels="clr-namespace:book_frontend.ViewModels"
       xmlns:constants="clr-namespace:book_frontend.Constants"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" d:DataContext="{d:DesignInstance viewModels:BookListViewModel}">
 
     <Grid>
@@ -19,62 +20,113 @@
         </Grid.RowDefinitions>
 
         <!-- 搜索表单 -->
-        <Border Style="{StaticResource SearchFormContainerStyle}" Grid.Row="0">
+        <Border Style="{StaticResource SearchAreaContainerStyle}" Grid.Row="0">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <!-- Orientation：排列方向 -->
-                <StackPanel Style="{StaticResource FormFieldContainerStyle}">
-                    <TextBlock Text="图书名称" Style="{StaticResource FormLabelStyle}" />
-                    <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" KeyDown="TextBox_KeyDown"
-                             Style="{StaticResource FormTextBoxStyle}" />
-                </StackPanel>
-                <StackPanel Grid.Row="0" Grid.Column="1" Style="{StaticResource FormFieldContainerStyle}">
-                    <TextBlock Text="作者" Style="{StaticResource FormLabelStyle}" />
-                    <TextBox Text="{Binding Author, UpdateSourceTrigger=PropertyChanged}" KeyDown="TextBox_KeyDown"
-                             Style="{StaticResource FormTextBoxStyle}" />
-                </StackPanel>
-                <StackPanel Grid.Row="0" Grid.Column="2" Style="{StaticResource FormFieldContainerStyle}">
-                    <TextBlock Text="类别名称" Style="{StaticResource FormLabelStyle}" />
-                    <TextBox Text="{Binding Category, UpdateSourceTrigger=PropertyChanged}" KeyDown="TextBox_KeyDown"
-                             Style="{StaticResource FormTextBoxStyle}" />
-                </StackPanel>
-                <StackPanel Grid.Row="0" Grid.Column="3" Style="{StaticResource FormFieldContainerStyle}">
-                    <TextBlock Text="出版社名称" Style="{StaticResource FormLabelStyle}" />
-                    <TextBox Text="{Binding Publisher, UpdateSourceTrigger=PropertyChanged}" KeyDown="TextBox_KeyDown"
-                             Style="{StaticResource FormTextBoxStyle}" />
-                </StackPanel>
-                <StackPanel Grid.Row="1" Grid.Column="0" Style="{StaticResource FormFieldContainerStyle}">
-                    <TextBlock Text="ISBN" Style="{StaticResource FormLabelStyle}" />
-                    <TextBox Text="{Binding Isbn, UpdateSourceTrigger=PropertyChanged}" KeyDown="TextBox_KeyDown"
-                             Style="{StaticResource FormTextBoxStyle}" />
-                </StackPanel>
-                <StackPanel Grid.Row="1" Grid.Column="1" Style="{StaticResource FormFieldContainerStyle}">
-                    <TextBlock Text="出版日期开始" Style="{StaticResource FormLabelStyle}" />
-                    <DatePicker SelectedDate="{Binding PublishDateStart}" Style="{StaticResource FormDatePickerStyle}" />
-                </StackPanel>
-                <StackPanel Grid.Row="1" Grid.Column="2" Style="{StaticResource FormFieldContainerStyle}">
-                    <TextBlock Text="出版日期结束" Style="{StaticResource FormLabelStyle}" />
-                    <DatePicker SelectedDate="{Binding PublishDateEnd}" Style="{StaticResource FormDatePickerStyle}" />
+                <!-- 第一行搜索条件 (4个字段) -->
+                <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,0">
+                    <TextBlock Text="图书名称" Style="{StaticResource SearchLabelStyle}" />
+                    <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"
+                             materialDesign:HintAssist.Hint="请输入图书名称"
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding SearchCommand}" />
+                        </TextBox.InputBindings>
+                    </TextBox>
                 </StackPanel>
 
-                <StackPanel Grid.Row="2" Grid.ColumnSpan="4" Grid.Column="0"
-                            Style="{StaticResource FormButtonGroupStyle}">
-                    <Button Content="{x:Static constants:UiConstant.ResetButton}" Command="{Binding ResetCommand}"
-                            Style="{StaticResource FormResetButtonStyle}" />
-                    <Button Content="{x:Static constants:UiConstant.SearchButton}" Command="{Binding SearchCommand}"
-                            Style="{StaticResource FormSearchButtonStyle}" />
+                <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,10,0">
+                    <TextBlock Text="作者" Style="{StaticResource SearchLabelStyle}" />
+                    <TextBox Text="{Binding Author, UpdateSourceTrigger=PropertyChanged}"
+                             materialDesign:HintAssist.Hint="请输入作者姓名"
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding SearchCommand}" />
+                        </TextBox.InputBindings>
+                    </TextBox>
+                </StackPanel>
+
+                <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,10,0">
+                    <TextBlock Text="类别名称" Style="{StaticResource SearchLabelStyle}" />
+                    <TextBox Text="{Binding Category, UpdateSourceTrigger=PropertyChanged}"
+                             materialDesign:HintAssist.Hint="请输入类别名称"
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding SearchCommand}" />
+                        </TextBox.InputBindings>
+                    </TextBox>
+                </StackPanel>
+
+                <StackPanel Grid.Row="0" Grid.Column="3" Margin="0,0,10,0">
+                    <TextBlock Text="出版社名称" Style="{StaticResource SearchLabelStyle}" />
+                    <TextBox Text="{Binding Publisher, UpdateSourceTrigger=PropertyChanged}"
+                             materialDesign:HintAssist.Hint="请输入出版社名称"
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding SearchCommand}" />
+                        </TextBox.InputBindings>
+                    </TextBox>
+                </StackPanel>
+
+                <!-- 搜索按钮 -->
+                <StackPanel Grid.Row="0" Grid.Column="4" VerticalAlignment="Bottom">
+                    <Button Command="{Binding SearchCommand}"
+                            Style="{StaticResource SearchButtonStyle}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Magnify" Width="16" Height="16"
+                                                     VerticalAlignment="Center" Margin="0,0,5,0" />
+                            <TextBlock Text="搜索" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+                <!-- 第二行搜索条件 (3个字段) -->
+                <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,15,10,0">
+                    <TextBlock Text="ISBN" Style="{StaticResource SearchLabelStyle}" />
+                    <TextBox Text="{Binding Isbn, UpdateSourceTrigger=PropertyChanged}"
+                             materialDesign:HintAssist.Hint="请输入ISBN"
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding SearchCommand}" />
+                        </TextBox.InputBindings>
+                    </TextBox>
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,15,10,0">
+                    <TextBlock Text="出版日期开始" Style="{StaticResource SearchLabelStyle}" />
+                    <DatePicker SelectedDate="{Binding PublishDateStart, UpdateSourceTrigger=PropertyChanged}"
+                                materialDesign:HintAssist.Hint="请选择开始日期"
+                                Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,15,10,0">
+                    <TextBlock Text="出版日期结束" Style="{StaticResource SearchLabelStyle}" />
+                    <DatePicker SelectedDate="{Binding PublishDateEnd, UpdateSourceTrigger=PropertyChanged}"
+                                materialDesign:HintAssist.Hint="请选择结束日期"
+                                Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
+                </StackPanel>
+
+                <!-- 重置按钮 -->
+                <StackPanel Grid.Row="1" Grid.Column="4" VerticalAlignment="Bottom">
+                    <Button Command="{Binding ResetCommand}"
+                            Style="{StaticResource ResetButtonStyle}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Refresh" Width="16" Height="16"
+                                                     VerticalAlignment="Center" Margin="0,0,5,0" />
+                            <TextBlock Text="重置" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
             </Grid>
         </Border>

@@ -154,6 +154,10 @@ public class BookEditViewModel : INotifyPropertyChanged
         set => SetProperty(ref _validationErrors, value);
     }
 
+    public string ValidationErrorMessage => ValidationErrors;
+
+    public bool HasValidationErrors => !string.IsNullOrEmpty(ValidationErrors);
+
     public bool IsEditMode
     {
         get => _isEditMode;
@@ -404,10 +408,14 @@ public class BookEditViewModel : INotifyPropertyChanged
         if (!result.IsValid)
         {
             ValidationErrors = string.Join("\n", result.Errors.Select(e => e.ErrorMessage));
+            OnPropertyChanged(nameof(ValidationErrorMessage));
+            OnPropertyChanged(nameof(HasValidationErrors));
             return false;
         }
 
         ValidationErrors = string.Empty;
+        OnPropertyChanged(nameof(ValidationErrorMessage));
+        OnPropertyChanged(nameof(HasValidationErrors));
         return true;
     }
 
@@ -460,8 +468,8 @@ public class BookEditValidator : AbstractValidator<EditBookDTO>
 
         RuleFor(x => x.Isbn)
             .NotEmpty().WithMessage("ISBN不能为空")
-            .Length(10, 13).WithMessage("ISBN长度必须在10-13位之间")
-            .Matches(@"^[0-9X-]+$").WithMessage("ISBN只能包含数字、X和连字符");
+            .Must(isbn => isbn.Length == 10 || isbn.Length == 13).WithMessage("ISBN只能是10位或13位")
+            .Matches(@"^[0-9]+$").WithMessage("ISBN只能包含数字");
 
         RuleFor(x => x.PublishedDate)
             .LessThanOrEqualTo(DateTime.Now).WithMessage("出版日期不能晚于今天")

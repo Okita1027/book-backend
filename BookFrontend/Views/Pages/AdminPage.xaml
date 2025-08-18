@@ -9,7 +9,15 @@
       d:DesignHeight="600" d:DesignWidth="1000"
       d:DataContext="{d:DesignInstance Type=viewModels:AdminViewModel, IsDesignTimeCreatable=False}">
 
-    <Grid>
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../ResourceDictionaries/AdminPageStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <Grid Style="{StaticResource AdminPageContainerStyle}">
         <Grid.ColumnDefinitions>
             <!-- 左侧导航栏 -->
             <ColumnDefinition Width="250" />
@@ -18,22 +26,14 @@
         </Grid.ColumnDefinitions>
 
         <!-- 左侧导航菜单 -->
-        <Border Grid.Column="0" Background="#f5f5f5" BorderBrush="#e0e0e0" BorderThickness="0,0,1,0">
+        <Border Grid.Column="0" Style="{StaticResource AdminSidebarContainerStyle}">
             <StackPanel Margin="0,20,0,0">
                 <!-- 管理员信息 -->
-                <Border Background="White" Margin="10" Padding="15" CornerRadius="5">
+                <Border Style="{StaticResource AdminInfoAreaStyle}">
                     <StackPanel>
-                        <materialDesign:PackIcon Kind="Account" Width="40" Height="40" 
-                                                 HorizontalAlignment="Center" Foreground="#2196F3" />
-                        <TextBlock Text="{Binding CurrentUserName}" 
-                                   HorizontalAlignment="Center" 
-                                   FontWeight="Bold" 
-                                   FontSize="14" 
-                                   Margin="0,5,0,0" />
-                        <TextBlock Text="管理员" 
-                                   HorizontalAlignment="Center" 
-                                   FontSize="12" 
-                                   Foreground="#666" />
+                        <materialDesign:PackIcon Kind="Account" Style="{StaticResource AdminAvatarStyle}" />
+                        <TextBlock Text="{Binding CurrentUserName}" Style="{StaticResource AdminNameStyle}" />
+                        <TextBlock Text="管理员" Style="{StaticResource AdminRoleStyle}" />
                     </StackPanel>
                 </Border>
 
@@ -47,11 +47,7 @@
                 <!-- 图书管理按钮 -->
                 <Button Name="BookManagementButton" 
                         Click="BookManagementButton_Click"
-                        Style="{StaticResource MaterialDesignFlatButton}"
-                        HorizontalAlignment="Stretch"
-                        HorizontalContentAlignment="Left"
-                        Padding="15,10"
-                        Margin="5,2">
+                        Style="{StaticResource BookManagementButtonStyle}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="Book" Width="20" Height="20" 
                                                  VerticalAlignment="Center" Margin="0,0,10,0" />
@@ -62,11 +58,7 @@
                 <!-- 用户管理按钮 -->
                 <Button Name="UserManagementButton" 
                         Click="UserManagementButton_Click"
-                        Style="{StaticResource MaterialDesignFlatButton}"
-                        HorizontalAlignment="Stretch"
-                        HorizontalContentAlignment="Left"
-                        Padding="15,10"
-                        Margin="5,2">
+                        Style="{StaticResource UserManagementButtonStyle}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="AccountGroup" Width="20" Height="20" 
                                                  VerticalAlignment="Center" Margin="0,0,10,0" />
@@ -79,7 +71,8 @@
         </Border>
 
         <!-- 右侧内容区域 -->
-        <Grid Grid.Column="1">
+        <Border Grid.Column="1" Style="{StaticResource AdminContentAreaStyle}">
+        <Grid>
             <Grid.RowDefinitions>
                 <!-- 面包屑导航 -->
                 <RowDefinition Height="Auto" />
@@ -100,5 +93,6 @@
             <!-- 主内容区域 -->
             <Frame Grid.Row="1" Name="AdminContentFrame" NavigationUIVisibility="Hidden" />
         </Grid>
+        </Border>
     </Grid>
 </Page>

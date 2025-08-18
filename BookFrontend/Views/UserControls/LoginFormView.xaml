@@ -9,6 +9,13 @@
              xmlns:constants="clr-namespace:book_frontend.Constants"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewModels:LoginViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../ResourceDictionaries/UserControlStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -36,12 +43,8 @@
 
                 <!-- 记住我选项 -->
                 <CheckBox Content="记住我"
-                          Visibility="Hidden"
                           IsChecked="{Binding RememberMe, UpdateSourceTrigger=PropertyChanged}"
-                          Style="{StaticResource MaterialDesignCheckBox}"
-                          Margin="0,0,0,10"
-                          FontSize="16"
-                          Foreground="#666" />
+                          Style="{StaticResource RememberMeCheckBoxStyle}" />
 
                 <!-- 消息显示 -->
                 <controls:MessageDisplay ErrorMessage="{Binding ErrorMessage}"
@@ -49,12 +52,7 @@
 
                 <Button Content="{x:Static constants:UiConstant.LoginButton}"
                         Command="{Binding LoginCommand}"
-                        Style="{StaticResource MaterialDesignRaisedButton}"
-                        Background="#2196F3"
-                        Foreground="White"
-                        FontSize="16"
-                        Height="45"
-                        Margin="0,10,0,0"
+                        Style="{StaticResource AuthButtonStyle}"
                         IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}" />
             </StackPanel>
         </ScrollViewer>

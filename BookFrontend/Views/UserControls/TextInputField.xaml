@@ -5,6 +5,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../ResourceDictionaries/UserControlStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <StackPanel>
         <!-- 
             图标
@@ -12,10 +19,7 @@
             - 这是 WPF 中实现自定义控件属性传递的标准模式
          -->
         <materialDesign:PackIcon Kind="{Binding IconKind, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                 Foreground="#2196F3"
-                                 Width="24" Height="24"
-                                 HorizontalAlignment="Left"
-                                 Margin="0,0,0,5"
+                                 Style="{StaticResource InputFieldIconStyle}"
                                  Visibility="{Binding ShowIcon, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BooleanToVisibilityConverter}}" />
         
         <!-- 
@@ -29,9 +33,7 @@
         <TextBox x:Name="InputTextBox"
                  materialDesign:HintAssist.Hint="{Binding HintText, RelativeSource={RelativeSource AncestorType=UserControl}}"
                  materialDesign:HintAssist.IsFloating="True"
-                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                 Text="{Binding Text, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}"
-                 Margin="0,0,0,20"
-                 FontSize="16" />
+                 Style="{StaticResource CustomTextBoxStyle}"
+                 Text="{Binding Text, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}" />
     </StackPanel>
 </UserControl>
