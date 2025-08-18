@@ -21,7 +21,7 @@ public class CategoryService : ICategoryService
     {
         try
         {
-            var response = await _apiClient.GetAsync<List<CategoryVO>>("/api/Categories");
+            var response = await _apiClient.GetAsync<List<CategoryVO>>("Categories");
             return response;
         }
         catch (Exception ex)
@@ -35,7 +35,7 @@ public class CategoryService : ICategoryService
     {
         try
         {
-            var response = await _apiClient.GetAsync<CategoryVO>($"/api/Categories/{id}");
+            var response = await _apiClient.GetAsync<CategoryVO>($"Categories/{id}");
             return response;
         }
         catch (Exception ex)
@@ -49,7 +49,7 @@ public class CategoryService : ICategoryService
     {
         try
         {
-            var response = await _apiClient.PostAsync<CategoryVO>("/api/Categories", category);
+            var response = await _apiClient.PostAsync<CategoryVO>("Categories", category);
             return response;
         }
         catch (Exception ex)
@@ -63,7 +63,7 @@ public class CategoryService : ICategoryService
     {
         try
         {
-            var response = await _apiClient.PutAsync<bool>($"/api/Categories/{id}", category);
+            var response = await _apiClient.PutAsync<bool>($"Categories/{id}", category);
             return response;
         }
         catch (Exception ex)
@@ -77,7 +77,7 @@ public class CategoryService : ICategoryService
     {
         try
         {
-            var response = await _apiClient.DeleteAsync($"/api/Categories/{id}");
+            var response = await _apiClient.DeleteAsync($"Categories/{id}");
             return response;
         }
         catch (Exception ex)
@@ -91,7 +91,7 @@ public class CategoryService : ICategoryService
     {
         try
         {
-            var response = await _apiClient.DeleteAsync("/api/Categories", ids);
+            var response = await _apiClient.DeleteAsync("Categories", ids);
             return response;
         }
         catch (Exception ex)

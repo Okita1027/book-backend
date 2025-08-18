@@ -23,7 +23,8 @@ namespace book_frontend.Services
         /// <param name="userMessage">显示给用户的友好消息</param>
         /// <param name="context">异常发生的上下文信息</param>
         /// <param name="showDialog">是否显示错误对话框</param>
-        public void LogErrorAndShowMessage(Exception exception, string userMessage, string context = "", bool showDialog = true)
+        public void LogErrorAndShowMessage(Exception exception, string userMessage, string context = "",
+            bool showDialog = true)
         {
             // 记录详细的异常信息到日志
             _logger.LogError(exception, "异常发生在: {Context}. 用户消息: {UserMessage}", context, userMessage);
@@ -90,7 +91,7 @@ namespace book_frontend.Services
         /// <param name="showDialog">是否显示对话框</param>
         public void LogApiError(string errorMessage, string context, string operation, bool showDialog = true)
         {
-            _logger.LogError("API调用失败 - 上下文: {Context}, 操作: {Operation}, 错误: {ErrorMessage}", 
+            _logger.LogError("API调用失败 - 上下文: {Context}, 操作: {Operation}, 错误: {ErrorMessage}",
                 context, operation, errorMessage);
 
             if (showDialog)
@@ -108,7 +109,7 @@ namespace book_frontend.Services
         /// <param name="userMessage">用户友好消息</param>
         public void LogApiError(Exception exception, string apiEndpoint, string operation, string userMessage)
         {
-            _logger.LogError(exception, "API调用失败 - 端点: {ApiEndpoint}, 操作: {Operation}, 异常: {Exception}", 
+            _logger.LogError(exception, "API调用失败 - 端点: {ApiEndpoint}, 操作: {Operation}, 异常: {Exception}",
                 apiEndpoint, operation, exception.Message);
 
             MessageBox.Show(userMessage, "网络错误", MessageBoxButton.OK, MessageBoxImage.Error);

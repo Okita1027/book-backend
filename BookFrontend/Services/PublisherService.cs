@@ -21,7 +21,7 @@ public class PublisherService : IPublisherService
     {
         try
         {
-            var response = await _apiClient.GetAsync<List<PublisherVO>>("/api/Publishers");
+            var response = await _apiClient.GetAsync<List<PublisherVO>>("Publishers");
             return response;
         }
         catch (Exception ex)
@@ -35,7 +35,7 @@ public class PublisherService : IPublisherService
     {
         try
         {
-            var response = await _apiClient.GetAsync<PublisherVO>($"/api/Publishers/{id}");
+            var response = await _apiClient.GetAsync<PublisherVO>($"Publishers/{id}");
             return response;
         }
         catch (Exception ex)
@@ -49,7 +49,7 @@ public class PublisherService : IPublisherService
     {
         try
         {
-            var response = await _apiClient.PostAsync<PublisherVO>("/api/Publishers", publisher);
+            var response = await _apiClient.PostAsync<PublisherVO>("Publishers", publisher);
             return response;
         }
         catch (Exception ex)
@@ -63,7 +63,7 @@ public class PublisherService : IPublisherService
     {
         try
         {
-            var response = await _apiClient.PutAsync<bool>($"/api/Publishers/{id}", publisher);
+            var response = await _apiClient.PutAsync<bool>($"Publishers/{id}", publisher);
             return response;
         }
         catch (Exception ex)
@@ -77,7 +77,7 @@ public class PublisherService : IPublisherService
     {
         try
         {
-            var response = await _apiClient.DeleteAsync($"/api/Publishers/{id}");
+            var response = await _apiClient.DeleteAsync($"Publishers/{id}");
             return response;
         }
         catch (Exception ex)
@@ -91,7 +91,7 @@ public class PublisherService : IPublisherService
     {
         try
         {
-            var response = await _apiClient.DeleteAsync("/api/Publishers", ids);
+            var response = await _apiClient.DeleteAsync("Publishers", ids);
             return response;
         }
         catch (Exception ex)

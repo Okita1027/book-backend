@@ -21,7 +21,7 @@ public class AuthorService : IAuthorService
     {
         try
         {
-            var response = await _apiClient.GetAsync<List<AuthorVO>>("/api/Authors");
+            var response = await _apiClient.GetAsync<List<AuthorVO>>("Authors");
             return response;
         }
         catch (Exception ex)
@@ -35,7 +35,7 @@ public class AuthorService : IAuthorService
     {
         try
         {
-            var response = await _apiClient.GetAsync<AuthorVO>($"/api/Authors/{id}");
+            var response = await _apiClient.GetAsync<AuthorVO>($"Authors/{id}");
             return response;
         }
         catch (Exception ex)
@@ -49,7 +49,7 @@ public class AuthorService : IAuthorService
     {
         try
         {
-            var response = await _apiClient.GetAsync<List<BookVO>>($"/api/Authors/{id}/books");
+            var response = await _apiClient.GetAsync<List<BookVO>>($"Authors/{id}/books");
             return response;
         }
         catch (Exception ex)
@@ -63,7 +63,7 @@ public class AuthorService : IAuthorService
     {
         try
         {
-            var response = await _apiClient.PostAsync<AuthorVO>("/api/Authors", author);
+            var response = await _apiClient.PostAsync<AuthorVO>("Authors", author);
             return response;
         }
         catch (Exception ex)
@@ -77,7 +77,7 @@ public class AuthorService : IAuthorService
     {
         try
         {
-            var response = await _apiClient.PutAsync<bool>($"/api/Authors/{id}", author);
+            var response = await _apiClient.PutAsync<bool>($"Authors/{id}", author);
             return response;
         }
         catch (Exception ex)
@@ -91,7 +91,7 @@ public class AuthorService : IAuthorService
     {
         try
         {
-            var response = await _apiClient.DeleteAsync($"/api/Authors/{id}");
+            var response = await _apiClient.DeleteAsync($"Authors/{id}");
             return response;
         }
         catch (Exception ex)
@@ -105,7 +105,7 @@ public class AuthorService : IAuthorService
     {
         try
         {
-            var response = await _apiClient.DeleteAsync("/api/Authors", ids);
+            var response = await _apiClient.DeleteAsync("Authors", ids);
             return response;
         }
         catch (Exception ex)

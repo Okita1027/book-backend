@@ -7,17 +7,15 @@ using book_frontend.Helpers;
 using book_frontend.Services;
 using book_frontend.Services.Interfaces;
 using book_frontend.ViewModels;
+using book_frontend.Views.Pages;
+using book_frontend.Views.UserControls;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
-using Serilog.Extensions.Logging;
+using Serilog.Sinks.SystemConsole.Themes;
 
 namespace book_frontend;
 
-/// <summary>
-/// Interaction logic for App.xaml
-/// </summary>
 public partial class App : Application
 {
     private ServiceProvider? _serviceProvider;
@@ -29,13 +27,6 @@ public partial class App : Application
 
     protected override void OnStartup(StartupEventArgs e)
     {
-        // 确保日志目录存在
-        var logDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
-        if (!Directory.Exists(logDirectory))
-        {
-            Directory.CreateDirectory(logDirectory);
-        }
-
         // 配置Serilog
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
@@ -44,7 +35,7 @@ public partial class App : Application
             .WriteTo.Console(
                 outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}",
                 standardErrorFromLevel: LogEventLevel.Error,
-                theme: Serilog.Sinks.SystemConsole.Themes.AnsiConsoleTheme.Code
+                theme: AnsiConsoleTheme.Code
             )
             .WriteTo.File(
                 Path.Combine("Logs", "log-.json"),
@@ -104,7 +95,7 @@ public partial class App : Application
         
         // 注册日志服务
         services.AddLogging(builder => builder.AddSerilog(Log.Logger));
-        services.AddSingleton<Services.LoggingService>();
+        services.AddSingleton<LoggingService>();
         
         // 注册凭据管理器服务(单例)
         services.AddSingleton<ICredentialManagerService, CredentialManagerService>();
@@ -116,6 +107,7 @@ public partial class App : Application
         services.AddSingleton<IAuthorService, AuthorService>();
         services.AddSingleton<IPublisherService, PublisherService>();
         services.AddSingleton<ICategoryService, CategoryService>();
+        
         // 注册ViewModels(瞬时)
         services.AddTransient<LoginViewModel>();
         services.AddTransient<RegisterViewModel>();
@@ -124,11 +116,9 @@ public partial class App : Application
         services.AddTransient<BookEditViewModel>();
         
         // 注册用户控件(瞬时)
-        services.AddTransient<Views.UserControls.BookManagement>();
-        
+        services.AddTransient<BookManagement>();
         // 注册页面(瞬时)
-        services.AddTransient<Views.Pages.AdminPage>();
-        
+        services.AddTransient<AdminPage>();
         // 注册主窗口(瞬时)
         services.AddTransient<MainWindow>();
     }
@@ -143,7 +133,7 @@ public partial class App : Application
     {
         Log.Error(e.Exception, "UI线程未处理异常");
         MessageBox.Show("发生未预期的错误，请查看日志了解详情。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-        // 标记异常已被处理，防止应用程序崩溃
+        // 标记异常已被处理（防止应用程序崩溃）
         e.Handled = true;
     }
 
@@ -160,16 +150,15 @@ public partial class App : Application
 
     /// <summary>
     /// 捕获未观察到的任务异常，这些异常通常是在异步任务中未处理的异常。
+    ///     异步任务抛出异常但未被观察到时，会触发此事件。
+    ///     可以在事件处理程序中记录异常信息，防止应用程序崩溃。
     /// </summary>
     /// <param name="sender">任务调度器实例</param>
     /// <param name="e">包含异常信息的事件参数</param>
-    /// <remarks>
-    /// 当异步任务抛出异常但未被观察到时，会触发此事件。
-    /// 可以在事件处理程序中记录异常信息，防止应用程序崩溃。
-    /// </remarks>
     private static void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
     {
         Log.Error(e.Exception, "未观察到的任务异常");
+        // 标记异常已被观察/处理（防止应用程序崩溃）
         e.SetObserved();
     }
 

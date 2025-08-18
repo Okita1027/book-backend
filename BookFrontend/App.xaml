@@ -11,7 +11,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <!-- 定义MaterialDesignThemes主题颜色方案；引用MaterialDesignThemes默认样式资源 -->
                 <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="DeepPurple" SecondaryColor="Lime" />
-                <!-- 引用程序集中的资源文件，PACK URI格式：pack://application:,,,/[AssemblyName];component/[ResourceFilePath] -->
+                <!-- 引用程序集中的资源文件，PACK URI格式：pack://application:,,,/[程序集名称];component/[资源路径] -->
                 <ResourceDictionary
                     Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
                 <!-- 引用应用程序自定义的样式资源 -->

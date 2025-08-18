@@ -1,10 +1,9 @@
 using System.Windows;
 
+// 全局资源字典
 [assembly: ThemeInfo(
-    ResourceDictionaryLocation.None, //where theme specific resource dictionaries are located
-    //(used if a resource is not found in the page,
-    // or application resource dictionaries)
-    ResourceDictionaryLocation.SourceAssembly //where the generic resource dictionary is located
-    //(used if a resource is not found in the page,
-    // app, or any theme specific resource dictionaries)
+    // 主题资源字典的位置
+    ResourceDictionaryLocation.None,
+    // 应用程序资源字典的位置
+    ResourceDictionaryLocation.SourceAssembly
 )]

@@ -11,9 +11,6 @@ using RelayCommand = CommunityToolkit.Mvvm.Input.RelayCommand;
 
 namespace book_frontend;
 
-/// <summary>
-/// Interaction logic for MainWindow.xaml
-/// </summary>
 public partial class MainWindow : Window
 {
     private readonly IAuthService _authService;
