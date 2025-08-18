@@ -1,4 +1,4 @@
-﻿using book_backend.Data;
+using book_backend.Data;
 using book_backend.Exceptions;
 using book_backend.Models.DTO;
 using book_backend.Models.Entity;
@@ -91,6 +91,8 @@ namespace book_backend.Services.Impl
                 // 加载关联的 Author 和 Publisher
                 .Include(b => b.Author)
                 .Include(b => b.Publisher)
+                .Include(b => b.BookCategories)
+                .ThenInclude(bc => bc.Category)
                 // 将原本的 Book 实体映射为 BookVO
                 .ProjectToType<BookVO>()
                 .ToListAsync();

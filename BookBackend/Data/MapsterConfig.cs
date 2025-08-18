@@ -58,8 +58,11 @@ namespace book_backend.Data
                 .Map(dest => dest.Stock, src => src.Stock)
                 .Map(dest => dest.Available, src => src.Available)
                 .Map(dest => dest.AuthorName, src => src.Author.Name)
+                .Map(dest => dest.AuthorId, src => src.Author.Id)
                 .Map(dest => dest.PublisherName, src => src.Publisher.Name)
+                .Map(dest => dest.PublisherId, src => src.Publisher.Id)
                 .Map(dest => dest.PublishedDate, src => src.PublishedDate)
+                .Map(dest => dest.CategoryIds, src => src.BookCategories.Select(bc => bc.Category.Id).ToList())
                 .Map(dest => dest.CategoryNames, src => src.BookCategories.Select(bc => bc.Category.Name).ToList())
                 .IgnoreNullValues(true);
             

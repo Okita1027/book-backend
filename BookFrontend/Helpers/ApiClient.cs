@@ -244,6 +244,17 @@ public class ApiClient
 
             if (response.IsSuccessStatusCode)
             {
+                // 对于HTTP 204 NoContent响应，不尝试解析JSON
+                if (response.StatusCode == HttpStatusCode.NoContent || string.IsNullOrWhiteSpace(content))
+                {
+                    return new ApiResponse<T>
+                    {
+                        Success = true,
+                        Data = default(T),
+                        Code = (int)response.StatusCode,
+                    };
+                }
+                
                 var data = JsonSerializer.Deserialize<T>(content, _jsonOptions);
                 return new ApiResponse<T>
                 {

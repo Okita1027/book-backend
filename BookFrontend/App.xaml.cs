@@ -21,6 +21,11 @@ namespace book_frontend;
 public partial class App : Application
 {
     private ServiceProvider? _serviceProvider;
+    
+    /// <summary>
+    /// 全局服务提供者，用于在非DI容器管理的类中获取服务
+    /// </summary>
+    public static ServiceProvider ServiceProvider { get; private set; } = null!;
 
     protected override void OnStartup(StartupEventArgs e)
     {
@@ -59,6 +64,7 @@ public partial class App : Application
         var serviceCollection = new ServiceCollection();
         ConfigureServices(serviceCollection);
         _serviceProvider = serviceCollection.BuildServiceProvider();
+        ServiceProvider = _serviceProvider;
 
         // 获取主窗口和主ViewModel
         var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
@@ -98,6 +104,7 @@ public partial class App : Application
         
         // 注册日志服务
         services.AddLogging(builder => builder.AddSerilog(Log.Logger));
+        services.AddSingleton<Services.LoggingService>();
         
         // 注册凭据管理器服务(单例)
         services.AddSingleton<ICredentialManagerService, CredentialManagerService>();
@@ -114,6 +121,7 @@ public partial class App : Application
         services.AddTransient<RegisterViewModel>();
         services.AddTransient<MainViewModel>();
         services.AddTransient<BookManagementViewModel>();
+        services.AddTransient<BookEditViewModel>();
         
         // 注册用户控件(瞬时)
         services.AddTransient<Views.UserControls.BookManagement>();

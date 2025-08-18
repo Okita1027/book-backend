@@ -7,15 +7,18 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using book_frontend.Models.DTOs;
 using book_frontend.Models.VOs;
 using book_frontend.Services.Interfaces;
 using book_frontend.Services;
+using CommunityToolkit.Mvvm.Input;
 
 namespace book_frontend.ViewModels
 {
     public class BookManagementViewModel : INotifyPropertyChanged
     {
         private readonly IBookService _bookService;
+        private readonly LoggingService _loggingService;
 
         // 搜索条件
         private string _searchTitle = string.Empty;
@@ -38,9 +41,10 @@ namespace book_frontend.ViewModels
         // 加载状态
         private bool _isLoading = false;
 
-        public BookManagementViewModel(IBookService bookService)
+        public BookManagementViewModel(IBookService bookService, LoggingService loggingService)
         {
             _bookService = bookService;
+            _loggingService = loggingService;
             InitializeCommands();
 
             // 初始加载数据
@@ -198,12 +202,12 @@ namespace book_frontend.ViewModels
                 }
                 else
                 {
-                    MessageBox.Show($"加载图书数据失败：{response.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    _loggingService.LogApiError(response.Message, "BookManagementViewModel.LoadBooksAsync", "加载图书数据");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"加载图书数据时发生异常：{ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                _loggingService.LogErrorAndShowMessage(ex, "加载图书数据时发生异常，请重试。", "BookManagementViewModel.LoadBooksAsync");
             }
             finally
             {
@@ -236,52 +240,126 @@ namespace book_frontend.ViewModels
         }
 
         /// <summary>
-        /// 新增图书（占位方法）
+        /// 新增图书
         /// </summary>
-        private void AddBook()
+        private async void AddBook()
         {
-            MessageBox.Show("新增图书功能正在开发中...", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            try
+            {
+                var currentWindow = Application.Current.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive);
+                if (currentWindow == null)
+                {
+                    currentWindow = Application.Current.MainWindow;
+                }
+
+                var result = await Views.BookEditDialog.ShowAddDialogAsync(currentWindow);
+                if (result == true)
+                {
+                    // 刷新图书列表
+                    await LoadBooksAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogErrorAndShowMessage(ex, "打开新增图书对话框时发生错误，请重试。", "BookManagementViewModel.AddBook");
+            }
         }
 
         /// <summary>
-        /// 编辑图书（占位方法）
+        /// 编辑图书
         /// </summary>
-        private void EditBook()
+        private async void EditBook()
         {
             var selectedItems = Books.Where(b => b.IsSelected).ToList();
             if (selectedItems.Count == 0)
             {
-                MessageBox.Show("请选择要编辑的图书", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _loggingService.LogWarningMessage("请选择要编辑的图书", "提示");
                 return;
             }
 
             if (selectedItems.Count > 1)
             {
-                MessageBox.Show("只能选择一本图书进行编辑", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _loggingService.LogWarningMessage("只能选择一本图书进行编辑", "提示");
                 return;
             }
 
-            MessageBox.Show("编辑图书功能正在开发中...", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            try
+            {
+                var selectedBook = selectedItems.First();
+                var currentWindow = Application.Current.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive);
+                if (currentWindow == null)
+                {
+                    currentWindow = Application.Current.MainWindow;
+                }
+
+                var result = await Views.BookEditDialog.ShowEditDialogAsync(currentWindow, selectedBook.Book.Id);
+                if (result == true)
+                {
+                    // 刷新图书列表
+                    await LoadBooksAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                _loggingService.LogErrorAndShowMessage(ex, "打开编辑图书对话框时发生错误，请重试。", "BookManagementViewModel.EditBook");
+            }
         }
 
         /// <summary>
-        /// 删除图书（占位方法）
+        /// 删除图书
         /// </summary>
-        private void DeleteBooks()
+        private async void DeleteBooks()
         {
             var selectedItems = Books.Where(b => b.IsSelected).ToList();
             if (selectedItems.Count == 0)
             {
-                MessageBox.Show("请选择要删除的图书", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _loggingService.LogWarningMessage("请选择要删除的图书", "提示");
                 return;
             }
 
-            var result = MessageBox.Show($"确定要删除选中的 {selectedItems.Count} 本图书吗？", "确认删除",
+            var result = MessageBox.Show($"确定要删除选中的 {selectedItems.Count} 本图书吗？\n\n删除后将无法恢复！", "确认删除",
                 MessageBoxButton.YesNo, MessageBoxImage.Question);
 
             if (result == MessageBoxResult.Yes)
             {
-                MessageBox.Show("删除图书功能正在开发中...", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                try
+                {
+                    IsLoading = true;
+
+                    var bookIds = selectedItems.Select(item => item.Book.Id).ToList();
+
+                    ApiResponse<bool> response;
+                    if (bookIds.Count == 1)
+                    {
+                        // 单个删除
+                        response = await _bookService.DeleteBookAsync(bookIds.First());
+                    }
+                    else
+                    {
+                        // 批量删除
+                        response = await _bookService.DeleteBooksAsync(bookIds);
+                    }
+
+                    if (response.Success)
+                    {
+                        _loggingService.LogSuccessMessage($"成功删除 {bookIds.Count} 本图书！", "删除成功");
+
+                        // 刷新图书列表
+                        await LoadBooksAsync();
+                    }
+                    else
+                    {
+                        _loggingService.LogApiError(response.Message, "BookManagementViewModel.DeleteBooks", "删除图书");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _loggingService.LogErrorAndShowMessage(ex, "删除图书时发生异常，请重试。", "BookManagementViewModel.DeleteBooks");
+                }
+                finally
+                {
+                    IsLoading = false;
+                }
             }
         }
 
@@ -349,7 +427,7 @@ namespace book_frontend.ViewModels
             }
             else if (JumpToPage < 1 || JumpToPage > TotalPages)
             {
-                MessageBox.Show($"页码必须在 1 到 {TotalPages} 之间", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _loggingService.LogWarningMessage($"页码必须在 1 到 {TotalPages} 之间", "提示");
                 JumpToPage = CurrentPage;
             }
         }
@@ -425,56 +503,6 @@ namespace book_frontend.ViewModels
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-    }
-
-    /// <summary>
-    /// 简单的命令实现
-    /// </summary>
-    public class RelayCommand : ICommand
-    {
-        private readonly Action _execute;
-        private readonly Func<bool>? _canExecute;
-        private readonly Func<Task>? _executeAsync;
-
-        public RelayCommand(Action execute, Func<bool>? canExecute = null)
-        {
-            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
-            _canExecute = canExecute;
-        }
-
-        public RelayCommand(Func<Task> executeAsync, Func<bool>? canExecute = null)
-        {
-            _executeAsync = executeAsync ?? throw new ArgumentNullException(nameof(executeAsync));
-            _canExecute = canExecute;
-        }
-
-        public event EventHandler? CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
-        }
-
-        public bool CanExecute(object? parameter)
-        {
-            return _canExecute?.Invoke() ?? true;
-        }
-
-        public void Execute(object? parameter)
-        {
-            if (_executeAsync != null)
-            {
-                _ = _executeAsync();
-            }
-            else
-            {
-                _execute?.Invoke();
-            }
-        }
-
-        public void NotifyCanExecuteChanged()
-        {
-            CommandManager.InvalidateRequerySuggested();
         }
     }
 }
