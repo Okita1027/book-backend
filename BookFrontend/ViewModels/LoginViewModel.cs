@@ -13,6 +13,9 @@ public class LoginViewModel : BaseViewModel
     private string _errorMessage = string.Empty;
     private bool _rememberMe = false;
 
+    /// <summary>
+    /// 事件声明，用于实现ViewModel与View之间的通信
+    /// </summary>
     public event Action? NavigateToRegister;
     public event Action? LoginSuccessful;
 

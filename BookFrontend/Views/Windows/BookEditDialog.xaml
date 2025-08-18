@@ -54,7 +54,7 @@
             <StackPanel>
 
                 <!-- 图书标题 -->
-                <StackPanel Style="{StaticResource FormFieldContainerStyle}" Margin="0,0,0,12">
+                <StackPanel Style="{StaticResource FormFieldContainerStyle}">
                     <TextBlock Text="图书标题" FontWeight="Bold" />
                     <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"
                              Style="{StaticResource FormTextBoxStyle}"
@@ -63,7 +63,7 @@
                 </StackPanel>
 
                 <!-- ISBN 和 出版日期 -->
-                <Grid Style="{StaticResource QuantityInputGridStyle}" Margin="0,0,0,12">
+                <Grid Style="{StaticResource QuantityInputGridStyle}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="10" />
@@ -87,7 +87,7 @@
                 </Grid>
 
                 <!-- 库存和可用数量 -->
-                <Grid Style="{StaticResource QuantityInputGridStyle}" Margin="0,0,0,12">
+                <Grid Style="{StaticResource QuantityInputGridStyle}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="10" />
@@ -110,7 +110,7 @@
                 </Grid>
 
                 <!-- 作者选择 和 出版社选择 -->
-                <Grid Style="{StaticResource QuantityInputGridStyle}" Margin="0,0,0,12">
+                <Grid Style="{StaticResource QuantityInputGridStyle}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="10" />
@@ -125,8 +125,7 @@
                                   SelectedValue="{Binding SelectedAuthorId}"
                                   SelectedValuePath="Id"
                                   DisplayMemberPath="Name"
-                                  Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                                  Margin="0,0,0,8" />
+                                  Style="{StaticResource MaterialDesignOutlinedComboBox}" />
                     </StackPanel>
 
                     <StackPanel Grid.Column="2" Style="{StaticResource FormFieldContainerStyle}">
@@ -137,13 +136,12 @@
                                   SelectedValue="{Binding SelectedPublisherId}"
                                   SelectedValuePath="Id"
                                   DisplayMemberPath="Name"
-                                  Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                                  Margin="0,0,0,8" />
+                                  Style="{StaticResource MaterialDesignOutlinedComboBox}" />
                     </StackPanel>
                 </Grid>
 
                 <!-- 分类选择 -->
-                <GroupBox Header="分类选择" Style="{StaticResource CategorySelectionGroupBoxStyle}" Margin="0,0,0,12">
+                <GroupBox Header="分类选择" Style="{StaticResource CategorySelectionGroupBoxStyle}">
                     <ScrollViewer Style="{StaticResource CategorySelectionScrollViewerStyle}">
                         <ItemsControl ItemsSource="{Binding Categories}">
                             <ItemsControl.ItemsPanel>

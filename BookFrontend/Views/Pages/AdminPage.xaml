@@ -20,7 +20,7 @@
     <Grid Style="{StaticResource AdminPageContainerStyle}">
         <Grid.ColumnDefinitions>
             <!-- 左侧导航栏 -->
-            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="225" />
             <!-- 右侧内容区域 -->
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
@@ -38,11 +38,7 @@
                 </Border>
 
                 <!-- 导航菜单 -->
-                <TextBlock Text="管理功能" 
-                           Margin="15,20,15,10" 
-                           FontWeight="Bold" 
-                           FontSize="14" 
-                           Foreground="#333" />
+                <TextBlock Text="管理功能" Style="{StaticResource AdminTitleStyle}" />
 
                 <!-- 图书管理按钮 -->
                 <Button Name="BookManagementButton" 
@@ -50,8 +46,8 @@
                         Style="{StaticResource BookManagementButtonStyle}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="Book" Width="20" Height="20" 
-                                                 VerticalAlignment="Center" Margin="0,0,10,0" />
-                        <TextBlock Text="图书管理" VerticalAlignment="Center" FontSize="14" />
+                                                 VerticalAlignment="Center" Margin="10" />
+                        <TextBlock Text="图书管理" VerticalAlignment="Center" FontSize="16" />
                     </StackPanel>
                 </Button>
 
@@ -61,11 +57,10 @@
                         Style="{StaticResource UserManagementButtonStyle}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="AccountGroup" Width="20" Height="20" 
-                                                 VerticalAlignment="Center" Margin="0,0,10,0" />
-                        <TextBlock Text="用户管理" VerticalAlignment="Center" FontSize="14" />
+                                                 VerticalAlignment="Center" Margin="10" />
+                        <TextBlock Text="用户管理" VerticalAlignment="Center" FontSize="16" />
                     </StackPanel>
                 </Button>
-
 
             </StackPanel>
         </Border>
@@ -91,7 +86,7 @@
             </Border>
 
             <!-- 主内容区域 -->
-            <Frame Grid.Row="1" Name="AdminContentFrame" NavigationUIVisibility="Hidden" />
+            <Frame Grid.Row="1" x:Name="AdminContentFrame" NavigationUIVisibility="Hidden" />
         </Grid>
         </Border>
     </Grid>

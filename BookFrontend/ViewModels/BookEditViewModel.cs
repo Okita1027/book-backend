@@ -239,7 +239,7 @@ public class BookEditViewModel : INotifyPropertyChanged
     private async Task LoadAuthorsAsync()
     {
         var response = await _authorService.GetAllAuthorsAsync();
-        if (response.Success && response.Data != null)
+        if (response is { Success: true, Data: not null })
         {
             Authors = new ObservableCollection<AuthorVO>(response.Data);
         }
@@ -251,7 +251,7 @@ public class BookEditViewModel : INotifyPropertyChanged
     private async Task LoadPublishersAsync()
     {
         var response = await _publisherService.GetAllPublishersAsync();
-        if (response.Success && response.Data != null)
+        if (response is { Success: true, Data: not null })
         {
             Publishers = new ObservableCollection<PublisherVO>(response.Data);
         }
@@ -263,7 +263,7 @@ public class BookEditViewModel : INotifyPropertyChanged
     private async Task LoadCategoriesAsync()
     {
         var response = await _categoryService.GetAllCategoriesAsync();
-        if (response.Success && response.Data != null)
+        if (response is { Success: true, Data: not null })
         {
             Categories = new ObservableCollection<CategoryVO>(response.Data);
 
@@ -278,6 +278,8 @@ public class BookEditViewModel : INotifyPropertyChanged
     /// <summary>
     /// 分类选择状态变化处理
     /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void Category_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(CategoryVO.IsSelected) && sender is CategoryVO category)
@@ -301,7 +303,7 @@ public class BookEditViewModel : INotifyPropertyChanged
         try
         {
             var response = await _bookService.GetBookByIdAsync(bookId);
-            if (response.Success && response.Data != null)
+            if (response is { Success: true, Data: not null })
             {
                 var book = response.Data;
                 Title = book.Title ?? string.Empty;
@@ -468,7 +470,7 @@ public class BookEditValidator : AbstractValidator<EditBookDTO>
 
         RuleFor(x => x.Isbn)
             .NotEmpty().WithMessage("ISBN不能为空")
-            .Must(isbn => isbn.Length == 10 || isbn.Length == 13).WithMessage("ISBN只能是10位或13位")
+            .Must(isbn => isbn.Length is 10 or 13).WithMessage("ISBN只能是10位或13位")
             .Matches(@"^[0-9]+$").WithMessage("ISBN只能包含数字");
 
         RuleFor(x => x.PublishedDate)
