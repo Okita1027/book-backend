@@ -5,23 +5,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../ResourceDictionaries/UserControlStyles.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
     <StackPanel>
         <!-- 
             图标
             - {RelativeSource AncestorType=UserControl} 实现了从子控件到父 UserControl 的属性绑定
+            - IconKind属性在 TextInputField.xaml.cs隐藏文件中定义
             - 这是 WPF 中实现自定义控件属性传递的标准模式
          -->
         <materialDesign:PackIcon Kind="{Binding IconKind, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                  Style="{StaticResource InputFieldIconStyle}"
                                  Visibility="{Binding ShowIcon, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BooleanToVisibilityConverter}}" />
-        
         <!-- 
             文本输入框
             UpdateSourceTrigger：定义了绑定源何时被更新

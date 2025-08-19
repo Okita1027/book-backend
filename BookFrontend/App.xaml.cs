@@ -162,7 +162,7 @@ public partial class App : Application
         e.SetObserved();
     }
 
-
+    
     protected override void OnExit(ExitEventArgs e)
     {
         // 释放依赖注入容器资源

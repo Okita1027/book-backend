@@ -10,7 +10,9 @@
         Title="{x:Static constants:UiConstant.TrayTooltip}" Height="720" Width="1200" Background="#F5F5F5"
         Closing="Window_Closing"
         WindowState="Maximized">
+    <!-- 边缘停靠布局 -->
     <DockPanel>
+        <!-- 托盘菜单 -->
         <tb:TaskbarIcon x:Name="TaskbarIcon"
                         DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
                         IconSource="/Assests/Icons/lemon.ico"

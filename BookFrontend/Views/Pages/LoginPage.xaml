@@ -3,8 +3,6 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-      xmlns:h="clr-namespace:book_frontend.Helpers"
       xmlns:views="clr-namespace:book_frontend.Views.UserControls"
       xmlns:viewModels="clr-namespace:book_frontend.ViewModels"
       xmlns:constants="clr-namespace:book_frontend.Constants"
@@ -21,7 +19,6 @@
 
         <!-- 主要内容区域 -->
         <Border Grid.Column="1" Style="{StaticResource PageMainContainerStyle}">
-            
             <!-- 使用登录表单用户控件 -->
             <views:LoginFormView DataContext="{Binding}">
                 <views:LoginFormView.FooterContent>

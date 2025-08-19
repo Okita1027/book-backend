@@ -41,7 +41,7 @@
                 <TextBlock Text="管理功能" Style="{StaticResource AdminTitleStyle}" />
 
                 <!-- 图书管理按钮 -->
-                <Button Name="BookManagementButton" 
+                <Button x:Name="BookManagementButton" 
                         Click="BookManagementButton_Click"
                         Style="{StaticResource BookManagementButtonStyle}">
                     <StackPanel Orientation="Horizontal">
@@ -52,7 +52,7 @@
                 </Button>
 
                 <!-- 用户管理按钮 -->
-                <Button Name="UserManagementButton" 
+                <Button x:Name="UserManagementButton" 
                         Click="UserManagementButton_Click"
                         Style="{StaticResource UserManagementButtonStyle}">
                     <StackPanel Orientation="Horizontal">
@@ -69,9 +69,7 @@
         <Border Grid.Column="1" Style="{StaticResource AdminContentAreaStyle}">
         <Grid>
             <Grid.RowDefinitions>
-                <!-- 面包屑导航 -->
                 <RowDefinition Height="Auto" />
-                <!-- 主内容区域 -->
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 

@@ -1,7 +1,6 @@
 <Application x:Class="book_frontend.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:book_frontend"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:converters="clr-namespace:book_frontend.Converters">
     <!-- 定义应用程序级别的资源（可以在整个应用程序中共享使用，包括样式、模板、画笔、转换器等） -->

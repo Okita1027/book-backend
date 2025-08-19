@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 namespace book_frontend.ViewModels;
 
 /// <summary>
+/// 这是一个典型的、广泛使用的实现方式
 /// ViewModel基类，实现INotifyPropertyChanged接口
 /// 这是WPF数据绑定的核心机制，类似于React的useState
 /// </summary>

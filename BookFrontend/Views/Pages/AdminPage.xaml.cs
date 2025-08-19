@@ -57,10 +57,10 @@ public partial class AdminPage : Page
     {
         var welcomeText = new TextBlock
         {
-            Text = "欢迎使用后台管理系统",
+            Text = "欢迎使用后台管理系统!",
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center,
-            FontSize = 24,
+            FontSize = 30,
             FontWeight = FontWeights.Bold,
             Foreground = System.Windows.Media.Brushes.Gray
         };
