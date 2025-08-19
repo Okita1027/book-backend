@@ -1,16 +1,27 @@
 using book_frontend.Services.Interfaces;
+using book_frontend.Services;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace book_frontend.ViewModels;
 
-public class LoginViewModel : BaseViewModel
+public partial class LoginViewModel : ObservableObject
 {
     private readonly IAuthService _authService;
     private readonly RelayCommand _loginCommand;
+    [ObservableProperty]
     private string _email = string.Empty;
+    
+    [ObservableProperty]
     private string _password = string.Empty;
+    
+    [ObservableProperty]
     private bool _isLoading = false;
+    
+    [ObservableProperty]
     private string _errorMessage = string.Empty;
+    
+    [ObservableProperty]
     private bool _rememberMe = false;
 
     /// <summary>
@@ -19,55 +30,19 @@ public class LoginViewModel : BaseViewModel
     public event Action? NavigateToRegister;
     public event Action? LoginSuccessful;
 
-    public string Email
+    partial void OnEmailChanged(string value)
     {
-        get => _email;
-        set
-        {
-            // 当用户名变化后，尝试更新绑定属性，并刷新命令可用状态
-            if (SetProperty(ref _email, value))
-            {
-                _loginCommand.NotifyCanExecuteChanged();
-            }
-        }
+        _loginCommand.NotifyCanExecuteChanged();
     }
 
-    public string Password
+    partial void OnPasswordChanged(string value)
     {
-        get => _password;
-        set
-        {
-            // 当密码变化后，尝试更新绑定属性，并刷新命令可用状态
-            if (SetProperty(ref _password, value))
-            {
-                _loginCommand.NotifyCanExecuteChanged();
-            }
-        }
+        _loginCommand.NotifyCanExecuteChanged();
     }
 
-    public bool IsLoading
+    partial void OnIsLoadingChanged(bool value)
     {
-        get => _isLoading;
-        set
-        {
-            // 登录过程中禁用按钮，结束后恢复
-            if (SetProperty(ref _isLoading, value))
-            {
-                _loginCommand.NotifyCanExecuteChanged();
-            }
-        }
-    }
-
-    public string ErrorMessage
-    {
-        get => _errorMessage;
-        set => SetProperty(ref _errorMessage, value);
-    }
-    
-    public bool RememberMe
-    {
-        get => _rememberMe;
-        set => SetProperty(ref _rememberMe, value);
+        _loginCommand.NotifyCanExecuteChanged();
     }
 
     // 将公开的命令暴露为 ICommand，供 XAML 绑定
@@ -90,9 +65,9 @@ public class LoginViewModel : BaseViewModel
     // 判断登录按钮是否可用：用户名/密码非空，且不在加载中
     private bool CanLogin()
     {
-        return !_isLoading
-               && !string.IsNullOrWhiteSpace(_email)
-               && !string.IsNullOrWhiteSpace(_password);
+        return !IsLoading
+               && !string.IsNullOrWhiteSpace(Email)
+               && !string.IsNullOrWhiteSpace(Password);
     }
 
     // 执行登录流程

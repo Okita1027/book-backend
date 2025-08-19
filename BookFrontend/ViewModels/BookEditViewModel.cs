@@ -8,11 +8,12 @@ using book_frontend.Models.VOs;
 using book_frontend.Services;
 using book_frontend.Services.Interfaces;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
 using FluentValidation;
 
 namespace book_frontend.ViewModels;
 
-public class BookEditViewModel : INotifyPropertyChanged
+public partial class BookEditViewModel : ObservableObject
 {
     private readonly IBookService _bookService;
     private readonly IAuthorService _authorService;
@@ -22,25 +23,53 @@ public class BookEditViewModel : INotifyPropertyChanged
     private readonly LoggingService _loggingService;
 
     // 基本属性
+    [ObservableProperty]
     private string _title = string.Empty;
+    
+    [ObservableProperty]
     private string _isbn = string.Empty;
+    
+    [ObservableProperty]
     private DateTime _publishedDate = DateTime.Now;
+    
+    [ObservableProperty]
     private int _stock = 0;
+    
+    [ObservableProperty]
     private int _available = 0;
+    
+    [ObservableProperty]
     private int? _selectedAuthorId;
+    
+    [ObservableProperty]
     private int? _selectedPublisherId;
+    
+    [ObservableProperty]
     private ObservableCollection<int> _selectedCategoryIds = new();
 
     // 下拉数据源
+    [ObservableProperty]
     private ObservableCollection<AuthorVO> _authors = new();
+    
+    [ObservableProperty]
     private ObservableCollection<PublisherVO> _publishers = new();
+    
+    [ObservableProperty]
     private ObservableCollection<CategoryVO> _categories = new();
 
     // UI状态
+    [ObservableProperty]
     private bool _isLoading = false;
+    
+    [ObservableProperty]
     private bool _isSaving = false;
+    
+    [ObservableProperty]
     private string _validationErrors = string.Empty;
+    
+    [ObservableProperty]
     private bool _isEditMode = false;
+    
     private int? _bookId;
 
     public BookEditViewModel(
@@ -62,107 +91,23 @@ public class BookEditViewModel : INotifyPropertyChanged
 
     #region 属性
 
-    public string Title
+    // 属性将由 [ObservableProperty] 特性自动生成
+    // Title, Isbn, PublishedDate, Stock, Available, SelectedAuthorId, SelectedPublisherId, SelectedCategoryIds
+    // Authors, Publishers, Categories, IsLoading, IsSaving, ValidationErrors, IsEditMode
+    
+    // Stock属性变化时的业务逻辑
+    partial void OnStockChanged(int value)
     {
-        get => _title;
-        set => SetProperty(ref _title, value);
-    }
-
-    public string Isbn
-    {
-        get => _isbn;
-        set => SetProperty(ref _isbn, value);
-    }
-
-    public DateTime PublishedDate
-    {
-        get => _publishedDate;
-        set => SetProperty(ref _publishedDate, value);
-    }
-
-    public int Stock
-    {
-        get => _stock;
-        set
+        // 库存变化时，可用数量不能超过总库存
+        if (Available > value)
         {
-            SetProperty(ref _stock, value);
-            // 库存变化时，可用数量不能超过总库存
-            if (Available > value)
-            {
-                Available = value;
-            }
+            Available = value;
         }
-    }
-
-    public int Available
-    {
-        get => _available;
-        set => SetProperty(ref _available, value);
-    }
-
-    public int? SelectedAuthorId
-    {
-        get => _selectedAuthorId;
-        set => SetProperty(ref _selectedAuthorId, value);
-    }
-
-    public int? SelectedPublisherId
-    {
-        get => _selectedPublisherId;
-        set => SetProperty(ref _selectedPublisherId, value);
-    }
-
-    public ObservableCollection<int> SelectedCategoryIds
-    {
-        get => _selectedCategoryIds;
-        set => SetProperty(ref _selectedCategoryIds, value);
-    }
-
-    public ObservableCollection<AuthorVO> Authors
-    {
-        get => _authors;
-        set => SetProperty(ref _authors, value);
-    }
-
-    public ObservableCollection<PublisherVO> Publishers
-    {
-        get => _publishers;
-        set => SetProperty(ref _publishers, value);
-    }
-
-    public ObservableCollection<CategoryVO> Categories
-    {
-        get => _categories;
-        set => SetProperty(ref _categories, value);
-    }
-
-    public bool IsLoading
-    {
-        get => _isLoading;
-        set => SetProperty(ref _isLoading, value);
-    }
-
-    public bool IsSaving
-    {
-        get => _isSaving;
-        set => SetProperty(ref _isSaving, value);
-    }
-
-    public string ValidationErrors
-    {
-        get => _validationErrors;
-        set => SetProperty(ref _validationErrors, value);
     }
 
     public string ValidationErrorMessage => ValidationErrors;
 
     public bool HasValidationErrors => !string.IsNullOrEmpty(ValidationErrors);
-
-    public bool IsEditMode
-    {
-        get => _isEditMode;
-        set => SetProperty(ref _isEditMode, value);
-    }
 
     public string WindowTitle => IsEditMode ? "编辑图书" : "新增图书";
 
@@ -435,26 +380,7 @@ public class BookEditViewModel : INotifyPropertyChanged
 
     #endregion
 
-    #region INotifyPropertyChanged 实现
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value))
-            return false;
-
-        field = value;
-        OnPropertyChanged(propertyName);
-        return true;
-    }
-
-    #endregion
 }
 
 /// <summary>

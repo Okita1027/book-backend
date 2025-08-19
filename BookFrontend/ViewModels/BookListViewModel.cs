@@ -2,125 +2,96 @@ using System.Collections.ObjectModel;
 using book_frontend.Models.VOs;
 using book_frontend.Services.Interfaces;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Serilog;
 
 namespace book_frontend.ViewModels;
 
-public class BookListViewModel : BaseViewModel
+public partial class BookListViewModel : ObservableObject
 {
     private readonly IBookService _bookService;
     private readonly ILogger _logger;
 
     // 搜索条件
+    [ObservableProperty]
     private string? _title;
 
-    public string? Title
-    {
-        get => _title;
-        set
-        {
-            if (SetProperty(ref _title, value)) RefreshCommands();
-        }
-    }
-
+    [ObservableProperty]
     private string? _author;
 
-    public string? Author
-    {
-        get => _author;
-        set
-        {
-            if (SetProperty(ref _author, value)) RefreshCommands();
-        }
-    }
-
+    [ObservableProperty]
     private string? _category;
 
-    public string? Category
-    {
-        get => _category;
-        set
-        {
-            if (SetProperty(ref _category, value)) RefreshCommands();
-        }
-    }
-
+    [ObservableProperty]
     private string? _publisher;
 
-    public string? Publisher
-    {
-        get => _publisher;
-        set
-        {
-            if (SetProperty(ref _publisher, value)) RefreshCommands();
-        }
-    }
-
+    [ObservableProperty]
     private string? _isbn;
 
-    public string? Isbn
+    partial void OnTitleChanged(string? value)
     {
-        get => _isbn;
-        set
-        {
-            if (SetProperty(ref _isbn, value)) RefreshCommands();
-        }
+        RefreshCommands();
     }
 
+    partial void OnAuthorChanged(string? value)
+    {
+        RefreshCommands();
+    }
+
+    partial void OnCategoryChanged(string? value)
+    {
+        RefreshCommands();
+    }
+
+    partial void OnPublisherChanged(string? value)
+    {
+        RefreshCommands();
+    }
+
+    partial void OnIsbnChanged(string? value)
+    {
+        RefreshCommands();
+    }
+
+    [ObservableProperty]
     private DateTime? _publishDateStart;
 
-    public DateTime? PublishDateStart
-    {
-        get => _publishDateStart;
-        set
-        {
-            if (SetProperty(ref _publishDateStart, value)) RefreshCommands();
-        }
-    }
-
+    [ObservableProperty]
     private DateTime? _publishDateEnd;
 
-    public DateTime? PublishDateEnd
-    {
-        get => _publishDateEnd;
-        set
-        {
-            if (SetProperty(ref _publishDateEnd, value)) RefreshCommands();
-        }
-    }
-
     // 分页
+    [ObservableProperty]
     private int _pageIndex;
 
-    public int PageIndex
-    {
-        get => _pageIndex;
-        set
-        {
-            if (SetProperty(ref _pageIndex, value)) RefreshCommands();
-        }
-    }
-
+    [ObservableProperty]
     private int _pageSize;
 
-    public int PageSize
-    {
-        get => _pageSize;
-        set
-        {
-            if (SetProperty(ref _pageSize, value)) RefreshCommands();
-        }
-    }
-
+    [ObservableProperty]
     private int _total;
 
-    public int Total
+    partial void OnPublishDateStartChanged(DateTime? value)
     {
-        get => _total;
-        set
-        {
-            if (SetProperty(ref _total, value)) RefreshCommands();
-        }
+        RefreshCommands();
+    }
+
+    partial void OnPublishDateEndChanged(DateTime? value)
+    {
+        RefreshCommands();
+    }
+
+    partial void OnPageIndexChanged(int value)
+    {
+        RefreshCommands();
+    }
+
+    partial void OnPageSizeChanged(int value)
+    {
+        RefreshCommands();
+    }
+
+    partial void OnTotalChanged(int value)
+    {
+        RefreshCommands();
     }
 
     public bool HasNextPage => PageIndex * PageSize < Total;
@@ -132,38 +103,24 @@ public class BookListViewModel : BaseViewModel
      */
     public ObservableCollection<BookVO> Books { get; }
 
+    [ObservableProperty]
     private bool _isLoading;
 
-    public bool IsLoading
-    {
-        get => _isLoading;
-        set
-        {
-            if (SetProperty(ref _isLoading, value)) RefreshCommands();
-        }
-    }
-
+    [ObservableProperty]
     private string? _errorMessage;
 
-    public string? ErrorMessage
-    {
-        get => _errorMessage;
-        set => SetProperty(ref _errorMessage, value);
-    }
-
     // 页码跳转
+    [ObservableProperty]
     private string _jumpToPageInput = "1";
 
-    public string JumpToPageInput
+    partial void OnIsLoadingChanged(bool value)
     {
-        get => _jumpToPageInput;
-        set
-        {
-            if (SetProperty(ref _jumpToPageInput, value))
-            {
-                RefreshCommands();
-            }
-        }
+        RefreshCommands();
+    }
+
+    partial void OnJumpToPageInputChanged(string value)
+    {
+        RefreshCommands();
     }
 
     public int TotalPages => Total > 0 ? (int)Math.Ceiling((double)Total / PageSize) : 1;

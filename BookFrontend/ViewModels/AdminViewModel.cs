@@ -1,28 +1,20 @@
 using book_frontend.Models.Entities;
 using book_frontend.Services.Interfaces;
+using book_frontend.Services;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 
 namespace book_frontend.ViewModels;
 
-public class AdminViewModel : BaseViewModel
+public partial class AdminViewModel : ObservableObject
 {
     private readonly IAuthService _authService;
     private readonly ILogger<AdminViewModel> _logger;
+    [ObservableProperty]
     private string _currentPageTitle = "欢迎";
+    
+    [ObservableProperty]
     private string _currentUserName = string.Empty;
-
-
-    public string CurrentPageTitle
-    {
-        get => _currentPageTitle;
-        set => SetProperty(ref _currentPageTitle, value);
-    }
-
-    public string CurrentUserName
-    {
-        get => _currentUserName;
-        set => SetProperty(ref _currentUserName, value);
-    }
 
     public AdminViewModel(IAuthService authService, ILogger<AdminViewModel> logger)
     {

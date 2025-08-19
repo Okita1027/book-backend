@@ -15,7 +15,7 @@
 
     <!-- 管理员页面标题样式 -->
     <Style x:Key="AdminTitleStyle" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="24" />
+        <Setter Property="FontSize" Value="22" />
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="Foreground" Value="#333" />
         <Setter Property="Margin" Value="15, 20, 15, 10"/>

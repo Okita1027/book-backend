@@ -12,35 +12,62 @@ using book_frontend.Models.VOs;
 using book_frontend.Services.Interfaces;
 using book_frontend.Services;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace book_frontend.ViewModels
 {
-    public class BookManagementViewModel : INotifyPropertyChanged
+    public partial class BookManagementViewModel : ObservableObject
     {
         private readonly IBookService _bookService;
         private readonly LoggingService _loggingService;
 
         // 搜索条件
+        [ObservableProperty]
         private string _searchTitle = string.Empty;
+        
+        [ObservableProperty]
         private string _searchAuthor = string.Empty;
+        
+        [ObservableProperty]
         private string _searchIsbn = string.Empty;
+        
+        [ObservableProperty]
         private string _searchPublisher = string.Empty;
+        
+        [ObservableProperty]
         private string _searchCategory = string.Empty;
+        
+        [ObservableProperty]
         private DateTime? _searchPublishDateStart = null;
+        
+        [ObservableProperty]
         private DateTime? _searchPublishDateEnd = null;
 
         // 分页相关
+        [ObservableProperty]
         private int _currentPage = 1;
+        
+        [ObservableProperty]
         private int _pageSize = 10;
+        
+        [ObservableProperty]
         private int _totalCount = 0;
+        
+        [ObservableProperty]
         private int _totalPages = 0;
+        
+        [ObservableProperty]
         private int _jumpToPage = 1;
 
         // 数据集合
+        [ObservableProperty]
         private ObservableCollection<BookVOWrapper> _books = new();
+        
+        [ObservableProperty]
         private ObservableCollection<BookVOWrapper> _selectedBooks = new();
 
         // 加载状态
+        [ObservableProperty]
         private bool _isLoading = false;
 
         public BookManagementViewModel(IBookService bookService, LoggingService loggingService)
@@ -54,97 +81,7 @@ namespace book_frontend.ViewModels
         }
 
         #region 属性
-
-        public string SearchTitle
-        {
-            get => _searchTitle;
-            set => SetProperty(ref _searchTitle, value);
-        }
-
-        public string SearchAuthor
-        {
-            get => _searchAuthor;
-            set => SetProperty(ref _searchAuthor, value);
-        }
-
-        public string SearchIsbn
-        {
-            get => _searchIsbn;
-            set => SetProperty(ref _searchIsbn, value);
-        }
-
-        public string SearchPublisher
-        {
-            get => _searchPublisher;
-            set => SetProperty(ref _searchPublisher, value);
-        }
-
-        public string SearchCategory
-        {
-            get => _searchCategory;
-            set => SetProperty(ref _searchCategory, value);
-        }
-
-        public DateTime? SearchPublishDateStart
-        {
-            get => _searchPublishDateStart;
-            set => SetProperty(ref _searchPublishDateStart, value);
-        }
-
-        public DateTime? SearchPublishDateEnd
-        {
-            get => _searchPublishDateEnd;
-            set => SetProperty(ref _searchPublishDateEnd, value);
-        }
-
-        public int CurrentPage
-        {
-            get => _currentPage;
-            set => SetProperty(ref _currentPage, value);
-        }
-
-        public int PageSize
-        {
-            get => _pageSize;
-            set => SetProperty(ref _pageSize, value);
-        }
-
-        public int TotalCount
-        {
-            get => _totalCount;
-            set => SetProperty(ref _totalCount, value);
-        }
-
-        public int TotalPages
-        {
-            get => _totalPages;
-            set => SetProperty(ref _totalPages, value);
-        }
-
-        public int JumpToPage
-        {
-            get => _jumpToPage;
-            set => SetProperty(ref _jumpToPage, value);
-        }
-
-        public ObservableCollection<BookVOWrapper> Books
-        {
-            get => _books;
-            set => SetProperty(ref _books, value);
-        }
-
-        public ObservableCollection<BookVOWrapper> SelectedBooks
-        {
-            get => _selectedBooks;
-            set => SetProperty(ref _selectedBooks, value);
-        }
-
-        public bool IsLoading
-        {
-            get => _isLoading;
-            set => SetProperty(ref _isLoading, value);
-        }
-
+        // 属性由 ObservableProperty 特性自动生成
         #endregion
 
         #region 命令
@@ -450,33 +387,15 @@ namespace book_frontend.ViewModels
 
         #endregion
 
-        #region INotifyPropertyChanged 实现
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value))
-                return false;
-
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
-
-        #endregion
     }
 
     /// <summary>
     /// BookVO 包装类，用于支持多选功能
     /// </summary>
-    public class BookVOWrapper : INotifyPropertyChanged
+    public partial class BookVOWrapper : ObservableObject
     {
+        [ObservableProperty]
         private bool _isSelected;
 
         public BookVOWrapper(BookVO book)
@@ -485,19 +404,6 @@ namespace book_frontend.ViewModels
         }
 
         public BookVO Book { get; }
-
-        public bool IsSelected
-        {
-            get => _isSelected;
-            set
-            {
-                if (_isSelected != value)
-                {
-                    _isSelected = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
 
         // 代理 BookVO 的属性
         public int Id => Book.Id;
@@ -513,12 +419,5 @@ namespace book_frontend.ViewModels
         public int Stock => Book.Stock;
         public int Available => Book.Available;
         public DateTime PublishDate => Book.PublishedDate;
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

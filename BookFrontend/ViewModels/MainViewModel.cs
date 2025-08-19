@@ -1,9 +1,11 @@
 using book_frontend.Services.Interfaces;
+using book_frontend.Services;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 
 namespace book_frontend.ViewModels;
 
-public class MainViewModel : BaseViewModel
+public partial class MainViewModel : ObservableObject
 {
     private readonly IAuthService _authService;
     private readonly ILogger<MainViewModel> _logger;

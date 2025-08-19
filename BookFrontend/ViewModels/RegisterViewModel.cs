@@ -2,20 +2,34 @@ using System.ComponentModel.DataAnnotations;
 using book_frontend.Constants;
 using book_frontend.Models.Entities;
 using book_frontend.Services.Interfaces;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace book_frontend.ViewModels;
 
-public class RegisterViewModel : BaseViewModel
+public partial class RegisterViewModel : ObservableObject
 {
     private readonly IAuthService _authService;
     private readonly RelayCommand _registerCommand;
+    [ObservableProperty]
     private string _name = string.Empty;
+    
+    [ObservableProperty]
     private string _email = string.Empty;
+    
+    [ObservableProperty]
     private string _password = string.Empty;
+    
+    [ObservableProperty]
     private string _confirmPassword = string.Empty;
+    
+    [ObservableProperty]
     private bool _isLoading = false;
+    
+    [ObservableProperty]
     private string _errorMessage = string.Empty;
+    
+    [ObservableProperty]
     private string _successMessage = string.Empty;
 
     public event Action? NavigateToLogin;
@@ -31,81 +45,31 @@ public class RegisterViewModel : BaseViewModel
 
     public RelayCommand RegisterCommand => _registerCommand;
 
-    public string Name
+    partial void OnNameChanged(string value)
     {
-        get => _name;
-        set
-        {
-            _name = value;
-            OnPropertyChanged();
-            _registerCommand.NotifyCanExecuteChanged();
-        }
+        _registerCommand.NotifyCanExecuteChanged();
     }
 
-    public string Email
+    partial void OnEmailChanged(string value)
     {
-        get => _email;
-        set
-        {
-            _email = value;
-            OnPropertyChanged();
-            _registerCommand.NotifyCanExecuteChanged();
-        }
+        _registerCommand.NotifyCanExecuteChanged();
     }
 
-    public string Password
+    partial void OnPasswordChanged(string value)
     {
-        get => _password;
-        set
-        {
-            _password = value;
-            OnPropertyChanged();
-            ValidatePassword();
-            _registerCommand.NotifyCanExecuteChanged();
-        }
+        ValidatePassword();
+        _registerCommand.NotifyCanExecuteChanged();
     }
 
-    public string ConfirmPassword
+    partial void OnConfirmPasswordChanged(string value)
     {
-        get => _confirmPassword;
-        set
-        {
-            _confirmPassword = value;
-            OnPropertyChanged();
-            ValidatePassword();
-            _registerCommand.NotifyCanExecuteChanged();
-        }
+        ValidatePassword();
+        _registerCommand.NotifyCanExecuteChanged();
     }
 
-    public bool IsLoading
+    partial void OnIsLoadingChanged(bool value)
     {
-        get => _isLoading;
-        set
-        {
-            _isLoading = value;
-            OnPropertyChanged();
-            _registerCommand.NotifyCanExecuteChanged();
-        }
-    }
-
-    public string ErrorMessage
-    {
-        get => _errorMessage;
-        set
-        {
-            _errorMessage = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public string SuccessMessage
-    {
-        get => _successMessage;
-        set
-        {
-            _successMessage = value;
-            OnPropertyChanged();
-        }
+        _registerCommand.NotifyCanExecuteChanged();
     }
 
     private bool CanRegister()
