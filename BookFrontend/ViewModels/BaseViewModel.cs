@@ -8,6 +8,7 @@ namespace book_frontend.ViewModels;
 /// ViewModel基类，实现INotifyPropertyChanged接口
 /// 这是WPF数据绑定的核心机制，类似于React的useState
 /// </summary>
+[Obsolete("该类不使用（已经引入了CommunityToolkit.Mvvm包")]
 public class BaseViewModel : INotifyPropertyChanged
 {
     /// <summary>

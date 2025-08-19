@@ -11,27 +11,24 @@ namespace book_frontend.Views.UserControls
     /// </summary>
     public partial class BookManagement : UserControl
     {
-        private BookManagementViewModel _viewModel;
-        
+        private readonly BookManagementViewModel _viewModel;
+
         public BookManagement(BookManagementViewModel viewModel)
         {
             InitializeComponent();
             _viewModel = viewModel;
             DataContext = _viewModel;
-            
+
             // 处理DataGrid选择变化
             BooksDataGrid.SelectionChanged += BooksDataGrid_SelectionChanged;
         }
-        
+
         private void BooksDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (_viewModel != null)
+            _viewModel.SelectedBooks.Clear();
+            foreach (BookVOWrapper item in BooksDataGrid.SelectedItems)
             {
-                _viewModel.SelectedBooks.Clear();
-                foreach (BookVOWrapper item in BooksDataGrid.SelectedItems)
-                {
-                    _viewModel.SelectedBooks.Add(item);
-                }
+                _viewModel.SelectedBooks.Add(item);
             }
         }
     }

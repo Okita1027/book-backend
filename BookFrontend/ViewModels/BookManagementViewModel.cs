@@ -11,6 +11,7 @@ using book_frontend.Models.DTOs;
 using book_frontend.Models.VOs;
 using book_frontend.Services.Interfaces;
 using book_frontend.Services;
+using book_frontend.Views.Windows;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -22,53 +23,38 @@ namespace book_frontend.ViewModels
         private readonly LoggingService _loggingService;
 
         // 搜索条件
-        [ObservableProperty]
-        private string _searchTitle = string.Empty;
-        
-        [ObservableProperty]
-        private string _searchAuthor = string.Empty;
-        
-        [ObservableProperty]
-        private string _searchIsbn = string.Empty;
-        
-        [ObservableProperty]
-        private string _searchPublisher = string.Empty;
-        
-        [ObservableProperty]
-        private string _searchCategory = string.Empty;
-        
-        [ObservableProperty]
-        private DateTime? _searchPublishDateStart = null;
-        
-        [ObservableProperty]
-        private DateTime? _searchPublishDateEnd = null;
+        [ObservableProperty] private string _searchTitle = string.Empty;
+
+        [ObservableProperty] private string _searchAuthor = string.Empty;
+
+        [ObservableProperty] private string _searchIsbn = string.Empty;
+
+        [ObservableProperty] private string _searchPublisher = string.Empty;
+
+        [ObservableProperty] private string _searchCategory = string.Empty;
+
+        [ObservableProperty] private DateTime? _searchPublishDateStart = null;
+
+        [ObservableProperty] private DateTime? _searchPublishDateEnd = null;
 
         // 分页相关
-        [ObservableProperty]
-        private int _currentPage = 1;
-        
-        [ObservableProperty]
-        private int _pageSize = 10;
-        
-        [ObservableProperty]
-        private int _totalCount = 0;
-        
-        [ObservableProperty]
-        private int _totalPages = 0;
-        
-        [ObservableProperty]
-        private int _jumpToPage = 1;
+        [ObservableProperty] private int _currentPage = 1;
+
+        [ObservableProperty] private int _pageSize = 10;
+
+        [ObservableProperty] private int _totalCount = 0;
+
+        [ObservableProperty] private int _totalPages = 0;
+
+        [ObservableProperty] private int _jumpToPage = 1;
 
         // 数据集合
-        [ObservableProperty]
-        private ObservableCollection<BookVOWrapper> _books = new();
-        
-        [ObservableProperty]
-        private ObservableCollection<BookVOWrapper> _selectedBooks = new();
+        [ObservableProperty] private ObservableCollection<BookVOWrapper> _books = new();
+
+        [ObservableProperty] private ObservableCollection<BookVOWrapper> _selectedBooks = new();
 
         // 加载状态
-        [ObservableProperty]
-        private bool _isLoading = false;
+        [ObservableProperty] private bool _isLoading = false;
 
         public BookManagementViewModel(IBookService bookService, LoggingService loggingService)
         {
@@ -80,9 +66,6 @@ namespace book_frontend.ViewModels
             _ = LoadBooksAsync();
         }
 
-        #region 属性
-        // 属性由 ObservableProperty 特性自动生成
-        #endregion
 
         #region 命令
 
@@ -158,7 +141,8 @@ namespace book_frontend.ViewModels
             }
             catch (Exception ex)
             {
-                _loggingService.LogErrorAndShowMessage(ex, "加载图书数据时发生异常，请重试。", "BookManagementViewModel.LoadBooksAsync");
+                _loggingService.LogErrorAndShowMessage(ex, "加载图书数据时发生异常，请重试。",
+                    "BookManagementViewModel.LoadBooksAsync");
             }
             finally
             {
@@ -205,7 +189,7 @@ namespace book_frontend.ViewModels
                     currentWindow = Application.Current.MainWindow;
                 }
 
-                var result = await Views.BookEditDialog.ShowAddDialogAsync(currentWindow);
+                var result = await BookEditDialog.ShowAddDialogAsync(currentWindow!);
                 if (result == true)
                 {
                     // 刷新图书列表
@@ -224,37 +208,46 @@ namespace book_frontend.ViewModels
         private async void EditBook()
         {
             var selectedItems = Books.Where(b => b.IsSelected).ToList();
-            if (selectedItems.Count == 0)
+            switch (selectedItems.Count)
             {
-                _loggingService.LogWarningMessage("请选择要编辑的图书", "提示");
-                return;
-            }
+                case 0:
+                    _loggingService.LogWarningMessage("请选择要编辑的图书", "提示");
+                    return;
+                case > 1:
+                    _loggingService.LogWarningMessage("只能选择一本图书进行编辑", "提示");
+                    return;
+                default:
+                    try
+                    {
+                        var selectedBook = selectedItems.First();
+                        /*
+                         * Application.Current.Windows
+                         *      获取当前应用程序中所有打开的窗口集合
+                         * .OfType<Window>()
+                         *      LINQ扩展方法，用于筛选指定类型的元素
+                         *      虽然Windows集合中已经是Window对象，但这里是为了将WindowCollection转换为IEnumerable<Window>，这样就能够使用其它的LINQ方法了
+                         */
+                        var currentWindow = Application.Current.Windows.OfType<Window>()
+                            .FirstOrDefault(w => w.IsActive);
+                        if (currentWindow == null)
+                        {
+                            currentWindow = Application.Current.MainWindow;
+                        }
 
-            if (selectedItems.Count > 1)
-            {
-                _loggingService.LogWarningMessage("只能选择一本图书进行编辑", "提示");
-                return;
-            }
+                        var result = await BookEditDialog.ShowEditDialogAsync(currentWindow!, selectedBook.Book.Id);
+                        if (result == true)
+                        {
+                            // 刷新图书列表
+                            await LoadBooksAsync();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _loggingService.LogErrorAndShowMessage(ex, "打开编辑图书对话框时发生错误，请重试。",
+                            "BookManagementViewModel.EditBook");
+                    }
 
-            try
-            {
-                var selectedBook = selectedItems.First();
-                var currentWindow = Application.Current.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive);
-                if (currentWindow == null)
-                {
-                    currentWindow = Application.Current.MainWindow;
-                }
-
-                var result = await Views.BookEditDialog.ShowEditDialogAsync(currentWindow, selectedBook.Book.Id);
-                if (result == true)
-                {
-                    // 刷新图书列表
-                    await LoadBooksAsync();
-                }
-            }
-            catch (Exception ex)
-            {
-                _loggingService.LogErrorAndShowMessage(ex, "打开编辑图书对话框时发生错误，请重试。", "BookManagementViewModel.EditBook");
+                    break;
             }
         }
 
@@ -386,8 +379,6 @@ namespace book_frontend.ViewModels
         }
 
         #endregion
-
-
     }
 
     /// <summary>
@@ -395,8 +386,7 @@ namespace book_frontend.ViewModels
     /// </summary>
     public partial class BookVOWrapper : ObservableObject
     {
-        [ObservableProperty]
-        private bool _isSelected;
+        [ObservableProperty] private bool _isSelected;
 
         public BookVOWrapper(BookVO book)
         {
@@ -412,7 +402,7 @@ namespace book_frontend.ViewModels
         public string Isbn => Book.Isbn ?? string.Empty;
         public string Publisher => Book.PublisherName ?? string.Empty;
 
-        public string Category => Book.CategoryNames != null && Book.CategoryNames.Count > 0
+        public string Category => Book.CategoryNames is { Count: > 0 }
             ? string.Join(", ", Book.CategoryNames)
             : string.Empty;
 

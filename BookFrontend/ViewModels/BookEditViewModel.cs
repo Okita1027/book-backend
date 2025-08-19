@@ -23,53 +23,38 @@ public partial class BookEditViewModel : ObservableObject
     private readonly LoggingService _loggingService;
 
     // 基本属性
-    [ObservableProperty]
-    private string _title = string.Empty;
-    
-    [ObservableProperty]
-    private string _isbn = string.Empty;
-    
-    [ObservableProperty]
-    private DateTime _publishedDate = DateTime.Now;
-    
-    [ObservableProperty]
-    private int _stock = 0;
-    
-    [ObservableProperty]
-    private int _available = 0;
-    
-    [ObservableProperty]
-    private int? _selectedAuthorId;
-    
-    [ObservableProperty]
-    private int? _selectedPublisherId;
-    
-    [ObservableProperty]
-    private ObservableCollection<int> _selectedCategoryIds = new();
+    [ObservableProperty] private string _title = string.Empty;
+
+    [ObservableProperty] private string _isbn = string.Empty;
+
+    [ObservableProperty] private DateTime _publishedDate = DateTime.Now;
+
+    [ObservableProperty] private int _stock = 0;
+
+    [ObservableProperty] private int _available = 0;
+
+    [ObservableProperty] private int? _selectedAuthorId;
+
+    [ObservableProperty] private int? _selectedPublisherId;
+
+    [ObservableProperty] private ObservableCollection<int> _selectedCategoryIds = [];
 
     // 下拉数据源
-    [ObservableProperty]
-    private ObservableCollection<AuthorVO> _authors = new();
-    
-    [ObservableProperty]
-    private ObservableCollection<PublisherVO> _publishers = new();
-    
-    [ObservableProperty]
-    private ObservableCollection<CategoryVO> _categories = new();
+    [ObservableProperty] private ObservableCollection<AuthorVO> _authors = [];
+
+    [ObservableProperty] private ObservableCollection<PublisherVO> _publishers = [];
+
+    [ObservableProperty] private ObservableCollection<CategoryVO> _categories = [];
 
     // UI状态
-    [ObservableProperty]
-    private bool _isLoading = false;
-    
-    [ObservableProperty]
-    private bool _isSaving = false;
-    
-    [ObservableProperty]
-    private string _validationErrors = string.Empty;
-    
-    [ObservableProperty]
-    private bool _isEditMode = false;
-    
+    [ObservableProperty] private bool _isLoading = false;
+
+    [ObservableProperty] private bool _isSaving = false;
+
+    [ObservableProperty] private string _validationErrors = string.Empty;
+
+    [ObservableProperty] private bool _isEditMode = false;
+
     private int? _bookId;
 
     public BookEditViewModel(
@@ -91,10 +76,14 @@ public partial class BookEditViewModel : ObservableObject
 
     #region 属性
 
-    // 属性将由 [ObservableProperty] 特性自动生成
-    // Title, Isbn, PublishedDate, Stock, Available, SelectedAuthorId, SelectedPublisherId, SelectedCategoryIds
-    // Authors, Publishers, Categories, IsLoading, IsSaving, ValidationErrors, IsEditMode
-    
+    /*
+     * 属性将由 [ObservableProperty] 特性自动生成
+     * [ObservableProperty] 是一个编译时源生成器特性，它可以自动为私有字段生成对应的公共属性，并自动实现 INotifyPropertyChanged 接口。
+     * Title, Isbn, PublishedDate, Stock, Available, SelectedAuthorId, SelectedPublisherId, SelectedCategoryIds
+     * Authors, Publishers, Categories, IsLoading, IsSaving, ValidationErrors, IsEditMode
+     */
+
+
     // Stock属性变化时的业务逻辑
     partial void OnStockChanged(int value)
     {
@@ -113,6 +102,7 @@ public partial class BookEditViewModel : ObservableObject
 
     #endregion
 
+
     #region 命令
 
     public ICommand SaveCommand { get; private set; }
@@ -124,7 +114,7 @@ public partial class BookEditViewModel : ObservableObject
 
     private void InitializeCommands()
     {
-        SaveCommand = new RelayCommand(async () => await SaveBookAsync(), () => !IsSaving);
+        SaveCommand = new RelayCommand(async void () => await SaveBookAsync(), () => !IsSaving);
         CancelCommand = new RelayCommand(() => CloseDialog(false));
     }
 
@@ -157,11 +147,6 @@ public partial class BookEditViewModel : ObservableObject
             if (IsEditMode && bookId.HasValue)
             {
                 await LoadBookDataAsync(bookId.Value);
-            }
-            else
-            {
-                // 新增模式，设置默认值
-                Available = Stock;
             }
         }
         catch (Exception ex)
@@ -251,8 +236,8 @@ public partial class BookEditViewModel : ObservableObject
             if (response is { Success: true, Data: not null })
             {
                 var book = response.Data;
-                Title = book.Title ?? string.Empty;
-                Isbn = book.Isbn ?? string.Empty;
+                Title = book.Title;
+                Isbn = book.Isbn;
                 PublishedDate = book.PublishedDate;
                 Stock = book.Stock;
                 Available = book.Available;
@@ -260,7 +245,7 @@ public partial class BookEditViewModel : ObservableObject
                 SelectedPublisherId = book.PublisherId;
 
                 // 设置选中的分类
-                var selectedCategoryIds = book.CategoryIds ?? new List<int>();
+                var selectedCategoryIds = book.CategoryIds;
                 SelectedCategoryIds = new ObservableCollection<int>(selectedCategoryIds);
 
                 // 更新分类的选中状态
@@ -341,14 +326,14 @@ public partial class BookEditViewModel : ObservableObject
     {
         var dto = new EditBookDTO
         {
-            Title = Title?.Trim() ?? string.Empty,
-            Isbn = Isbn?.Trim() ?? string.Empty,
+            Title = Title.Trim(),
+            Isbn = Isbn.Trim(),
             PublishedDate = PublishedDate,
             Stock = Stock,
             Available = Available,
             AuthorId = SelectedAuthorId ?? 0,
             PublisherId = SelectedPublisherId ?? 0,
-            CategoryIds = SelectedCategoryIds?.ToList() ?? new List<int>()
+            CategoryIds = SelectedCategoryIds.ToList()
         };
 
         var result = _validator.Validate(dto);
@@ -371,7 +356,8 @@ public partial class BookEditViewModel : ObservableObject
     /// </summary>
     private void CloseDialog(bool dialogResult)
     {
-        if (Application.Current.Windows.OfType<Window>().FirstOrDefault(w => w.DataContext == this) is Window window)
+        // {}：匹配一个非 null 的对象。
+        if (Application.Current.Windows.OfType<Window>().FirstOrDefault(w => w.DataContext == this) is { } window)
         {
             window.DialogResult = dialogResult;
             window.Close();
@@ -379,8 +365,6 @@ public partial class BookEditViewModel : ObservableObject
     }
 
     #endregion
-
-
 }
 
 /// <summary>
@@ -397,7 +381,7 @@ public class BookEditValidator : AbstractValidator<EditBookDTO>
         RuleFor(x => x.Isbn)
             .NotEmpty().WithMessage("ISBN不能为空")
             .Must(isbn => isbn.Length is 10 or 13).WithMessage("ISBN只能是10位或13位")
-            .Matches(@"^[0-9]+$").WithMessage("ISBN只能包含数字");
+            .Matches("^[0-9]+$").WithMessage("ISBN只能包含数字");
 
         RuleFor(x => x.PublishedDate)
             .LessThanOrEqualTo(DateTime.Now).WithMessage("出版日期不能晚于今天")

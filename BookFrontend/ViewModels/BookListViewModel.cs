@@ -13,20 +13,15 @@ public partial class BookListViewModel : ObservableObject
     private readonly ILogger _logger;
 
     // 搜索条件
-    [ObservableProperty]
-    private string? _title;
+    [ObservableProperty] private string? _title;
 
-    [ObservableProperty]
-    private string? _author;
+    [ObservableProperty] private string? _author;
 
-    [ObservableProperty]
-    private string? _category;
+    [ObservableProperty] private string? _category;
 
-    [ObservableProperty]
-    private string? _publisher;
+    [ObservableProperty] private string? _publisher;
 
-    [ObservableProperty]
-    private string? _isbn;
+    [ObservableProperty] private string? _isbn;
 
     partial void OnTitleChanged(string? value)
     {
@@ -53,21 +48,16 @@ public partial class BookListViewModel : ObservableObject
         RefreshCommands();
     }
 
-    [ObservableProperty]
-    private DateTime? _publishDateStart;
+    [ObservableProperty] private DateTime? _publishDateStart;
 
-    [ObservableProperty]
-    private DateTime? _publishDateEnd;
+    [ObservableProperty] private DateTime? _publishDateEnd;
 
     // 分页
-    [ObservableProperty]
-    private int _pageIndex;
+    [ObservableProperty] private int _pageIndex;
 
-    [ObservableProperty]
-    private int _pageSize;
+    [ObservableProperty] private int _pageSize;
 
-    [ObservableProperty]
-    private int _total;
+    [ObservableProperty] private int _total;
 
     partial void OnPublishDateStartChanged(DateTime? value)
     {
@@ -103,15 +93,12 @@ public partial class BookListViewModel : ObservableObject
      */
     public ObservableCollection<BookVO> Books { get; }
 
-    [ObservableProperty]
-    private bool _isLoading;
+    [ObservableProperty] private bool _isLoading;
 
-    [ObservableProperty]
-    private string? _errorMessage;
+    [ObservableProperty] private string? _errorMessage;
 
     // 页码跳转
-    [ObservableProperty]
-    private string _jumpToPageInput = "1";
+    [ObservableProperty] private string _jumpToPageInput = "1";
 
     partial void OnIsLoadingChanged(bool value)
     {
@@ -269,7 +256,7 @@ public partial class BookListViewModel : ObservableObject
         PrevPageCommand.NotifyCanExecuteChanged();
         JumpToPageCommand.NotifyCanExecuteChanged();
         /*
-         * HasNextPage 和 HasPreviousPage是计算属性
+         * HasNextPage 和 HasPreviousPage 是计算属性
          * 它们的值依赖于其他属性（PageIndex、PageSize、Total）的变化
          * 当执行分页操作时，这些依赖属性会改变，但 HasNextPage 和 HasPreviousPage 本身不会自动通知UI更新
          * 所以需要手动调用 OnPropertyChanged 来通知UI这些计算属性的值已经改变
@@ -278,7 +265,6 @@ public partial class BookListViewModel : ObservableObject
         OnPropertyChanged(nameof(HasPreviousPage));
         OnPropertyChanged(nameof(TotalPages));
     }
-// removed erroneous class closing brace here to keep following methods inside the class
 
     private bool CanJumpToPage()
     {

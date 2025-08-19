@@ -49,8 +49,6 @@ public partial class AdminViewModel : ObservableObject
             }
 
             // 检查用户是否为管理员
-            // 注意：这里假设User模型有IsAdmin属性或Role属性
-            // 如果没有，需要根据实际的用户模型进行调整
             var isAdmin = IsUserAdmin(currentUser);
             
             if (!isAdmin)
@@ -72,7 +70,7 @@ public partial class AdminViewModel : ObservableObject
     /// </summary>
     /// <param name="user">用户对象</param>
     /// <returns>是否为管理员</returns>
-    private bool IsUserAdmin(User user)
+    private static bool IsUserAdmin(User user)
     {
         // 使用User模型的Role属性判断管理员权限
         return user.Role == UserRole.Admin;
@@ -88,7 +86,7 @@ public partial class AdminViewModel : ObservableObject
             var currentUser = _authService.GetCurrentUser();
             if (currentUser != null)
             {
-                CurrentUserName = currentUser.Name ?? currentUser.Email ?? "未知用户";
+                CurrentUserName = currentUser.Name;
             }
             else
             {
