@@ -19,7 +19,10 @@ public partial class LoginViewModel : ObservableObject
     private bool _isLoading = false;
     
     [ObservableProperty]
-    private string _errorMessage = string.Empty;
+    private string _errorMessage = string.Empty;    
+    
+    [ObservableProperty]
+    private string _successMessage = string.Empty;
     
     [ObservableProperty]
     private bool _rememberMe = false;
@@ -85,6 +88,7 @@ public partial class LoginViewModel : ObservableObject
             if (result.IsSuccess)
             {
                 // 登录成功：清空错误信息并触发登录成功事件
+                SuccessMessage = "登录成功！";
                 ErrorMessage = string.Empty;
                 LoginSuccessful?.Invoke();
             }

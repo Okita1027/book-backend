@@ -9,14 +9,6 @@
       d:DesignHeight="600" d:DesignWidth="1000"
       d:DataContext="{d:DesignInstance Type=viewModels:AdminViewModel, IsDesignTimeCreatable=False}">
 
-    <Page.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../ResourceDictionaries/AdminPageStyles.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Page.Resources>
-
     <Grid Style="{StaticResource AdminPageContainerStyle}">
         <Grid.ColumnDefinitions>
             <!-- 左侧导航栏 -->
@@ -27,7 +19,7 @@
 
         <!-- 左侧导航菜单 -->
         <Border Grid.Column="0" Style="{StaticResource AdminSidebarContainerStyle}">
-            <StackPanel Margin="0,20,0,0">
+            <StackPanel Margin="15">
                 <!-- 管理员信息 -->
                 <Border Style="{StaticResource AdminInfoAreaStyle}">
                     <StackPanel>
@@ -41,24 +33,22 @@
                 <TextBlock Text="管理功能" Style="{StaticResource AdminTitleStyle}" />
 
                 <!-- 图书管理按钮 -->
-                <Button x:Name="BookManagementButton" 
+                <Button x:Name="BookManagementButton"
                         Click="BookManagementButton_Click"
                         Style="{StaticResource BookManagementButtonStyle}">
                     <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="Book" Width="20" Height="20" 
-                                                 VerticalAlignment="Center" Margin="10" />
-                        <TextBlock Text="图书管理" VerticalAlignment="Center" FontSize="16" />
+                        <materialDesign:PackIcon Kind="Book" Width="20" Height="20" />
+                        <TextBlock Text="图书管理" />
                     </StackPanel>
                 </Button>
 
                 <!-- 用户管理按钮 -->
-                <Button x:Name="UserManagementButton" 
+                <Button x:Name="UserManagementButton"
                         Click="UserManagementButton_Click"
                         Style="{StaticResource UserManagementButtonStyle}">
                     <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="AccountGroup" Width="20" Height="20" 
-                                                 VerticalAlignment="Center" Margin="10" />
-                        <TextBlock Text="用户管理" VerticalAlignment="Center" FontSize="16" />
+                        <materialDesign:PackIcon Kind="AccountGroup" Width="20" Height="20" />
+                        <TextBlock Text="用户管理" />
                     </StackPanel>
                 </Button>
 
@@ -67,25 +57,28 @@
 
         <!-- 右侧内容区域 -->
         <Border Grid.Column="1" Style="{StaticResource AdminContentAreaStyle}">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
 
-            <!-- 面包屑导航 -->
-            <Border Grid.Row="0" Background="White" BorderBrush="#e0e0e0" BorderThickness="0,0,0,1" Padding="20,15">
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="Home" Width="16" Height="16" VerticalAlignment="Center" Foreground="#666" />
-                    <TextBlock Text="后台管理" Margin="5,0" VerticalAlignment="Center" Foreground="#666" />
-                    <materialDesign:PackIcon Kind="ChevronRight" Width="12" Height="12" VerticalAlignment="Center" Foreground="#999" />
-                    <TextBlock Text="{Binding CurrentPageTitle}" Margin="5,0" VerticalAlignment="Center" FontWeight="Bold" />
-                </StackPanel>
-            </Border>
+                <!-- 面包屑导航 -->
+                <Border Grid.Row="0" Background="White" BorderBrush="#e0e0e0" BorderThickness="0,0,0,1" Padding="20,15">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Home" Width="16" Height="16" VerticalAlignment="Center"
+                                                 Foreground="#666" />
+                        <TextBlock Text="后台管理" Margin="5,0" VerticalAlignment="Center" Foreground="#666" />
+                        <materialDesign:PackIcon Kind="ChevronRight" Width="12" Height="12" VerticalAlignment="Center"
+                                                 Foreground="#999" />
+                        <TextBlock Text="{Binding CurrentPageTitle}" Margin="5,0" VerticalAlignment="Center"
+                                   FontWeight="Bold" />
+                    </StackPanel>
+                </Border>
 
-            <!-- 主内容区域 -->
-            <Frame Grid.Row="1" x:Name="AdminContentFrame" NavigationUIVisibility="Hidden" />
-        </Grid>
+                <!-- 主内容区域 -->
+                <Frame Grid.Row="1" x:Name="AdminContentFrame" NavigationUIVisibility="Hidden" />
+            </Grid>
         </Border>
     </Grid>
 </Page>
